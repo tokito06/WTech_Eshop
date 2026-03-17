@@ -36,6 +36,8 @@ header {
     cursor: pointer;
 
     transition: 0.2s;
+    color: #000000;
+    text-decoration: none;
 }
 
 .header__icon:hover {

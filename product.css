@@ -3,10 +3,8 @@
     gap: 60px;
     padding: 40px;
     background-color: #f2f2f2;
-    min-height: calc(100vh - 130px);
 }
 
-/* LEFT SIDE */
 .product__gallery {
     flex: 1;
 }
@@ -30,14 +28,14 @@
 .product__thumb {
     width: 40px;
     height: 40px;
-    background-color: #d9d9d9;
+    background-color: var(--gray-color);
 }
 
 .product__rating {
-    font-size: 24px;
+    font-size: 32px;
+    cursor: pointer;
 }
 
-/* RIGHT SIDE */
 .product__info {
     flex: 1;
     display: flex;
@@ -50,16 +48,15 @@
 }
 
 .product__size {
-    height: 30px;
     width: 300px;
     padding: 10px;
-    background-color: #d9d9d9;
+    background-color: var(--gray-color);
     border: none;
 }
 
-/* ACTIONS */
 .product__actions {
     margin-top: auto;
+    margin-bottom: 100px;
     display: flex;
     gap: 20px;
 }
