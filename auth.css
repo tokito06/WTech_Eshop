@@ -1,0 +1,88 @@
+.auth {
+    display: flex;
+    height: 100%;
+}
+
+.libre-barcode-39-text-regular {
+    font-family: "Libre Barcode 39 Text", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* LEFT SIDE */
+.auth__left {
+    flex: 1;
+    background-color: var(--bg-primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #8a5a44;
+}
+
+/* RIGHT SIDE */
+.auth__right {
+    flex: 1;
+    background-color: var(--white-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    background-color: var(--bg-primary-color);
+}
+
+.register__size {
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    background-color: var(--input_form);
+    outline: none;
+}
+.register__container {
+    background-color: var(--white-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 500px;
+    padding: 50px;
+}
+
+/* FORM */
+.auth__form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 300px;
+    text-align: center;
+}
+
+.auth__form input {
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    background-color: var(--input_form);
+    outline: none;
+}
+
+.auth__form button {
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    background-color: var(--highlight-color);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.auth__form button:hover {
+    background-color: var(--highlight-dark-color);
+}
+
+.auth__form a {
+    color: blue;
+    text-decoration: none;
+}
