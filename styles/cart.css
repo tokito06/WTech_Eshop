@@ -133,13 +133,16 @@
 }
 
 /* Cart Summary Block */
+.cart-sticky {
+    position: sticky;
+    top: clamp(10px, 2vw, 24px);
+}
+
 .cart-summary {
     background: var(--white-color);
     border-radius: 12px;
     padding: clamp(16px, 2vw, 32px);
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    position: sticky;
-    top: clamp(10px, 2vw, 24px);
 }
 
 .cart-summary__title {
