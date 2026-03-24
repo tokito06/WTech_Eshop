@@ -13,11 +13,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anaheim:wght@400..800&display=swap" rel="stylesheet">
 
-    <title>Liked</title>
+    <title>Shop</title>
 
     <!-- Custom stylesheets -->
     <link rel="stylesheet" href="../styles/main.css">
-    <link rel="stylesheet" href="../styles/favourites.css">
+    <link rel="stylesheet" href="../styles/main_page.css">
 </head>
 <body>
 
@@ -26,39 +26,55 @@
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand" href="#">Logo</a>
         <div class="d-flex align-items-center gap-1">
+            <a class="header__icon" href="./favourites-bootstrap.html" title="Liked">
+                <span class="material-symbols-outlined">favorite</span>
+            </a>
             <a class="header__icon" href="./cart-bootstrap.html" title="Cart">
                 <span class="material-symbols-outlined">shopping_bag</span>
             </a>
-            <a class="header__icon" href="profile_bootstrap.html" title="Profile">
+            <a class="header__icon" href="./profile_bootstrap.html" title="Profile">
                 <span class="material-symbols-outlined">account_circle</span>
             </a>
         </div>
     </div>
 </nav>
 
-<!-- Favourites Page -->
-<main class="liked-section">
-    <div class="container">
+<!-- Category Nav -->
+<nav class="category-nav">
+    <ul class="nav d-flex flex-nowrap overflow-auto" style="scrollbar-width:none;">
+        <li class="nav-item"><a class="nav-link active" href="#">Men</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Kids</a></li>
+    </ul>
+</nav>
 
-        <div class="liked-title">
-            <span class="material-symbols-outlined">favorite</span>
-            <h1>Liked</h1>
+<!-- Main -->
+<main>
+    <div class="container py-4">
+
+        <!-- Filter + Search toolbar -->
+        <div class="shop-toolbar">
+            <button class="shop-filter-btn" id="btn-filter" title="Filters">
+                <span class="material-symbols-outlined">filter_list</span>
+            </button>
+            <input class="shop-search" type="search" placeholder="Type your query here....">
         </div>
 
-        <div class="liked-empty" id="liked-empty">
-            <span class="material-symbols-outlined">heart_broken</span>
-            <p>No liked items yet</p>
-        </div>
-
-
-        <div class="row g-3 g-md-4" id="liked-grid">
+        <!-- Product Grid -->
+        <div class="row g-3 g-md-4">
 
             <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
                 <div class="product-card">
-                    <button class="product-card__delete" aria-label="Remove from liked">
-                        <span class="material-symbols-outlined">delete</span>
+                    <button class="product-card__fav" aria-label="Like">
+                        <span class="material-symbols-outlined">favorite</span>
                     </button>
                     <div class="product-card__img">340 × 280</div>
+                    <div class="product-card__sizes">
+                        <span class="size-badge active">S</span>
+                        <span class="size-badge">M</span>
+                        <span class="size-badge">L</span>
+                        <span class="size-badge">XL</span>
+                    </div>
                     <div class="product-card__body">
                         <h3 class="product-card__name">Item name</h3>
                         <p class="product-card__desc">Item description Item description Item description Item descript</p>
@@ -69,10 +85,16 @@
 
             <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
                 <div class="product-card">
-                    <button class="product-card__delete" aria-label="Remove from liked">
-                        <span class="material-symbols-outlined">delete</span>
+                    <button class="product-card__fav" aria-label="Like">
+                        <span class="material-symbols-outlined">favorite</span>
                     </button>
                     <div class="product-card__img">340 × 280</div>
+                    <div class="product-card__sizes">
+                        <span class="size-badge">S</span>
+                        <span class="size-badge active">M</span>
+                        <span class="size-badge">L</span>
+                        <span class="size-badge">XL</span>
+                    </div>
                     <div class="product-card__body">
                         <h3 class="product-card__name">Item name</h3>
                         <p class="product-card__desc">Item description Item description Item description Item descript</p>
@@ -83,10 +105,16 @@
 
             <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
                 <div class="product-card">
-                    <button class="product-card__delete" aria-label="Remove from liked">
-                        <span class="material-symbols-outlined">delete</span>
+                    <button class="product-card__fav" aria-label="Like">
+                        <span class="material-symbols-outlined">favorite</span>
                     </button>
                     <div class="product-card__img">340 × 280</div>
+                    <div class="product-card__sizes">
+                        <span class="size-badge">S</span>
+                        <span class="size-badge">M</span>
+                        <span class="size-badge active">L</span>
+                        <span class="size-badge">XL</span>
+                    </div>
                     <div class="product-card__body">
                         <h3 class="product-card__name">Item name</h3>
                         <p class="product-card__desc">Item description Item description Item description Item descript</p>
@@ -97,10 +125,16 @@
 
             <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
                 <div class="product-card">
-                    <button class="product-card__delete" aria-label="Remove from liked">
-                        <span class="material-symbols-outlined">delete</span>
+                    <button class="product-card__fav" aria-label="Like">
+                        <span class="material-symbols-outlined">favorite</span>
                     </button>
                     <div class="product-card__img">340 × 280</div>
+                    <div class="product-card__sizes">
+                        <span class="size-badge">S</span>
+                        <span class="size-badge">M</span>
+                        <span class="size-badge">L</span>
+                        <span class="size-badge active">XL</span>
+                    </div>
                     <div class="product-card__body">
                         <h3 class="product-card__name">Item name</h3>
                         <p class="product-card__desc">Item description Item description Item description Item descript</p>
@@ -111,10 +145,16 @@
 
             <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
                 <div class="product-card">
-                    <button class="product-card__delete" aria-label="Remove from liked">
-                        <span class="material-symbols-outlined">delete</span>
+                    <button class="product-card__fav" aria-label="Like">
+                        <span class="material-symbols-outlined">favorite</span>
                     </button>
                     <div class="product-card__img">340 × 280</div>
+                    <div class="product-card__sizes">
+                        <span class="size-badge active">S</span>
+                        <span class="size-badge">M</span>
+                        <span class="size-badge">L</span>
+                        <span class="size-badge">XL</span>
+                    </div>
                     <div class="product-card__body">
                         <h3 class="product-card__name">Item name</h3>
                         <p class="product-card__desc">Item description Item description Item description Item descript</p>
@@ -125,10 +165,16 @@
 
             <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
                 <div class="product-card">
-                    <button class="product-card__delete" aria-label="Remove from liked">
-                        <span class="material-symbols-outlined">delete</span>
+                    <button class="product-card__fav" aria-label="Like">
+                        <span class="material-symbols-outlined">favorite</span>
                     </button>
                     <div class="product-card__img">340 × 280</div>
+                    <div class="product-card__sizes">
+                        <span class="size-badge">S</span>
+                        <span class="size-badge active">M</span>
+                        <span class="size-badge">L</span>
+                        <span class="size-badge">XL</span>
+                    </div>
                     <div class="product-card__body">
                         <h3 class="product-card__name">Item name</h3>
                         <p class="product-card__desc">Item description Item description Item description Item descript</p>
@@ -156,33 +202,30 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    /* ══════════════════════════════════
-       Видалення з лайків
-    ══════════════════════════════════ */
-    document.getElementById('liked-grid').addEventListener('click', e => {
-        const btn = e.target.closest('.product-card__delete');
-        if (!btn) return;
-
-        const col = btn.closest('[class*="col-"]');
-
-        // Анімація зникнення
-        col.style.transition = 'opacity 0.25s, transform 0.25s';
-        col.style.opacity    = '0';
-        col.style.transform  = 'scale(0.9)';
-
-        setTimeout(() => {
-            col.remove();
-            checkEmpty();
-        }, 260);
+    /* Category nav active */
+    document.querySelectorAll('.category-nav .nav-link').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            document.querySelectorAll('.category-nav .nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
     });
 
-    function checkEmpty() {
-        const remaining = document.querySelectorAll('#liked-grid [class*="col-"]').length;
-        document.getElementById('liked-empty').style.display =
-            remaining === 0 ? 'flex' : 'none';
-    }
+    /* Favourites toggle */
+    document.querySelectorAll('.product-card__fav').forEach(btn => {
+        btn.addEventListener('click', () => btn.classList.toggle('liked'));
+    });
+
+    /* Size badge toggle — one active per card */
+    document.querySelectorAll('.product-card__sizes').forEach(group => {
+        group.querySelectorAll('.size-badge').forEach(badge => {
+            badge.addEventListener('click', () => {
+                group.querySelectorAll('.size-badge').forEach(b => b.classList.remove('active'));
+                badge.classList.add('active');
+            });
+        });
+    });
 </script>
 </body>
 </html>
