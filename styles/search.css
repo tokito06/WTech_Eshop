@@ -172,25 +172,6 @@
     .filters-body.open { max-height: 600px; }
 }
 
-/* Product card sizes overlay */
-.product-card__sizes {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    display: flex;
-    gap: 3px;
-}
-
-.product-card__size-tag {
-    background: var(--white-color);
-    border-radius: 3px;
-    font-size: clamp(9px, 0.75vw, 12px);
-    font-weight: 700;
-    padding: 2px 5px;
-    color: #000;
-    opacity: 0.9;
-}
-
 /* Pagination */
 .pagination-bar {
     display: flex;
