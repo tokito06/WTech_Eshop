@@ -57,11 +57,6 @@
 .categories-scroll::-webkit-scrollbar { display: none; }
 .categories-scroll.no-scroll { justify-content: center; }
 
-.categories-row {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(8px, 1.2vw, 18px);
-}
 
 .cat-card {
     flex-shrink: 0;
