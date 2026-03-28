@@ -27,8 +27,8 @@
 /* Product delete btn */
 .product-card__delete {
     position: absolute;
-    top: clamp(6px, 1vw, 12px);
-    right: clamp(6px, 1vw, 12px);
+    top: clamp(6px, 0.5vw, 10px);
+    right: clamp(6px, 0.5vw, 10px);
     width: clamp(28px, 2.5vw, 40px);
     height: clamp(28px, 2.5vw, 40px);
     border: none;
@@ -38,6 +38,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    z-index: 1;
     transition: background-color 0.2s, color 0.2s;
     backdrop-filter: blur(4px);
 }
