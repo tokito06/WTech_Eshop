@@ -172,6 +172,10 @@
 }
 
 .cart-summary__btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
     width: 100%;
     border: none;
     background-color: var(--highlight-color);
