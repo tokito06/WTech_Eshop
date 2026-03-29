@@ -161,6 +161,7 @@ main { flex: 1; }
     right: 8px;
     display: flex;
     gap: 3px;
+    z-index: 100;
 }
 
 .product-card__size-tag {
@@ -171,6 +172,14 @@ main { flex: 1; }
     padding: 2px 5px;
     color: #000;
     opacity: 0.9;
+    z-index: 100;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, opacity 0.15s;
+}
+.product-card__size-tag.active {
+    background: #000;
+    color: var(--white-color);
+    opacity: 1;
 }
 
 /* Auth form */
