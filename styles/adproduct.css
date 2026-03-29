@@ -149,6 +149,7 @@
     background-color: var(--gray-color);
     border-radius: 6px;
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 .admin-cell-label {

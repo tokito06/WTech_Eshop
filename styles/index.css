@@ -74,9 +74,11 @@
     aspect-ratio: 1;
     background-color: var(--bg-primary-color);
     border-radius: 8px;
+    overflow: hidden;
     transition: opacity 0.2s, transform 0.2s;
     opacity: 0.7;
 }
+
 .cat-card:hover .cat-card__img { opacity: 1; transform: scale(1.05); }
 
 .cat-card__label {
