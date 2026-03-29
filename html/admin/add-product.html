@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anaheim:wght@400..800&display=swap" rel="stylesheet">
 
-    <title>Admin – Edit Product</title>
+    <title>Admin – Add Product</title>
 
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/adproduct.css">
@@ -24,11 +24,11 @@
 <!-- Header -->
 <nav class="navbar">
     <div class="container-fluid d-flex align-items-center gap-3">
-        <a class="navbar-brand flex-shrink-0" href="adproducts-bootstrap.html">Logo</a>
+        <a class="navbar-brand flex-shrink-0" href="adproducts.html">Logo</a>
         <div class="admin-search-wrap flex-grow-1">
             <input class="admin-search" type="search" placeholder="Search">
         </div>
-        <a class="header__icon ms-auto flex-shrink-0" href="profile-bootstrap.html" title="Profile">
+        <a class="header__icon ms-auto flex-shrink-0" href="profile.html" title="Profile">
             <span class="material-symbols-outlined">account_circle</span>
         </a>
     </div>
@@ -40,7 +40,7 @@
         <div class="row g-4 g-xl-5 align-items-start justify-content-center">
 
             <!-- Left: photo + size/total -->
-            <div class="col-12 col-md-5 col-lg-5 d-flex flex-column">
+            <div class="col-12 col-md-5 col-lg-4 d-flex flex-column">
 
                 <!-- Photo upload -->
                 <div class="add-product-photo" id="photo-drop" title="Click or drag to upload">
@@ -76,16 +76,16 @@
 
                     <div class="d-flex gap-3">
                         <input class="add-product-input add-product-input--half" type="text" placeholder="Type">
+
                     </div>
 
                     <div class="d-flex gap-3">
                         <input class="add-product-input add-product-input--half" type="text" placeholder="Sex">
                     </div>
 
-
                     <input class="add-product-input add-product-input--vendor" type="text" placeholder="Vendor">
 
-                    <button class="add-product-btn" id="add-btn">Save</button>
+                    <button class="add-product-btn" id="add-btn">Add</button>
 
                 </div>
             </div>
@@ -95,8 +95,7 @@
 </main>
 
 
-
-<!-- Footer -->
+<!-- Footer --->
 <footer class="py-3 px-4">
     <div class="container-fluid d-flex flex-column flex-sm-row
                 justify-content-between align-items-center gap-2">
