@@ -108,6 +108,12 @@
     line-height: 1.6;
 }
 
+/* Price */
+.product__price {
+    font-size: clamp(1.4rem, 2.5vw, 2.8rem);
+    font-weight: 700;
+}
+
 .product__size {
     width: 100%;
     padding: clamp(8px, 1vw, 16px) clamp(10px, 1.2vw, 20px);
