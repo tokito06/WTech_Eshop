@@ -72,11 +72,20 @@
 .cat-card__img {
     width: 100%;
     aspect-ratio: 1;
-    background-color: var(--bg-primary-color);
+    background-color: var(--white-color);
     border-radius: 8px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: opacity 0.2s, transform 0.2s;
     opacity: 0.7;
+}
+
+.cat-card__icon {
+    font-size: clamp(30px, 3vw, 46px);
+    color: var(--dark-gray-color);
+    line-height: 1;
 }
 
 .cat-card:hover .cat-card__img { opacity: 1; transform: scale(1.05); }
