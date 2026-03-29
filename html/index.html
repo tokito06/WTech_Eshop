@@ -50,6 +50,46 @@
 
 <main>
 
+    <!-- Promo banner -->
+    <section class="home-banner-section">
+        <div class="container">
+            <div class="home-banner-scroll" id="home-banner-scroll" aria-label="Promotions">
+                <a class="home-banner-card clear-link" href="./main.html">
+                    <div class="home-banner-card__media">
+                        <img src="../images/image_1.jpg" alt="Sneakers collection banner">
+                    </div>
+                    <div class="home-banner-card__content">
+                        <p class="home-banner-card__eyebrow">New Collection</p>
+                        <h2>Fresh Sneakers Drop</h2>
+                        <p>Discover trending pairs and complete your everyday look.</p>
+                    </div>
+                </a>
+
+                <a class="home-banner-card clear-link" href="./main.html">
+                    <div class="home-banner-card__media">
+                        <img src="../images/image_2.jpg" alt="Accessories sale banner">
+                    </div>
+                    <div class="home-banner-card__content">
+                        <p class="home-banner-card__eyebrow">Limited Offer</p>
+                        <h2>Accessories Sale</h2>
+                        <p>Save up to 30% on bags, watches and more.</p>
+                    </div>
+                </a>
+
+                <a class="home-banner-card clear-link" href="./main.html">
+                    <div class="home-banner-card__media">
+                        <img src="../images/image_3.jpg" alt="Streetwear essentials banner">
+                    </div>
+                    <div class="home-banner-card__content">
+                        <p class="home-banner-card__eyebrow">Daily Picks</p>
+                        <h2>Streetwear Essentials</h2>
+                        <p>Mix shirts, trousers and layers for your style.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Categories Scroll -->
     <section class="home-section" style="background:#fafafa; border-bottom:1px solid var(--gray-color);">
         <div class="container">
@@ -232,6 +272,49 @@
     const dots = document.querySelectorAll('.cat-dot');
     const prevBtn = document.getElementById('cat-prev');
     const nextBtn = document.getElementById('cat-next');
+    const bannerScroll = document.getElementById('home-banner-scroll');
+
+    // Auto-scroll promo banner after a short delay.
+    if (bannerScroll) {
+        const banners = bannerScroll.querySelectorAll('.home-banner-card');
+        let bannerIndex = 0;
+        let bannerTimer = null;
+
+        const goToBanner = (index) => {
+            bannerScroll.scrollTo({
+                left: index * bannerScroll.clientWidth,
+                behavior: 'smooth'
+            });
+        };
+
+        const stopBannerAuto = () => {
+            if (bannerTimer) {
+                clearInterval(bannerTimer);
+                bannerTimer = null;
+            }
+        };
+
+        const startBannerAuto = () => {
+            if (banners.length < 2) return;
+            stopBannerAuto();
+            bannerTimer = setInterval(() => {
+                bannerIndex = (bannerIndex + 1) % banners.length;
+                goToBanner(bannerIndex);
+            }, 3600);
+        };
+
+        setTimeout(startBannerAuto, 1500);
+
+        bannerScroll.addEventListener('scroll', () => {
+            const page = Math.round(bannerScroll.scrollLeft / Math.max(1, bannerScroll.clientWidth));
+            bannerIndex = Math.max(0, Math.min(banners.length - 1, page));
+        });
+
+        bannerScroll.addEventListener('pointerdown', stopBannerAuto);
+        bannerScroll.addEventListener('mouseenter', stopBannerAuto);
+        bannerScroll.addEventListener('mouseleave', () => setTimeout(startBannerAuto, 1200));
+        window.addEventListener('resize', () => goToBanner(bannerIndex));
+    }
 
     function positionArrows() {
         const scrollEl = catScroll;
