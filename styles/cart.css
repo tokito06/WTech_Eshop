@@ -24,6 +24,11 @@
     margin: 0;
 }
 
+.cart-items__title {
+    margin-left: clamp(35px, 5vw, 90px);
+    font-size: clamp(1.2rem, 2.2vw, 2.2rem);
+}
+
 /* Cart item */
 .cart-item {
     display: flex;
