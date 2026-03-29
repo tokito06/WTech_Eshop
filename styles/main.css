@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap");
+
 /* Variables */
 :root {
     --bg-primary-color:     #FFA883;
@@ -34,9 +36,11 @@ main { flex: 1; }
 }
 
 .navbar-brand {
+    font-family: "Libre Barcode 39 Text", system-ui;
     font-size: clamp(1.4rem, 2.5vw, 2.4rem);
-    font-weight: 700;
+    font-weight: 400;
     color: #000 !important;
+    letter-spacing: 2px;
 }
 
 .header__icon {
