@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(10px, 1.5vw, 20px);
-    margin-bottom: clamp(20px, 3vw, 40px);
+    margin: clamp(20px, 3vw, 40px) 0;
 }
 
 .shop-filter-btn {
