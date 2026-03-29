@@ -127,25 +127,25 @@
 .product__size:focus { outline: 2px solid var(--highlight-color); }
 
 /* Quantity controls */
-.quantity-label {
+.quantity__label {
     font-size: clamp(0.85rem, 1vw, 1.1rem);
     color: var(--dark-gray-color);
     font-weight: 600;
     margin-bottom: 6px;
 }
 
-.quantity-selector {
+.quantity__selector {
     display: flex;
     align-items: center;
     width: fit-content;
     border-radius: 10px;
     overflow: hidden;
-    border: 2px solid var(--gray-color);
-    background-color: var(--white-color);
+    border: 4px solid var(--gray-color);
+    background-color: var(--gray-color);
 }
 
 .quantity-selector__btn {
-    width:  clamp(36px, 3.5vw, 52px);
+    width: clamp(36px, 3.5vw, 52px);
     height: clamp(36px, 3.5vw, 52px);
     border: none;
     background-color: var(--gray-color);
@@ -162,11 +162,11 @@
 .quantity-selector__btn:active { background-color: var(--highlight-dark-color); }
 
 .quantity-selector__input {
-    width:  clamp(44px, 4vw, 64px);
+    width: clamp(44px, 4vw, 64px);
     height: clamp(36px, 3.5vw, 52px);
+    margin: 0 3px;
     border: none;
-    border-left:  2px solid var(--gray-color);
-    border-right: 2px solid var(--gray-color);
+    border-radius: 5px;
     text-align: center;
     font-family: "Anaheim", sans-serif;
     font-size: clamp(0.95rem, 1.2vw, 1.4rem);
