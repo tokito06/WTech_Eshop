@@ -95,6 +95,13 @@
 .field-hint.visible { display: block; color: #e05555; }
 
 /* Subtitle */
+
+.auth__form {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 .auth__form .subtitle {
     color: var(--dark-gray-color);
     font-size: clamp(0.8rem, 1vw, 1rem);
