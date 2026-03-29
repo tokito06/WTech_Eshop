@@ -48,7 +48,7 @@
         <div class="row g-4 align-items-start">
 
             <!-- Goods list -->
-            <div class="col-12 col-lg-8">
+            <section class="col-12 col-lg-8">
 
                 <div class="cart-empty" id="cart-empty">
                     <span class="material-symbols-outlined">shopping_cart</span>
@@ -56,11 +56,12 @@
                 </div>
 
                 <div id="cart-items-list">
+                    <h2 class="cart-items__title">Items</h2>
 
                     <!-- Good -->
                     <div class="cart-item" data-price="100.99">
-                        <label class="cart-item__checkbox" aria-label="Select item">
-                            <input type="checkbox">
+                        <label class="cart-item__checkbox">
+                            <input type="checkbox" aria-label="Select item">
                             <span class="cart-item__checkbox-box"></span>
                         </label>
 
@@ -89,13 +90,13 @@
                     </div>
 
                     <div class="cart-item" data-price="59.00">
-                        <label class="cart-item__checkbox" aria-label="Select item">
-                            <input type="checkbox">
+                        <label class="cart-item__checkbox">
+                            <input type="checkbox" aria-label="Select item">
                             <span class="cart-item__checkbox-box"></span>
                         </label>
 
                         <div class="cart-item__image">
-                            <img src="../images/image_2.jpg" alt="Cart product image">
+                            <img class="img__container" src="../images/image_2.jpg" alt="Cart product image">
                         </div>
 
                         <div class="cart-item__info">
@@ -119,12 +120,12 @@
                     </div>
 
                 </div>
-            </div>
+            </section>
 
             <!-- Cart summary -->
-            <div class="col-12 col-lg-4 cart-sticky">
+            <section class="col-12 col-lg-4 cart-sticky">
                 <div class="cart-summary">
-                    <span class="cart-summary__title">Cart summary</span>
+                    <h2 class="cart-summary__title">Cart summary</h2>
 
                     <div class="cart-summary__amounts">
                         <div class="cart-summary__amount">
@@ -143,7 +144,7 @@
 
                     <a href="delivery.html" class="cart-summary__btn">Go to checkout</a>
                 </div>
-            </div>
+            </section>
 
         </div>
     </div>
