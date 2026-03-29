@@ -42,23 +42,98 @@
     <div class="container">
         <div class="row g-4 g-xl-5 align-items-start">
 
-            <!-- Left: delivery form -->
+            <!-- Left: delivery service + form -->
             <div class="col-12 col-lg-7">
 
+                <!-- Delivery service selection -->
                 <div class="delivery-title">
-                    <span class="material-symbols-outlined">shopping_bag</span>
-                    <h1>Enter delivery information</h1>
+                    <span class="material-symbols-outlined">local_shipping</span>
+                    <h1>Choose delivery service</h1>
+                </div>
+
+                <div class="delivery-services" id="delivery-services">
+                    <!-- Slovenská pošta -->
+                    <label class="service-card">
+                        <input type="radio" name="delivery-service" value="slovenska-posta">
+                        <span class="service-card__icon">🇸🇰</span>
+                        <span class="service-card__name">Slovenská pošta</span>
+                        <span class="service-card__desc">Post office pickup</span>
+                        <div class="service-card__meta">
+                            <span class="service-card__time">
+                                <span class="material-symbols-outlined">schedule</span>
+                                3-5 days
+                            </span>
+                            <span class="service-card__price">Free</span>
+                        </div>
+                    </label>
+
+                    <!-- Packeta -->
+                    <label class="service-card">
+                        <input type="radio" name="delivery-service" value="packeta">
+                        <span class="service-card__icon">📦</span>
+                        <span class="service-card__name">Packeta</span>
+                        <span class="service-card__desc">Pickup point / home delivery</span>
+                        <div class="service-card__meta">
+                            <span class="service-card__time">
+                                <span class="material-symbols-outlined">schedule</span>
+                                2-3 days
+                            </span>
+                            <span class="service-card__price">from 1.99 €</span>
+                        </div>
+                    </label>
+
+                    <!-- GLS Slovakia -->
+                    <label class="service-card">
+                        <input type="radio" name="delivery-service" value="gls">
+                        <span class="service-card__icon">🚚</span>
+                        <span class="service-card__name">GLS Slovakia</span>
+                        <span class="service-card__desc">Courier to door</span>
+                        <div class="service-card__meta">
+                            <span class="service-card__time">
+                                <span class="material-symbols-outlined">schedule</span>
+                                1-2 days
+                            </span>
+                            <span class="service-card__price">from 2.99 €</span>
+                        </div>
+                    </label>
+
+                    <!-- DHL Express -->
+                    <label class="service-card">
+                        <input type="radio" name="delivery-service" value="dhl">
+                        <span class="service-card__icon">✈️</span>
+                        <span class="service-card__name">DHL Express</span>
+                        <span class="service-card__desc">Express courier</span>
+                        <div class="service-card__meta">
+                            <span class="service-card__time">
+                                <span class="material-symbols-outlined">schedule</span>
+                                1-2 days
+                            </span>
+                            <span class="service-card__price">9.99 €</span>
+                        </div>
+                    </label>
+                </div>
+
+                <p class="delivery-services__error" id="service-error">Please select a delivery service.</p>
+
+                <!-- Personal data form -->
+                <div class="delivery-title delivery-title--form">
+                    <span class="material-symbols-outlined">person</span>
+                    <h2>Enter delivery information</h2>
                 </div>
 
                 <form class="delivery-form" id="delivery-form" novalidate>
-                    <input class="delivery-input" type="text"         id="name"         placeholder="Name"         required>
-                    <input class="delivery-input" type="text"         id="surname"      placeholder="Surname"      required>
-                    <input class="delivery-input" type="text"         id="street"       placeholder="Street"       required>
-                    <input class="delivery-input" type="text"         id="city"         placeholder="City"         required>
-                    <input class="delivery-input" type="text"         id="state"        placeholder="State">
-                    <input class="delivery-input" type="text"         id="country"      placeholder="Country"      required>
-                    <input class="delivery-input" type="text"         id="zip"          placeholder="Zip Code"     required inputmode="numeric">
-                    <input class="delivery-input" type="tel"          id="phone"        placeholder="Phone number" required inputmode="tel">
+                    <div class="delivery-form__row">
+                        <input class="delivery-input" type="text" id="name" placeholder="First name" required>
+                        <input class="delivery-input" type="text" id="surname" placeholder="Last name"  required>
+                    </div>
+                    <input class="delivery-input" type="email" id="email" placeholder="Email address" required>
+                    <input class="delivery-input" type="tel" id="phone" placeholder="Phone number" required inputmode="tel">
+                    <input class="delivery-input" type="text" id="street" placeholder="Street and house number" required>
+                    <div class="delivery-form__row">
+                        <input class="delivery-input" type="text" id="city" placeholder="City" required>
+                        <input class="delivery-input" type="text" id="zip" placeholder="ZIP code" required inputmode="numeric">
+                    </div>
+                    <input class="delivery-input" type="text" id="country" placeholder="Country" required>
                 </form>
 
             </div>
@@ -75,7 +150,7 @@
                         </div>
                         <div class="cart-summary__amount">
                             <span>Delivery amount</span>
-                            <small>from 0 €</small>
+                            <small id="summary-delivery">from 0 €</small>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Total</span>
@@ -107,11 +182,31 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.getElementById('payment-btn').addEventListener('click', () => {
-        const form    = document.getElementById('delivery-form');
-        const inputs  = form.querySelectorAll('input[required]');
-        let   valid   = true;
+    // Highlight selected service card
+    document.querySelectorAll('.service-card input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.querySelectorAll('.service-card').forEach(c => c.classList.remove('service-card--selected'));
+            radio.closest('.service-card').classList.add('service-card--selected');
+            document.getElementById('service-error').classList.remove('delivery-services__error--visible');
+        });
+    });
 
+    document.getElementById('payment-btn').addEventListener('click', () => {
+        const form = document.getElementById('delivery-form');
+        const inputs = form.querySelectorAll('input[required]');
+        const serviceChosen = document.querySelector('.service-card input[type="radio"]:checked');
+        let valid = true;
+
+        // Validate delivery service
+        if (!serviceChosen) {
+            document.getElementById('service-error').classList.add('delivery-services__error--visible');
+            document.getElementById('delivery-services').classList.add('delivery-services--error');
+            valid = false;
+        } else {
+            document.getElementById('delivery-services').classList.remove('delivery-services--error');
+        }
+
+        // Validate form inputs
         inputs.forEach(input => {
             if (!input.value.trim()) {
                 input.classList.add('delivery-input--error');
