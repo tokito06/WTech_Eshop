@@ -166,7 +166,7 @@
     margin-bottom: 12px;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
     .filters-toggle { display: flex; align-items: center; justify-content: space-between; }
     .filters-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
     .filters-body.open { max-height: 600px; }
