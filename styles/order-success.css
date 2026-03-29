@@ -1,0 +1,103 @@
+.success-section {
+    padding: clamp(40px, 6vw, 100px) 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-card {
+    background: var(--white-color);
+    border-radius: 16px;
+    padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    text-align: center;
+    max-width: 560px;
+    width: 100%;
+}
+
+.success-icon {
+    width: clamp(72px, 10vw, 120px);
+    height: clamp(72px, 10vw, 120px);
+    border-radius: 50%;
+    background-color: var(--highlight-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto clamp(20px, 3vw, 36px);
+}
+.success-icon .material-symbols-outlined {
+    font-size: clamp(40px, 5vw, 68px);
+    color: #fff;
+}
+
+.success-title {
+    font-size: clamp(1.6rem, 3vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: clamp(10px, 1.5vw, 18px);
+}
+
+.success-subtitle {
+    font-size: clamp(0.9rem, 1.2vw, 1.3rem);
+    color: var(--dark-gray-color);
+    margin-bottom: clamp(24px, 3vw, 44px);
+    line-height: 1.5;
+}
+
+.success-order-info {
+    background: #fafafa;
+    border-radius: 10px;
+    padding: clamp(14px, 2vw, 24px) clamp(16px, 2.5vw, 32px);
+    margin-bottom: clamp(24px, 3vw, 40px);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.success-order-info__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: clamp(0.85rem, 1vw, 1.15rem);
+    border-bottom: 1px solid var(--gray-color);
+    padding-bottom: 10px;
+}
+.success-order-info__row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    font-weight: 700;
+}
+.success-order-info__row span:first-child {
+    color: var(--dark-gray-color);
+}
+
+.success-actions {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.5vw, 16px);
+}
+
+.success-btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    border: none;
+    background-color: var(--highlight-color);
+    font-family: "Anaheim", sans-serif;
+    font-size: clamp(0.95rem, 1.1vw, 1.3rem);
+    font-weight: 600;
+    padding: clamp(12px, 1.3vw, 18px);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.success-btn:hover { background-color: var(--highlight-dark-color); }
+
+.success-btn--secondary {
+    background-color: transparent;
+    border: 2px solid var(--gray-color);
+    color: #000;
+}
+.success-btn--secondary:hover { background-color: var(--gray-color); }

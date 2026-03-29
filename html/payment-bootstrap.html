@@ -195,9 +195,7 @@
   });
 
   document.getElementById('pay-btn').addEventListener('click', () => {
-    bootstrap.Toast.getOrCreateInstance(
-            document.getElementById('payToast'), { delay: 2500 }
-    ).show();
+    window.location.href = './order-success-bootstrap.html';
   });
 </script>
 </body>
