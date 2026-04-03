@@ -1,0 +1,111 @@
+.payment-section {
+    background-color: #f2f2f2;
+    padding: clamp(20px, 3vw, 60px) 0;
+}
+
+.payment-section .container {
+    max-width: min(1800px, 95vw);
+}
+
+/* Section title */
+.payment-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: clamp(20px, 3vw, 40px);
+}
+
+.payment-title .material-symbols-outlined {
+    font-size: clamp(28px, 3vw, 44px);
+}
+
+.payment-title h1 {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Payment method buttons */
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 1.2vw, 16px);
+}
+
+.pay-btn {
+    width: 100%;
+    padding: clamp(12px, 1.5vw, 18px);
+    border: 2px solid var(--gray-color);
+    border-radius: 12px;
+    background-color: var(--white-color);
+    font-family: "Anaheim", sans-serif;
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: border-color 0.2s, background-color 0.2s, transform 0.15s;
+}
+
+.pay-btn:hover {
+    border-color: var(--highlight-dark-color);
+    background-color: #f7f7ff;
+    transform: translateY(-1px);
+}
+
+.pay-btn:active { transform: scale(0.99); }
+
+/* Card form */
+.card-form {
+    border: 2px solid var(--gray-color);
+    border-radius: 12px;
+    background-color: var(--white-color);
+    padding: clamp(16px, 2vw, 28px);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.5vw, 18px);
+    transition: border-color 0.2s;
+}
+
+.card-form:focus-within { border-color: var(--highlight-dark-color); }
+
+.card-form__header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.card-form__label {
+    font-size: clamp(0.75rem, 0.9vw, 0.95rem);
+    color: var(--dark-gray-color);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.card-form__input {
+    width: 100%;
+    padding: clamp(8px, 1vw, 14px) clamp(10px, 1.2vw, 16px);
+    border: none;
+    border-bottom: 2px solid var(--gray-color);
+    background: transparent;
+    font-family: "Anaheim", sans-serif;
+    font-size: clamp(0.9rem, 1.1vw, 1.2rem);
+    color: var(--dark-gray-color);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.card-form__input:focus {
+    border-bottom-color: var(--highlight-dark-color);
+    color: #000;
+}
+
+.card-form__input::placeholder { color: #bbb; }
+
+/* Responsive */
+@media (max-width: 575px) {
+    .navbar { padding: 0 16px; min-height: 60px; }
+}
