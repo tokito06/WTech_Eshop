@@ -63,7 +63,7 @@
                     <div>
                         @if($brand->products_count === 0)
                         <form method="POST" action="{{ route('admin.brands.destroy', $brand) }}"
-                              onsubmit="return confirm('Delete brand \'{{ addslashes($brand->name) }}\'?')">
+                              onsubmit="return confirm(@js('Delete brand \'' . $brand->name . '\' ?'))">
                             @csrf @method('DELETE')
                             <button type="submit" class="admin-edit-btn" title="Delete">
                                 <span class="material-symbols-outlined">delete</span>
