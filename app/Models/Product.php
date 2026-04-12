@@ -54,7 +54,7 @@ class Product extends Model
     public function getFirstImageUrlAttribute(): ?string
     {
         $image = $this->images->first();
-        return $image ? asset('storage/' . $image->path) : null;
+        return $image ? $image->url : null;
     }
 
     public function getMinPriceAttribute(): ?float

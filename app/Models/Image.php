@@ -18,4 +18,12 @@ class Image extends Model
     {
         return $this->belongsToMany(Product::class, 'product_images');
     }
+
+    public function getUrlAttribute(): string
+    {
+        if (str_starts_with($this->path, 'images/')) {
+            return asset($this->path);
+        }
+        return asset('storage/' . $this->path);
+    }
 }
