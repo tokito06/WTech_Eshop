@@ -10,7 +10,8 @@
 <!-- Category Nav -->
 <nav class="category-nav">
     <ul class="nav d-flex flex-nowrap overflow-auto" style="scrollbar-width:none;">
-        <li class="nav-item"><a class="nav-link active" href="#">Men</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">All</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Men</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Kids</a></li>
     </ul>
@@ -24,38 +25,28 @@
     <section class="home-banner-section">
         <div class="container">
             <div class="home-banner-scroll" id="home-banner-scroll" aria-label="Promotions">
+                @forelse($banners as $banner)
                 <a class="home-banner-card clear-link" href="{{ route('shop') }}">
+                    @if($banner->image)
                     <div class="home-banner-card__media">
-                        <img class="img__container" src="{{ asset('images/image_1.jpg') }}" alt="Sneakers collection banner">
+                        <img class="img__container" src="{{ $banner->image->url }}" alt="{{ $banner->name }}">
                     </div>
+                    @endif
+                    <div class="home-banner-card__content">
+                        <p class="home-banner-card__eyebrow">Featured</p>
+                        <h2>{{ $banner->name }}</h2>
+                        <p>{{ $banner->description }}</p>
+                    </div>
+                </a>
+                @empty
+                <a class="home-banner-card clear-link" href="{{ route('shop') }}">
                     <div class="home-banner-card__content">
                         <p class="home-banner-card__eyebrow">New Collection</p>
-                        <h2>Fresh Sneakers Drop</h2>
-                        <p>Discover trending pairs and complete your everyday look.</p>
+                        <h2>Fresh Arrivals</h2>
+                        <p>Discover trending items and complete your look.</p>
                     </div>
                 </a>
-
-                <a class="home-banner-card clear-link" href="{{ route('shop') }}">
-                    <div class="home-banner-card__media">
-                        <img class="img__container" src="{{ asset('images/image_2.jpg') }}" alt="Accessories sale banner">
-                    </div>
-                    <div class="home-banner-card__content">
-                        <p class="home-banner-card__eyebrow">Limited Offer</p>
-                        <h2>Accessories Sale</h2>
-                        <p>Save up to 30% on bags, watches and more.</p>
-                    </div>
-                </a>
-
-                <a class="home-banner-card clear-link" href="{{ route('shop') }}">
-                    <div class="home-banner-card__media">
-                        <img class="img__container" src="{{ asset('images/image_3.jpg') }}" alt="Streetwear essentials banner">
-                    </div>
-                    <div class="home-banner-card__content">
-                        <p class="home-banner-card__eyebrow">Daily Picks</p>
-                        <h2>Streetwear Essentials</h2>
-                        <p>Mix shirts, trousers and layers for your style.</p>
-                    </div>
-                </a>
+                @endforelse
             </div>
         </div>
     </section>
@@ -76,22 +67,16 @@
 
                 <div class="categories-inner">
                     <div class="categories-scroll" id="cat-scroll">
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">footprint</span></div><span class="cat-card__label">Shoes</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">checkroom</span></div><span class="cat-card__label">Shirts</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">styler</span></div><span class="cat-card__label">Trousers</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">watch</span></div><span class="cat-card__label">Accessories</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">backpack</span></div><span class="cat-card__label">Bags</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">diamond</span></div><span class="cat-card__label">Jewelry</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">dry_cleaning</span></div><span class="cat-card__label">Outerwear</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">fitness_center</span></div><span class="cat-card__label">Sportswear</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">footprint</span></div><span class="cat-card__label">Sneakers</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">checkroom</span></div><span class="cat-card__label">T-Shirts</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">styler</span></div><span class="cat-card__label">Jeans</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">watch</span></div><span class="cat-card__label">Watches</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">backpack</span></div><span class="cat-card__label">Backpacks</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">diamond</span></div><span class="cat-card__label">Rings</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">dry_cleaning</span></div><span class="cat-card__label">Coats</span></a>
-                        <a class="cat-card clear-link" href="{{ route('search') }}"><div class="cat-card__img"><span class="material-symbols-outlined cat-card__icon" aria-hidden="true">fitness_center</span></div><span class="cat-card__label">Training</span></a>
+                        @forelse($categories as $category)
+                        <a class="cat-card clear-link" href="{{ route('search') }}?category={{ $category->id }}">
+                            <div class="cat-card__img">
+                                <span class="material-symbols-outlined cat-card__icon" aria-hidden="true">{{ $category->icon }}</span>
+                            </div>
+                            <span class="cat-card__label">{{ $category->name }}</span>
+                        </a>
+                        @empty
+                        <p class="text-muted">No categories yet.</p>
+                        @endforelse
                     </div>
 
                     <div class="cat-dots">
@@ -116,89 +101,31 @@
             </div>
 
             <div class="row g-3 g-md-4">
+                @forelse($products as $product)
                 <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
                     <div class="product-card">
                         <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_1.jpg') }}" alt="Product image"></div>
+                        <a href="{{ route('product') }}?id={{ $product->id }}" class="clear-link">
+                            <div class="product-card__img">
+                                @if($product->firstImageUrl)
+                                <img src="{{ $product->firstImageUrl }}" alt="{{ $product->name }}">
+                                @else
+                                <img src="{{ asset('images/image_1.jpg') }}" alt="{{ $product->name }}">
+                                @endif
+                            </div>
                             <div class="product-card__body">
-                                <h3 class="product-card__name">Super View Glasses</h3>
-                                <p class="product-card__desc">UV-protective lenses with a lightweight frame. Wide field of view for everyday outdoor wear.</p>
-                                <span class="product-card__price">19,99 €</span>
+                                <h3 class="product-card__name">{{ $product->name }}</h3>
+                                <p class="product-card__desc">{{ Str::limit($product->description, 90) }}</p>
+                                @if($product->minPrice !== null)
+                                <span class="product-card__price">{{ number_format($product->minPrice, 2, ',', '.') }} €</span>
+                                @endif
                             </div>
                         </a>
                     </div>
                 </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_2.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">Red Jacket</h3>
-                                <p class="product-card__desc">Bold red jacket with a modern slim cut. Water-resistant fabric, perfect for spring and autumn.</p>
-                                <span class="product-card__price">104,50 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_3.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">White T-shirt</h3>
-                                <p class="product-card__desc">Classic 100% cotton tee with a relaxed fit. Soft, breathable and versatile for any casual look.</p>
-                                <span class="product-card__price">39,00 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_1.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">Super View Glasses</h3>
-                                <p class="product-card__desc">Polarised lenses in a sleek frame. Blocks glare and protects eyes on sunny days.</p>
-                                <span class="product-card__price">12,99 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_2.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">Red Jacket</h3>
-                                <p class="product-card__desc">Oversized fit with ribbed cuffs and a zip-up front. Warm lining for extra comfort in cold weather.</p>
-                                <span class="product-card__price">89,00 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_3.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">White T-shirt</h3>
-                                <p class="product-card__desc">Crew-neck essential in premium cotton. Pre-washed fabric that stays soft wash after wash.</p>
-                                <span class="product-card__price">24,99 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+                @empty
+                <p class="text-muted">No products available.</p>
+                @endforelse
             </div>
         </div>
     </section>
