@@ -65,7 +65,7 @@
     flex-direction: column;
     gap: clamp(16px, 2.5vw, 32px);
     height: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .info-block {
@@ -112,6 +112,7 @@
 /* Actions btns */
 .btn-edit {
     width: 100%;
+    margin-top: clamp(12px, 2vw, 24px);
     padding: clamp(12px, 1.4vw, 18px) clamp(14px, 2vw, 24px);
     background-color: var(--highlight-color);
     border: none;

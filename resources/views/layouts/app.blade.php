@@ -31,7 +31,7 @@
             <a class="header__icon" href="{{ route('cart') }}" title="Cart">
                 <span class="material-symbols-outlined">shopping_bag</span>
             </a>
-            <a class="header__icon" href="{{ route('profile') }}" title="Profile">
+            <a class="header__icon" href="{{ auth()->check() ? route('profile') : route('login') }}" title="Profile">
                 <span class="material-symbols-outlined">account_circle</span>
             </a>
         </div>

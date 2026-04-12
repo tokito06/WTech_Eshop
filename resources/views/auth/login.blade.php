@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="auth-wrapper">
-
     <div class="auth__left col-12 col-md-5">
         <div class="auth__left-logo libre">RuPo</div>
         <div class="auth__left-decor">
@@ -13,13 +12,27 @@
     </div>
 
     <div class="auth__right col-12 col-md-7">
-        <div class="auth__form">
+        <form class="auth__form" method="POST" action="{{ route('login') }}">
+            @csrf
+
             <h2 class="libre">LOGIN</h2>
 
-            <input class="auth__input" type="email" placeholder="Email">
-            <input class="auth__input" type="password" placeholder="Password">
+            @if (session('status'))
+                <small class="text-success d-block mb-2">{{ session('status') }}</small>
+            @endif
 
-            <button class="auth__btn">Login</button>
+            <input class="auth__input" type="email" name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="username" autofocus>
+            @error('email')<small class="text-danger d-block mb-2">{{ $message }}</small>@enderror
+
+            <input class="auth__input" type="password" name="password" placeholder="Password" required autocomplete="current-password">
+            @error('password')<small class="text-danger d-block mb-2">{{ $message }}</small>@enderror
+
+            <label class="d-flex align-items-center gap-2 mb-3">
+                <input type="checkbox" name="remember">
+                <small>Remember me</small>
+            </label>
+
+            <button class="auth__btn" type="submit">Login</button>
 
             <div class="auth__divider">or</div>
 
@@ -27,8 +40,7 @@
                 Still not registered?
                 <a href="{{ route('register') }}">Registration</a>
             </small>
-        </div>
+        </form>
     </div>
-
 </div>
 @endsection

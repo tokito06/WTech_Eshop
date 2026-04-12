@@ -86,13 +86,14 @@
                     <h2>Enter delivery information</h2>
                 </div>
 
-                <form class="delivery-form" id="delivery-form" novalidate>
+                <form class="delivery-form" id="delivery-form" action="{{ route('delivery.store') }}" method="POST" novalidate>
+                    @csrf
                     <div class="delivery-form__row">
                         <input class="delivery-input" type="text" id="name" placeholder="First name" required>
                         <input class="delivery-input" type="text" id="surname" placeholder="Last name" required>
                     </div>
                     <input class="delivery-input" type="email" id="email" placeholder="Email address" required>
-                    <input class="delivery-input" type="tel" id="phone" placeholder="Phone number" required inputmode="tel">
+                    <input class="delivery-input" type="tel" id="phone" name="phone" placeholder="Phone number" required inputmode="tel">
                     <input class="delivery-input" type="text" id="street" placeholder="Street and house number" required>
                     <div class="delivery-form__row">
                         <input class="delivery-input" type="text" id="city" placeholder="City" required>
@@ -163,7 +164,12 @@
         });
 
         if (valid) {
-            window.location.href = '{{ route('payment') }}';
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            form.submit();
         }
     });
 
