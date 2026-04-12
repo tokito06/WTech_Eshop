@@ -14,12 +14,26 @@ class HomeController extends Controller
 
         $categories = Category::all();
 
-        $products = Product::with(['images', 'variants'])
+        $menProducts = Product::with(['images', 'variants'])
+            ->where('status', 'active')
+            ->whereIn('sex', ['men', 'unisex'])
+            ->latest('created_at')
+            ->take(4)
+            ->get();
+
+        $womenProducts = Product::with(['images', 'variants'])
+            ->where('status', 'active')
+            ->whereIn('sex', ['women', 'unisex'])
+            ->latest('created_at')
+            ->take(4)
+            ->get();
+
+        $trendingProducts = Product::with(['images', 'variants'])
             ->where('status', 'active')
             ->latest('created_at')
             ->take(6)
             ->get();
 
-        return view('index', compact('banners', 'categories', 'products'));
+        return view('index', compact('banners', 'categories', 'menProducts', 'womenProducts', 'trendingProducts'));
     }
 }
