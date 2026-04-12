@@ -27,6 +27,13 @@ class DatabaseSeeder extends Seeder
             'user_type' => 'seller',
         ]);
 
+        User::factory()->create([
+            'name'      => 'Super',
+            'surname'   => 'Admin',
+            'email'     => 'superadmin@example.com',
+            'user_type' => 'superadmin',
+        ]);
+
         $this->call([
             BrandSeeder::class,
             CategorySeeder::class,
