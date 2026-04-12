@@ -96,7 +96,7 @@
                             <span class="material-symbols-outlined">edit</span>
                         </a>
                         <form method="POST" action="{{ route('admin.products.destroy', $product) }}"
-                              onsubmit="return confirm('Delete {{ addslashes($product->name) }}?')">
+                              onsubmit="return confirm(@js('Delete product \'' . $product->name . '\' ?'))">
                             @csrf @method('DELETE')
                             <button type="submit" class="admin-edit-btn" title="Delete">
                                 <span class="material-symbols-outlined">delete</span>
