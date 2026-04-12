@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -23,10 +25,17 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::view('/products', 'admin.products')->name('products');
-        Route::view('/products/create', 'admin.add-product')->name('products.create');
-        Route::view('/products/edit', 'admin.edit-product')->name('products.edit');
+    Route::middleware('seller')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/brands', [BrandController::class, 'index'])->name('brands');
+        Route::post('/brands', [BrandController::class, 'store'])->name('brands.store');
+        Route::delete('/brands/{brand}', [BrandController::class, 'destroy'])->name('brands.destroy');
+
+        Route::get('/products', [AdminProductController::class, 'index'])->name('products');
+        Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
+        Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [AdminProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
     });
 });
 
