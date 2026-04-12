@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Image;
 use App\Models\Product;
@@ -17,23 +18,29 @@ class ProductController extends Controller
 
     public function index(Request $request): View
     {
-        $brandIds = auth()->user()->brands->pluck('id');
+        $query = Product::with(['brand', 'category', 'images', 'variants']);
 
-        $query = Product::with(['brand', 'category', 'images', 'variants'])
-            ->whereIn('brand_id', $brandIds);
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->whereIn('brand_id', $this->sellerBrandIds());
+        }
 
         if ($request->status && in_array($request->status, ['active', 'archived'])) {
             $query->where('status', $request->status);
         }
 
-        $products = $query->latest('created_at')->paginate(20);
+        if (auth()->user()->isSuperAdmin() && $request->brand_id) {
+            $query->where('brand_id', $request->brand_id);
+        }
 
-        return view('admin.products', compact('products'));
+        $products   = $query->latest('created_at')->paginate(20);
+        $allBrands  = auth()->user()->isSuperAdmin() ? Brand::orderBy('name')->get() : collect();
+
+        return view('admin.products', compact('products', 'allBrands'));
     }
 
     public function create(): View
     {
-        $brands     = auth()->user()->brands;
+        $brands     = $this->accessibleBrands();
         $categories = Category::orderBy('name')->get();
 
         return view('admin.add-product', compact('brands', 'categories'));
@@ -41,12 +48,10 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $sellerBrandIds = auth()->user()->brands->pluck('id')->toArray();
-
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:2000'],
-            'brand_id'    => ['required', 'integer', 'in:' . implode(',', $sellerBrandIds)],
+            'brand_id'    => ['required', 'integer', 'in:' . implode(',', $this->accessibleBrandIds())],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'sex'         => ['required', 'in:men,women,kids,unisex'],
             'price'       => ['required', 'numeric', 'min:0'],
@@ -92,9 +97,8 @@ class ProductController extends Controller
         $this->authorizeProduct($product);
 
         $product->load(['images', 'variants', 'brand', 'category']);
-        $brands     = auth()->user()->brands;
-        $categories = Category::orderBy('name')->get();
-
+        $brands         = $this->accessibleBrands();
+        $categories     = Category::orderBy('name')->get();
         $variantsBySize = $product->variants->keyBy('symbol');
 
         return view('admin.edit-product', compact('product', 'brands', 'categories', 'variantsBySize'));
@@ -104,12 +108,10 @@ class ProductController extends Controller
     {
         $this->authorizeProduct($product);
 
-        $sellerBrandIds = auth()->user()->brands->pluck('id')->toArray();
-
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:2000'],
-            'brand_id'    => ['required', 'integer', 'in:' . implode(',', $sellerBrandIds)],
+            'brand_id'    => ['required', 'integer', 'in:' . implode(',', $this->accessibleBrandIds())],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'sex'         => ['required', 'in:men,women,kids,unisex'],
             'status'      => ['required', 'in:active,archived'],
@@ -158,9 +160,34 @@ class ProductController extends Controller
         return redirect()->route('admin.products')->with('success', 'Product deleted.');
     }
 
+    // --- Helpers ---
+
+    private function sellerBrandIds(): array
+    {
+        return auth()->user()->brands->pluck('id')->toArray();
+    }
+
+    private function accessibleBrandIds(): array
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            return Brand::pluck('id')->toArray();
+        }
+        return $this->sellerBrandIds();
+    }
+
+    private function accessibleBrands()
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            return Brand::orderBy('name')->get();
+        }
+        return auth()->user()->brands;
+    }
+
     private function authorizeProduct(Product $product): void
     {
-        $sellerBrandIds = auth()->user()->brands->pluck('id')->toArray();
-        abort_unless(in_array($product->brand_id, $sellerBrandIds), 403);
+        if (auth()->user()->isSuperAdmin()) {
+            return;
+        }
+        abort_unless(in_array($product->brand_id, $this->sellerBrandIds()), 403);
     }
 }

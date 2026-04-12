@@ -12,7 +12,14 @@ class BrandController extends Controller
 {
     public function index(): View
     {
-        $brands = auth()->user()->brands()->withCount('products')->get();
+        if (auth()->user()->isSuperAdmin()) {
+            $brands = Brand::withCount('products')
+                ->with('seller')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $brands = auth()->user()->brands()->withCount('products')->get();
+        }
 
         return view('admin.brands', compact('brands'));
     }
@@ -25,7 +32,7 @@ class BrandController extends Controller
 
         Brand::create([
             'name'    => $request->name,
-            'user_id' => auth()->id(),
+            'user_id' => auth()->user()->isSuperAdmin() ? null : auth()->id(),
         ]);
 
         return redirect()->route('admin.brands')->with('success', 'Brand created successfully.');
@@ -33,7 +40,9 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand): RedirectResponse
     {
-        abort_unless($brand->user_id === auth()->id(), 403);
+        if (!auth()->user()->isSuperAdmin()) {
+            abort_unless($brand->user_id === auth()->id(), 403);
+        }
 
         $brand->delete();
 

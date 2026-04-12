@@ -11,7 +11,7 @@ class SellerMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->isSeller()) {
+        if (Auth::check() && Auth::user()->hasAdminAccess()) {
             return $next($request);
         }
 
