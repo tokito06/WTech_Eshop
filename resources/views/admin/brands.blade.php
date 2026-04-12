@@ -39,16 +39,26 @@
         <!-- Brands table -->
         <div class="admin-table-card">
 
-            <div class="admin-table-header" style="grid-template-columns: 1fr clamp(90px,12%,140px) 44px">
+            @php $isSuperAdmin = auth()->user()->isSuperAdmin(); @endphp
+
+            <div class="admin-table-header"
+                 style="grid-template-columns: 1fr {{ $isSuperAdmin ? 'clamp(120px,18%,200px)' : '' }} clamp(90px,12%,140px) 44px">
                 <div>Brand</div>
+                @if($isSuperAdmin)<div>Seller</div>@endif
                 <div>Products</div>
                 <div></div>
             </div>
 
             <div class="admin-table-body">
                 @forelse($brands as $brand)
-                <div class="admin-row" style="grid-template-columns: 1fr clamp(90px,12%,140px) 44px">
+                <div class="admin-row"
+                     style="grid-template-columns: 1fr {{ $isSuperAdmin ? 'clamp(120px,18%,200px)' : '' }} clamp(90px,12%,140px) 44px">
                     <div class="admin-cell-label">{{ $brand->name }}</div>
+                    @if($isSuperAdmin)
+                        <div class="admin-cell-muted">
+                            {{ $brand->seller?->name ?? '—' }}
+                        </div>
+                    @endif
                     <div class="admin-cell-muted">{{ $brand->products_count }}</div>
                     <div>
                         @if($brand->products_count === 0)
@@ -68,7 +78,11 @@
                 </div>
                 @empty
                 <div class="p-4 text-center" style="color:var(--dark-gray-color)">
-                    You have no brands yet. Add your first brand above.
+                    @if($isSuperAdmin)
+                        No brands in the system yet.
+                    @else
+                        You have no brands yet. Add your first brand above.
+                    @endif
                 </div>
                 @endforelse
             </div>

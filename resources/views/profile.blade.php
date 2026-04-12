@@ -18,7 +18,7 @@
                         <div class="avatar">
                             <span class="material-symbols-outlined">account_circle</span>
                         </div>
-                        @if(auth()->user()->isSeller())
+                        @if(auth()->user()->hasAdminAccess())
                             <a href="{{ route('admin.products') }}" class="btn-admin-panel">
                                 <span class="material-symbols-outlined">admin_panel_settings</span>
                                 Admin panel

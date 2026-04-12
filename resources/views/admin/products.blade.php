@@ -24,14 +24,28 @@
 
             <!-- Toolbar -->
             <div class="admin-toolbar">
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 flex-wrap">
                     <a href="{{ route('admin.products') }}"
                        class="admin-filter-btn {{ !request('status') ? 'active' : '' }}">All</a>
-                    <a href="{{ route('admin.products', ['status' => 'active']) }}"
+                    <a href="{{ route('admin.products', array_filter(['status' => 'active', 'brand_id' => request('brand_id')])) }}"
                        class="admin-filter-btn {{ request('status') === 'active' ? 'active' : '' }}">Active</a>
-                    <a href="{{ route('admin.products', ['status' => 'archived']) }}"
+                    <a href="{{ route('admin.products', array_filter(['status' => 'archived', 'brand_id' => request('brand_id')])) }}"
                        class="admin-filter-btn {{ request('status') === 'archived' ? 'active' : '' }}">Archived</a>
                 </div>
+
+                @if(auth()->user()->isSuperAdmin() && $allBrands->isNotEmpty())
+                <div class="ms-auto">
+                    <select class="admin-search" style="width:auto;padding:5px 12px;cursor:pointer"
+                            onchange="window.location = '{{ route('admin.products') }}?brand_id=' + this.value + '{{ request('status') ? '&status=' . request('status') : '' }}'">
+                        <option value="">All brands</option>
+                        @foreach($allBrands as $b)
+                            <option value="{{ $b->id }}" {{ request('brand_id') == $b->id ? 'selected' : '' }}>
+                                {{ $b->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
             </div>
 
             <!-- Table header -->
