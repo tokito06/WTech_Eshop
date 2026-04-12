@@ -7,6 +7,13 @@
 @endsection
 
 @section('subnav')
+@php
+    $gallery = ($product?->images && $product->images->count()) ? $product->images : collect();
+    if ($gallery->isEmpty()) {
+        $gallery = collect([(object) ['url' => asset('images/image_1.jpg')]]);
+    }
+    $firstVariant = $product?->variants?->first();
+@endphp
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
     <div class="container-fluid">
@@ -14,9 +21,9 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('shop') }}">Shop</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('search') }}">Mens</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('search') }}">Outwear</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Red Jacket</li>
+                <li class="breadcrumb-item"><a href="{{ route('search') }}">{{ ucfirst($product->sex ?? 'All') }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('search') }}">{{ $product?->category?->name ?? 'Products' }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $product->name ?? 'Product' }}</li>
             </ol>
         </nav>
     </div>
@@ -32,25 +39,17 @@
             <div class="col-12 col-md-6">
                 <div id="productCarousel" class="carousel slide product-carousel" data-bs-touch="true">
                     <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="2"></button>
-                        <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="3"></button>
+                        @foreach ($gallery as $index => $image)
+                            <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="{{ $index }}" @class(['active' => $index === 0])></button>
+                        @endforeach
                     </div>
 
                     <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <div class="carousel-slide"><img class="img__container" src="{{ asset('images/image_2.jpg') }}" alt="Product photo 1"></div>
-                        </div>
-                        <div class="carousel-item">
-                            <div class="carousel-slide"><img class="img__container" src="{{ asset('images/image_3.jpg') }}" alt="Product photo 2"></div>
-                        </div>
-                        <div class="carousel-item">
-                            <div class="carousel-slide"><img class="img__container" src="{{ asset('images/image_1.jpg') }}" alt="Product photo 3"></div>
-                        </div>
-                        <div class="carousel-item">
-                            <div class="carousel-slide"><img class="img__container" src="{{ asset('images/image_2.jpg') }}" alt="Product photo 4"></div>
-                        </div>
+                        @foreach ($gallery as $index => $image)
+                            <div @class(['carousel-item', 'active' => $index === 0])>
+                                <div class="carousel-slide"><img class="img__container" src="{{ $image->url }}" alt="{{ $product->name ?? 'Product' }} photo {{ $index + 1 }}"></div>
+                            </div>
+                        @endforeach
                     </div>
 
                     <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
@@ -63,11 +62,9 @@
 
                 <!-- Thumbnails -->
                 <div class="thumbnails-row">
-                    <div class="product__thumb active" data-slide="0"><img src="{{ asset('images/image_2.jpg') }}" alt="Thumbnail 1"></div>
-                    <div class="product__thumb" data-slide="1"><img src="{{ asset('images/image_3.jpg') }}" alt="Thumbnail 2"></div>
-                    <div class="product__thumb" data-slide="2"><img src="{{ asset('images/image_1.jpg') }}" alt="Thumbnail 3"></div>
-                    <div class="product__thumb" data-slide="3"><img src="{{ asset('images/image_2.jpg') }}" alt="Thumbnail 4"></div>
-                    <div class="product__thumb" data-slide="4"><img src="{{ asset('images/image_1.jpg') }}" alt="Thumbnail 5"></div>
+                    @foreach ($gallery as $index => $image)
+                        <div @class(['product__thumb', 'active' => $index === 0]) data-slide="{{ $index }}"><img src="{{ $image->url }}" alt="Thumbnail {{ $index + 1 }}"></div>
+                    @endforeach
                 </div>
 
                 <div class="product__rating">☆ ☆ ☆ ☆ ☆</div>
@@ -76,26 +73,21 @@
             <!-- Product info -->
             <div class="col-12 col-md-6">
                 <div class="product__info">
-                    <span class="product__category-badge">Outerwear</span>
-                    <h1>Red Jacket</h1>
+                    <span class="product__category-badge">{{ $product?->category?->name ?? 'Category' }}</span>
+                    <h1>{{ $product->name ?? 'Product' }}</h1>
 
                     <p class="product__description">
-                        Bold red jacket with a modern slim cut. Made from water-resistant
-                        ripstop fabric with a warm fleece lining. Features a full zip-up
-                        front, ribbed cuffs, and two side pockets. Perfect for spring,
-                        autumn, or cool summer evenings.
+                        {{ $product->description ?? 'Product description is not available.' }}
                     </p>
 
-                    <div class="product__price">104,50 €</div>
+                    <div class="product__price" id="product-price">{{ number_format((float) ($firstVariant->price ?? 0), 2, ',', ' ') }} €</div>
 
-                    <select class="product__size">
-                        <option>Size</option>
-                        <option>XS</option>
-                        <option>S</option>
-                        <option>M</option>
-                        <option>L</option>
-                        <option>XL</option>
-                        <option>XXL</option>
+                    <select class="product__size" id="product-size">
+                        @forelse(($product?->variants ?? collect()) as $variant)
+                            <option value="{{ $variant->id }}" data-price="{{ $variant->price }}" @selected($loop->first)>{{ $variant->symbol }}</option>
+                        @empty
+                            <option value="">Size</option>
+                        @endforelse
                     </select>
 
                     <div class="quantity__container">
@@ -109,7 +101,7 @@
 
                     <div class="product__actions">
                         <button class="product__fav" title="Add to favourites">♡</button>
-                        <button class="product__add" id="add-to-bag">Add to bag</button>
+                        <button class="product__add" id="add-to-bag" data-variant-id="{{ $variantId ?? '' }}">Add to bag</button>
                     </div>
                 </div>
             </div>
@@ -119,12 +111,12 @@
 </main>
 
 <!-- Toast -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999">
+<div class="toast-container product-toast">
     <div id="cartToast" class="toast align-items-center border-0" role="alert" aria-live="assertive">
-        <div class="d-flex align-items-center gap-2 p-3" style="background:var(--highlight-color); border-radius:10px;">
+        <div class="product-toast__content product-toast__row">
             <span class="material-symbols-outlined">shopping_cart</span>
             <span>Added <strong id="toast-qty">1</strong> item(s) to bag!</span>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close product-toast__close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -137,7 +129,7 @@
     const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carousel);
 
     thumbs.forEach((thumb, i) => {
-        thumb.addEventListener('click', () => { bsCarousel.to(i < 4 ? i : 0); });
+        thumb.addEventListener('click', () => { bsCarousel.to(i); });
     });
 
     carousel.addEventListener('slid.bs.carousel', e => {
@@ -149,6 +141,8 @@
     const qtyInput = document.getElementById('qty-input');
     const qtyMinus = document.getElementById('qty-minus');
     const qtyPlus  = document.getElementById('qty-plus');
+    const sizeSelect = document.getElementById('product-size');
+    const priceEl = document.getElementById('product-price');
     const addBtn   = document.getElementById('add-to-bag');
 
     function setQty(val) {
@@ -161,9 +155,53 @@
     qtyPlus.addEventListener ('click', () => setQty(+qtyInput.value + 1));
     qtyInput.addEventListener('input', () => setQty(qtyInput.value));
 
-    addBtn.addEventListener('click', () => {
-        document.getElementById('toast-qty').textContent = qtyInput.value;
-        bootstrap.Toast.getOrCreateInstance(document.getElementById('cartToast'), { delay: 2500 }).show();
+    function syncVariantSelection() {
+        const selected = sizeSelect?.selectedOptions?.[0];
+        addBtn.dataset.variantId = selected?.value || '';
+
+        if (priceEl && selected?.dataset?.price) {
+            const price = Number(selected.dataset.price || 0);
+            priceEl.textContent = `${price.toFixed(2).replace('.', ',')} €`;
+        }
+    }
+
+    sizeSelect?.addEventListener('change', syncVariantSelection);
+    syncVariantSelection();
+
+    addBtn.addEventListener('click', async () => {
+        @guest
+            window.location.href = '{{ route('login') }}';
+            return;
+        @endguest
+
+        const variantId = addBtn.dataset.variantId;
+        const quantity = parseInt(qtyInput.value, 10) || 1;
+
+        if (!variantId) {
+            alert('Variant is not available for this product.');
+            return;
+        }
+
+        try {
+            const response = await fetch('{{ route('cart.add') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({ variant_id: variantId, quantity }),
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to add item');
+            }
+
+            document.getElementById('toast-qty').textContent = quantity;
+            bootstrap.Toast.getOrCreateInstance(document.getElementById('cartToast'), { delay: 2500 }).show();
+        } catch (error) {
+            alert(error.message || 'Unable to add item to cart.');
+        }
     });
 
     setQty(1);

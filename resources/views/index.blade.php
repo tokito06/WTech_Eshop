@@ -116,89 +116,30 @@
             </div>
 
             <div class="row g-3 g-md-4">
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_1.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">Super View Glasses</h3>
-                                <p class="product-card__desc">UV-protective lenses with a lightweight frame. Wide field of view for everyday outdoor wear.</p>
-                                <span class="product-card__price">19,99 €</span>
-                            </div>
-                        </a>
+                @forelse($products as $product)
+                    @php
+                        $image = $product->images->first();
+                        $imageUrl = $image ? $image->url : asset('images/image_1.jpg');
+                        $price = $product->variants->min('price') ?? 0;
+                    @endphp
+                    <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
+                        <div class="product-card">
+                            <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
+                            <a href="{{ route('product', $product) }}" class="clear-link">
+                                <div class="product-card__img"><img src="{{ $imageUrl }}" alt="{{ $product->name }} image"></div>
+                                <div class="product-card__body">
+                                    <h3 class="product-card__name">{{ $product->name }}</h3>
+                                    <p class="product-card__desc">{{ \Illuminate\Support\Str::limit($product->description, 120) }}</p>
+                                    <span class="product-card__price">{{ number_format((float) $price, 2, ',', ' ') }} €</span>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_2.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">Red Jacket</h3>
-                                <p class="product-card__desc">Bold red jacket with a modern slim cut. Water-resistant fabric, perfect for spring and autumn.</p>
-                                <span class="product-card__price">104,50 €</span>
-                            </div>
-                        </a>
+                @empty
+                    <div class="col-12">
+                        <p class="text-center text-muted mb-0">No products available yet.</p>
                     </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_3.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">White T-shirt</h3>
-                                <p class="product-card__desc">Classic 100% cotton tee with a relaxed fit. Soft, breathable and versatile for any casual look.</p>
-                                <span class="product-card__price">39,00 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_1.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">Super View Glasses</h3>
-                                <p class="product-card__desc">Polarised lenses in a sleek frame. Blocks glare and protects eyes on sunny days.</p>
-                                <span class="product-card__price">12,99 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_2.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">Red Jacket</h3>
-                                <p class="product-card__desc">Oversized fit with ribbed cuffs and a zip-up front. Warm lining for extra comfort in cold weather.</p>
-                                <span class="product-card__price">89,00 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    <div class="product-card">
-                        <button class="product-card__fav" aria-label="Like"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product') }}" class="clear-link">
-                            <div class="product-card__img"><img src="{{ asset('images/image_3.jpg') }}" alt="Product image"></div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">White T-shirt</h3>
-                                <p class="product-card__desc">Crew-neck essential in premium cotton. Pre-washed fabric that stays soft wash after wash.</p>
-                                <span class="product-card__price">24,99 €</span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>

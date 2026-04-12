@@ -4,15 +4,24 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\CatalogController;
+use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\ProductController as UserProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'index')->name('home');
-Route::view('/shop', 'shop')->name('shop');
-Route::view('/search', 'search')->name('search');
-Route::view('/product', 'product')->name('product');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/shop', [CatalogController::class, 'shop'])->name('shop');
+Route::get('/search', [CatalogController::class, 'search'])->name('search');
+Route::get('/product/{product?}', [UserProductController::class, 'show'])->name('product');
 
 Route::middleware('auth')->group(function () {
     Route::view('/cart', 'cart')->name('cart');
+    Route::get('/api/cart', [CartController::class, 'index'])->name('cart.get');
+    Route::post('/api/cart/add', [CartController::class, 'store'])->name('cart.add');
+    Route::put('/api/cart/item/{item}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/api/cart/item/{item}', [CartController::class, 'destroy'])->name('cart.remove');
+
     Route::view('/favourites', 'favourites')->name('favourites');
     Route::view('/delivery', 'delivery')->name('delivery');
     Route::post('/delivery', [DeliveryController::class, 'store'])->name('delivery.store');

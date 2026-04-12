@@ -256,6 +256,31 @@
 .product__fav:hover,
 .product__add:hover { background-color: var(--highlight-dark-color); }
 
+/* Toast */
+.product-toast {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    padding: 1rem;
+    z-index: 9999;
+}
+
+.product-toast__content {
+    background: var(--highlight-color);
+    border-radius: 10px;
+}
+
+.product-toast__row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+.product-toast__close {
+    margin-left: auto;
+}
+
 /* Responsive */
 @media (max-width: 575px) {
     :root { --thumb-size: 36px; }

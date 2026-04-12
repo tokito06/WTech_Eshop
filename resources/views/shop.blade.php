@@ -22,102 +22,50 @@
     <div class="container py-4">
 
         <!-- Search input -->
-        <div class="shop-toolbar">
-            <input class="shop-search" type="search" placeholder="Type your query here...." aria-label="Search products">
-            <a href="{{ route('search') }}" class="shop-search-btn" aria-label="Search products" title="Search">
+        <form class="shop-toolbar" method="get" action="{{ route('search') }}">
+            <input class="shop-search" type="search" name="q" placeholder="Type your query here...." value="{{ request('q') }}" aria-label="Search products">
+            <button type="submit" class="shop-search-btn" aria-label="Search products" title="Search">
                 <span class="material-symbols-outlined" aria-hidden="true">search</span>
-            </a>
-        </div>
+            </button>
+        </form>
 
         <!-- Product Grid -->
         <div class="row g-3 g-md-4">
-            <div class="col-6 col-lg-4 col-xxl-3">
-                <div class="product-card">
-                    <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
-                    <a href="{{ route('product') }}" class="clear-link">
-                        <div class="product-card__img">
-                            <img src="{{ asset('images/image_1.jpg') }}" alt="Product image">
-                            <div class="product-card__sizes">
-                                <span class="product-card__size-tag">S</span>
-                                <span class="product-card__size-tag">M</span>
-                                <span class="product-card__size-tag">L</span>
-                                <span class="product-card__size-tag">XL</span>
+            @forelse($products as $product)
+                @php
+                    $image = $product->images->first();
+                    $imageUrl = $image ? $image->url : asset('images/image_1.jpg');
+                    $sizes = $product->variants->pluck('symbol')->take(4);
+                    $price = $product->variants->min('price') ?? 0;
+                @endphp
+                <div class="col-6 col-lg-4 col-xxl-3">
+                    <div class="product-card">
+                        <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
+                        <a href="{{ route('product', $product) }}" class="clear-link">
+                            <div class="product-card__img">
+                                <img src="{{ $imageUrl }}" alt="{{ $product->name }} image">
+                                <div class="product-card__sizes">
+                                    @foreach($sizes as $size)
+                                        <span class="product-card__size-tag">{{ $size }}</span>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                        <div class="product-card__body">
-                            <h3 class="product-card__name">Super View Glasses</h3>
-                            <p class="product-card__desc">UV-protective lenses with a lightweight frame. Wide field of view for everyday outdoor wear.</p>
-                            <span class="product-card__price">19,99 €</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-6 col-lg-4 col-xxl-3">
-                <div class="product-card">
-                    <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
-                    <a href="{{ route('product') }}" class="clear-link">
-                        <div class="product-card__img">
-                            <img src="{{ asset('images/image_2.jpg') }}" alt="Product image">
-                            <div class="product-card__sizes">
-                                <span class="product-card__size-tag">S</span>
-                                <span class="product-card__size-tag">M</span>
-                                <span class="product-card__size-tag">L</span>
-                                <span class="product-card__size-tag">XL</span>
+                            <div class="product-card__body">
+                                <h3 class="product-card__name">{{ $product->name }}</h3>
+                                <p class="product-card__desc">{{ \Illuminate\Support\Str::limit($product->description, 120) }}</p>
+                                <span class="product-card__price">{{ number_format((float) $price, 2, ',', ' ') }} €</span>
                             </div>
-                        </div>
-                        <div class="product-card__body">
-                            <h3 class="product-card__name">Red Jacket</h3>
-                            <p class="product-card__desc">Bold red jacket with a modern slim cut. Water-resistant fabric, perfect for spring and autumn.</p>
-                            <span class="product-card__price">104,50 €</span>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-6 col-lg-4 col-xxl-3">
-                <div class="product-card">
-                    <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
-                    <a href="{{ route('product') }}" class="clear-link">
-                        <div class="product-card__img">
-                            <img src="{{ asset('images/image_3.jpg') }}" alt="Product image">
-                            <div class="product-card__sizes">
-                                <span class="product-card__size-tag">S</span>
-                                <span class="product-card__size-tag">M</span>
-                                <span class="product-card__size-tag">L</span>
-                                <span class="product-card__size-tag">XL</span>
-                            </div>
-                        </div>
-                        <div class="product-card__body">
-                            <h3 class="product-card__name">White T-shirt</h3>
-                            <p class="product-card__desc">Classic 100% cotton tee with a relaxed fit. Soft, breathable and versatile for any casual look.</p>
-                            <span class="product-card__price">39,00 €</span>
-                        </div>
-                    </a>
+            @empty
+                <div class="col-12">
+                    <p class="text-center text-muted mb-0">No products in catalogue yet.</p>
                 </div>
-            </div>
-
-            <div class="col-6 col-lg-4 col-xxl-3">
-                <div class="product-card">
-                    <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
-                    <a href="{{ route('product') }}" class="clear-link">
-                        <div class="product-card__img">
-                            <img src="{{ asset('images/image_1.jpg') }}" alt="Product image">
-                            <div class="product-card__sizes">
-                                <span class="product-card__size-tag">S</span>
-                                <span class="product-card__size-tag">M</span>
-                                <span class="product-card__size-tag">L</span>
-                                <span class="product-card__size-tag">XL</span>
-                            </div>
-                        </div>
-                        <div class="product-card__body">
-                            <h3 class="product-card__name">Super View Glasses</h3>
-                            <p class="product-card__desc">Polarised lenses in a sleek frame. Blocks glare and protects eyes on sunny days.</p>
-                            <span class="product-card__price">12,99 €</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
+            @endforelse
+        </div>
+        <div class="mt-4">
+            {{ $products->links() }}
         </div>
     </div>
 </main>

@@ -19,7 +19,7 @@
 <!-- Search bar -->
 <div class="search-bar">
     <div class="search-tag">
-        "Searched text"
+        "{{ request('q', 'All products') }}"
         <button class="search-tag__close" id="clear-search" aria-label="Clear search">✕</button>
     </div>
 
@@ -103,41 +103,42 @@
             <div class="col-12 col-md-9 col-lg-10">
                 <div class="row g-3" id="products-grid">
 
-                    @for ($i = 0; $i < 8; $i++)
-                    <div class="col-6 col-lg-4 col-xxl-3">
-                        <div class="product-card">
-                            <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
-                            <a href="{{ route('product') }}" class="clear-link">
-                                <div class="product-card__img">
-                                    <img src="{{ asset('images/image_' . ($i % 3 + 1) . '.jpg') }}" alt="Product image">
-                                    <div class="product-card__sizes">
-                                        <span class="product-card__size-tag">S</span>
-                                        <span class="product-card__size-tag">M</span>
-                                        <span class="product-card__size-tag">L</span>
-                                        <span class="product-card__size-tag">XL</span>
+                    @forelse($products as $product)
+                        @php
+                            $image = $product->images->first();
+                            $imageUrl = $image ? $image->url : asset('images/image_1.jpg');
+                            $sizes = $product->variants->pluck('symbol')->take(4);
+                            $price = $product->variants->min('price') ?? 0;
+                        @endphp
+                        <div class="col-6 col-lg-4 col-xxl-3">
+                            <div class="product-card">
+                                <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
+                                <a href="{{ route('product', $product) }}" class="clear-link">
+                                    <div class="product-card__img">
+                                        <img src="{{ $imageUrl }}" alt="{{ $product->name }} image">
+                                        <div class="product-card__sizes">
+                                            @foreach($sizes as $size)
+                                                <span class="product-card__size-tag">{{ $size }}</span>
+                                            @endforeach
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="product-card__body">
-                                    <h3 class="product-card__name">Product Name</h3>
-                                    <p class="product-card__desc">Product description goes here.</p>
-                                    <span class="product-card__price">19,99 €</span>
-                                </div>
-                            </a>
+                                    <div class="product-card__body">
+                                        <h3 class="product-card__name">{{ $product->name }}</h3>
+                                        <p class="product-card__desc">{{ \Illuminate\Support\Str::limit($product->description, 120) }}</p>
+                                        <span class="product-card__price">{{ number_format((float) $price, 2, ',', ' ') }} €</span>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    @endfor
-
+                    @empty
+                        <div class="col-12">
+                            <p class="text-center text-muted mb-0">No products found.</p>
+                        </div>
+                    @endforelse
                 </div>
 
-                <!-- Pagination -->
-                <div class="pagination-bar">
-                    <button class="page-arrow" aria-label="Previous page">
-                        <span class="material-symbols-outlined">chevron_left</span>
-                    </button>
-                    <span class="page-info">Page 1 … 426</span>
-                    <button class="page-arrow" aria-label="Next page">
-                        <span class="material-symbols-outlined">chevron_right</span>
-                    </button>
+                <div class="mt-4">
+                    {{ $products->links() }}
                 </div>
             </div>
         </div>

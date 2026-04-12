@@ -38,61 +38,7 @@
                     <p>Your cart is empty</p>
                 </div>
 
-                <div id="cart-items-list">
-                    <h2 class="cart-items__title">Items</h2>
-
-                    <div class="cart-item" data-price="100.99">
-                        <label class="cart-item__checkbox">
-                            <input type="checkbox" aria-label="Select item">
-                            <span class="cart-item__checkbox-box"></span>
-                        </label>
-                        <div class="cart-item__image">
-                            <img class="img__container" src="{{ asset('images/image_1.jpg') }}" alt="Cart product image">
-                        </div>
-                        <div class="cart-item__info">
-                            <h3>Super View Glasses</h3>
-                            <p>UV-protective lenses with a lightweight frame. Wide field of view for everyday outdoor wear.</p>
-                            <div class="cart-item__meta">
-                                <span class="cart-item__size-badge">M</span>
-                                <span class="cart-item__price">100.99 €</span>
-                            </div>
-                        </div>
-                        <div class="cart-item__controls">
-                            <button class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
-                            <span class="cart-item__count">4</span>
-                            <button class="cart-item__ctrl-btn" data-action="dec" aria-label="Decrease">−</button>
-                        </div>
-                        <button class="cart-item__delete" aria-label="Remove item" title="Remove">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                    </div>
-
-                    <div class="cart-item" data-price="59.00">
-                        <label class="cart-item__checkbox">
-                            <input type="checkbox" aria-label="Select item">
-                            <span class="cart-item__checkbox-box"></span>
-                        </label>
-                        <div class="cart-item__image">
-                            <img class="img__container" src="{{ asset('images/image_2.jpg') }}" alt="Cart product image">
-                        </div>
-                        <div class="cart-item__info">
-                            <h3>Red Jacket</h3>
-                            <p>Bold red jacket with a modern slim cut. Water-resistant fabric, perfect for spring and autumn.</p>
-                            <div class="cart-item__meta">
-                                <span class="cart-item__size-badge">XL</span>
-                                <span class="cart-item__price">59.00 €</span>
-                            </div>
-                        </div>
-                        <div class="cart-item__controls">
-                            <button class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
-                            <span class="cart-item__count">1</span>
-                            <button class="cart-item__ctrl-btn" data-action="dec" aria-label="Decrease">−</button>
-                        </div>
-                        <button class="cart-item__delete" aria-label="Remove item" title="Remove">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                    </div>
-                </div>
+                <div id="cart-items-list"></div>
             </section>
 
             <!-- Cart summary -->
@@ -102,7 +48,7 @@
                     <div class="cart-summary__amounts">
                         <div class="cart-summary__amount">
                             <span>Items amount</span>
-                            <span id="summary-items">—</span>
+                            <span id="summary-items">0.00 €</span>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Delivery</span>
@@ -110,7 +56,7 @@
                         </div>
                         <div class="cart-summary__amount">
                             <span>Total</span>
-                            <strong class="cart-summary__total" id="summary-total">—</strong>
+                            <strong class="cart-summary__total" id="summary-total">0.00 €</strong>
                         </div>
                     </div>
                     <a href="{{ route('delivery') }}" class="cart-summary__btn">Go to checkout</a>
@@ -124,47 +70,143 @@
 
 @section('scripts')
 <script>
-    function updateSummary() {
-        const items = document.querySelectorAll('.cart-item');
-        let total = 0;
-        items.forEach(item => {
-            const price = parseFloat(item.dataset.price) || 0;
-            const qty   = parseInt(item.querySelector('.cart-item__count').textContent) || 0;
-            total += price * qty;
-        });
-        if (items.length === 0) {
-            document.getElementById('summary-items').textContent = '0.00 €';
-            document.getElementById('summary-total').textContent = '0.00 €';
-            document.getElementById('cart-empty').style.display = 'flex';
-        } else {
-            document.getElementById('summary-items').textContent = total.toFixed(2) + ' €';
-            document.getElementById('summary-total').textContent = total.toFixed(2) + ' €';
-            document.getElementById('cart-empty').style.display = 'none';
-        }
+    const cartState = { items: [] };
+    const cartList = document.getElementById('cart-items-list');
+    const emptyState = document.getElementById('cart-empty');
+
+    function formatPrice(value) {
+        return Number(value || 0).toFixed(2) + ' €';
     }
 
-    document.getElementById('cart-items-list').addEventListener('click', e => {
-        const ctrlBtn = e.target.closest('.cart-item__ctrl-btn');
-        if (ctrlBtn) {
-            const item    = ctrlBtn.closest('.cart-item');
-            const countEl = item.querySelector('.cart-item__count');
-            let count = parseInt(countEl.textContent) || 1;
-            if (ctrlBtn.dataset.action === 'inc') count++;
-            if (ctrlBtn.dataset.action === 'dec') count = Math.max(1, count - 1);
-            countEl.textContent = count;
+    function updateSummary() {
+        const total = cartState.items.reduce((sum, item) => sum + (Number(item.amount) * Number(item.quantity)), 0);
+        document.getElementById('summary-items').textContent = formatPrice(total);
+        document.getElementById('summary-total').textContent = formatPrice(total);
+        emptyState.style.display = cartState.items.length ? 'none' : 'flex';
+    }
+
+    function renderCart() {
+        if (!cartState.items.length) {
+            cartList.innerHTML = '';
             updateSummary();
             return;
         }
-        const delBtn = e.target.closest('.cart-item__delete');
-        if (delBtn) {
-            const item = delBtn.closest('.cart-item');
-            item.style.transition = 'opacity 0.25s, transform 0.25s';
-            item.style.opacity    = '0';
-            item.style.transform  = 'translateX(30px)';
-            setTimeout(() => { item.remove(); updateSummary(); }, 260);
+
+        const cards = cartState.items.map(item => {
+            const product = item.variant?.product;
+            const image = product?.images?.[0]?.url || '{{ asset('images/image_1.jpg') }}';
+            const size = item.variant?.symbol || 'N/A';
+            const price = Number(item.amount || 0);
+
+            return `
+                <div class="cart-item" data-id="${item.id}">
+                    <label class="cart-item__checkbox">
+                        <input type="checkbox" aria-label="Select item">
+                        <span class="cart-item__checkbox-box"></span>
+                    </label>
+                    <div class="cart-item__image">
+                        <img class="img__container" src="${image}" alt="Cart product image">
+                    </div>
+                    <div class="cart-item__info">
+                        <h3>${product?.name ?? 'Product'}</h3>
+                        <p>${product?.description ?? ''}</p>
+                        <div class="cart-item__meta">
+                            <span class="cart-item__size-badge">${size}</span>
+                            <span class="cart-item__price">${formatPrice(price)}</span>
+                        </div>
+                    </div>
+                    <div class="cart-item__controls">
+                        <button class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
+                        <span class="cart-item__count">${item.quantity}</span>
+                        <button class="cart-item__ctrl-btn" data-action="dec" aria-label="Decrease">−</button>
+                    </div>
+                    <button class="cart-item__delete" aria-label="Remove item" title="Remove">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                </div>
+            `;
+        }).join('');
+
+        cartList.innerHTML = `<h2 class="cart-items__title">Items</h2>${cards}`;
+        updateSummary();
+    }
+
+    async function loadCart() {
+        const response = await fetch('{{ route('cart.get') }}');
+        const data = await response.json();
+        cartState.items = data.items || [];
+        renderCart();
+    }
+
+    async function syncQuantity(itemId, quantity) {
+        const response = await fetch(`/api/cart/item/${itemId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({ quantity }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update item quantity');
+        }
+    }
+
+    async function removeItem(itemId) {
+        const response = await fetch(`/api/cart/item/${itemId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to remove item');
+        }
+    }
+
+    cartList.addEventListener('click', async e => {
+        const card = e.target.closest('.cart-item');
+        if (!card) {
+            return;
+        }
+
+        const itemId = card.dataset.id;
+        const item = cartState.items.find(i => i.id === itemId);
+        if (!item) {
+            return;
+        }
+
+        const ctrlBtn = e.target.closest('.cart-item__ctrl-btn');
+        if (ctrlBtn) {
+            const nextQuantity = ctrlBtn.dataset.action === 'inc'
+                ? item.quantity + 1
+                : Math.max(1, item.quantity - 1);
+
+            try {
+                await syncQuantity(itemId, nextQuantity);
+                item.quantity = nextQuantity;
+                renderCart();
+            } catch (error) {
+                alert(error.message);
+            }
+            return;
+        }
+
+        if (e.target.closest('.cart-item__delete')) {
+            try {
+                await removeItem(itemId);
+                cartState.items = cartState.items.filter(i => i.id !== itemId);
+                renderCart();
+            } catch (error) {
+                alert(error.message);
+            }
         }
     });
 
-    updateSummary();
+    loadCart().catch(() => {
+        emptyState.style.display = 'flex';
+    });
 </script>
 @endsection
