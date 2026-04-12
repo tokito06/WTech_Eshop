@@ -12,14 +12,7 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        $this->call([
-            BrandSeeder::class,
-            CategorySeeder::class,
-            BannerSeeder::class,
-            DeliveryMethodSeeder::class,
-            ProductSeeder::class,
-        ]);
-
+        // Users first — BrandSeeder needs the seller ID
         User::factory()->create([
             'name'      => 'Test',
             'surname'   => 'User',
@@ -32,6 +25,21 @@ class DatabaseSeeder extends Seeder
             'surname'   => 'Seller',
             'email'     => 'admin@example.com',
             'user_type' => 'seller',
+        ]);
+
+        User::factory()->create([
+            'name'      => 'Super',
+            'surname'   => 'Admin',
+            'email'     => 'superadmin@example.com',
+            'user_type' => 'superadmin',
+        ]);
+
+        $this->call([
+            BrandSeeder::class,
+            CategorySeeder::class,
+            BannerSeeder::class,
+            DeliveryMethodSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

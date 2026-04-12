@@ -40,6 +40,26 @@
     color: #bbb;
 }
 
+/* Admin panel btn */
+.btn-admin-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: clamp(140px, 18vw, 220px);
+    padding: clamp(6px, 1vw, 16px) clamp(14px, 2vw, 24px);
+    background-color: var(--bg-primary-color);
+    border-radius: 10px;
+    font-family: "Anaheim", sans-serif;
+    font-size: clamp(0.95rem, 1.2vw, 1.3rem);
+    font-weight: 600;
+    color: #000;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.btn-admin-panel:hover { opacity: 0.8; color: #000; }
+.btn-admin-panel .material-symbols-outlined { font-size: 20px; }
+
 /* Logout btn */
 .btn-logout {
     width: clamp(140px, 18vw, 220px);

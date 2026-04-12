@@ -40,4 +40,24 @@ class User extends Authenticatable
         return $this->belongsToMany(Product::class, 'favourites', 'user_id', 'product_id')
                     ->withPivot('added_at');
     }
+
+    public function brands(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Brand::class, 'user_id');
+    }
+
+    public function isSeller(): bool
+    {
+        return $this->user_type === 'seller';
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->user_type === 'superadmin';
+    }
+
+    public function hasAdminAccess(): bool
+    {
+        return $this->isSeller() || $this->isSuperAdmin();
+    }
 }

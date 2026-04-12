@@ -18,6 +18,12 @@
                         <div class="avatar">
                             <span class="material-symbols-outlined">account_circle</span>
                         </div>
+                        @if(auth()->user()->hasAdminAccess())
+                            <a href="{{ route('admin.products') }}" class="btn-admin-panel">
+                                <span class="material-symbols-outlined">admin_panel_settings</span>
+                                Admin panel
+                            </a>
+                        @endif
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button class="btn-logout" type="submit" onclick="return confirm('Are you sure you want to log out?')">Log out?</button>

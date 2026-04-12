@@ -3,15 +3,24 @@
 namespace Database\Seeders;
 
 use App\Models\Brand;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class BrandSeeder extends Seeder
 {
     public function run(): void
     {
-        $brands = ['Nike', 'Adidas', 'Puma', 'New Balance', 'Zara', 'H&M', 'Uniqlo'];
+        $seller = User::where('email', 'admin@example.com')->first();
 
-        foreach ($brands as $name) {
+        // Seller's own brands
+        $sellerBrands = ['Zara', 'Nike'];
+        foreach ($sellerBrands as $name) {
+            Brand::create(['name' => $name, 'user_id' => $seller?->id]);
+        }
+
+        // Unowned brands (available in the system but no seller assigned)
+        $globalBrands = ['Adidas', 'Puma', 'New Balance', 'H&M', 'Uniqlo'];
+        foreach ($globalBrands as $name) {
             Brand::create(['name' => $name]);
         }
     }
