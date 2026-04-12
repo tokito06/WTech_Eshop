@@ -32,8 +32,8 @@ class ProductController extends Controller
             $query->where('brand_id', $request->brand_id);
         }
 
-        $products   = $query->latest('created_at')->paginate(20);
-        $allBrands  = auth()->user()->isSuperAdmin() ? Brand::orderBy('name')->get() : collect();
+        $products = $query->latest('created_at')->paginate(20)->withQueryString();
+        $allBrands = auth()->user()->isSuperAdmin() ? Brand::orderBy('name')->get() : collect();
 
         return view('admin.products', compact('products', 'allBrands'));
     }
