@@ -50,4 +50,14 @@ class User extends Authenticatable
     {
         return $this->user_type === 'seller';
     }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->user_type === 'superadmin';
+    }
+
+    public function hasAdminAccess(): bool
+    {
+        return $this->isSeller() || $this->isSuperAdmin();
+    }
 }
