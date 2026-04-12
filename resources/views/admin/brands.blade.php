@@ -3,6 +3,8 @@
 @section('title', 'Admin — My Brands')
 
 @section('content')
+
+@php $isSuperAdmin = auth()->user()->isSuperAdmin(); @endphp
 <main class="admin-main">
     <div class="container-fluid px-4 px-md-5">
 
@@ -21,7 +23,7 @@
         @endif
 
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="admin-page-title">My Brands</h1>
+            <h1 class="admin-page-title">{{ $isSuperAdmin ? 'Brands' : 'My brands' }}</h1>
         </div>
 
         <!-- Add brand form -->
@@ -38,9 +40,6 @@
 
         <!-- Brands table -->
         <div class="admin-table-card">
-
-            @php $isSuperAdmin = auth()->user()->isSuperAdmin(); @endphp
-
             <div class="admin-table-header"
                  style="grid-template-columns: 1fr {{ $isSuperAdmin ? 'clamp(120px,18%,200px)' : '' }} clamp(90px,12%,140px) 44px">
                 <div>Brand</div>
