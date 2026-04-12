@@ -34,9 +34,12 @@
                 </div>
 
                 @if(auth()->user()->isSuperAdmin() && $allBrands->isNotEmpty())
-                <div class="ms-auto">
-                    <select class="admin-search" style="width:auto;padding:5px 12px;cursor:pointer"
-                            onchange="window.location = '{{ route('admin.products') }}?brand_id=' + this.value + '{{ request('status') ? '&status=' . request('status') : '' }}'">
+                <form method="GET" action="{{ route('admin.products') }}" class="ms-auto">
+                    @if(request('status'))
+                        <input type="hidden" name="status" value="{{ request('status') }}">
+                    @endif
+                    <select name="brand_id" class="admin-search" style="width:auto;padding:5px 12px;cursor:pointer"
+                            onchange="this.form.submit()">
                         <option value="">All brands</option>
                         @foreach($allBrands as $b)
                             <option value="{{ $b->id }}" {{ request('brand_id') == $b->id ? 'selected' : '' }}>
@@ -44,7 +47,7 @@
                             </option>
                         @endforeach
                     </select>
-                </div>
+                </form>
                 @endif
             </div>
 
