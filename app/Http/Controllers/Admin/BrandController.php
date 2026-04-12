@@ -40,6 +40,10 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand): RedirectResponse
     {
+        if ($brand->products()->count() > 0) {
+            return redirect()->route('admin.brands')->with('error', 'Cannot delete brand with associated products.');
+        }
+
         if (!auth()->user()->isSuperAdmin()) {
             abort_unless($brand->user_id === auth()->id(), 403);
         }
