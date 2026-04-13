@@ -83,6 +83,7 @@
     function hydrateCartItems(items) {
         return (items || []).map(item => ({
             ...item,
+            id: String(item.id),
             quantity: Number(item.quantity) || 1,
             amount: Number(item.amount) || 0,
         }));
@@ -294,13 +295,13 @@
         }
 
         const card = quantityInput.closest('.cart-item');
-        const item = cartState.items.find(entry => entry.id === card?.dataset.id);
 
-        if (!card || !item) {
+        if (!card) {
             return;
         }
 
-        quantityInput.value = sanitizeQuantityInput(quantityInput.value).slice(0, 2);
+        const maxQuantityLength = String(getQuantityLimit()).length;
+        quantityInput.value = sanitizeQuantityInput(quantityInput.value).slice(0, maxQuantityLength);
     });
 
     cartList.addEventListener('keydown', e => {
