@@ -6,26 +6,8 @@
 <link rel="stylesheet" href="{{ asset('css/search.css') }}">
 @endsection
 
-@php
-    $activeSex = request('sex');
-    $sexLabels = [
-        'men' => 'Men',
-        'women' => 'Women',
-        'kids' => 'Kids',
-    ];
-@endphp
-
-
 @section("subnav")
-<nav class="category-nav">
-    <ul class="nav" style="scrollbar-width:none;">
-        @foreach($sexLabels as $value => $label)
-            <li class="nav-item">
-                <a class="nav-link {{ $activeSex === $value ? 'active' : '' }}" href="{{ route('search', array_merge(request()->except('page'), ['sex' => $value])) }}">{{ $label }}</a>
-            </li>
-        @endforeach
-    </ul>
-</nav>
+<x-gender-subnav route-name="search" :active-sex="request('sex')" />
 
 <!-- Search bar -->
 <form class="search-bar" method="get" action="{{ route('search') }}" id="search-filters-form">

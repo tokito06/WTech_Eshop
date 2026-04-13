@@ -7,24 +7,7 @@
 @endsection
 
 @section('subnav')
-@php
-    $sexLabels = [
-        'men' => 'Men',
-        'women' => 'Women',
-        'kids' => 'Kids',
-    ];
-@endphp
-
-<!-- Category Nav -->
-<nav class="category-nav">
-    <ul class="nav d-flex flex-nowrap overflow-auto" style="scrollbar-width:none;">
-        @foreach($sexLabels as $value => $label)
-            <li class="nav-item">
-                <a class="nav-link {{ ($activeSex ?? null) === $value ? 'active' : '' }}" href="{{ route('shop', array_merge(request()->except('page'), ['sex' => $value])) }}">{{ $label }}</a>
-            </li>
-        @endforeach
-    </ul>
-</nav>
+<x-gender-subnav route-name="shop" :active-sex="$activeSex ?? null" />
 @endsection
 
 @section('content')
