@@ -73,9 +73,40 @@
     const cartState = { items: [] };
     const cartList = document.getElementById('cart-items-list');
     const emptyState = document.getElementById('cart-empty');
+    const cartUpdateUrlTemplate = '{{ route('cart.update', ['item' => '__ITEM_ID__']) }}';
+    const cartRemoveUrlTemplate = '{{ route('cart.remove', ['item' => '__ITEM_ID__']) }}';
 
     function formatPrice(value) {
         return Number(value || 0).toFixed(2) + ' €';
+    }
+
+    function hydrateCartItems(items) {
+        return (items || []).map(item => ({
+            ...item,
+            id: String(item.id),
+            quantity: Number(item.quantity) || 1,
+            amount: Number(item.amount) || 0,
+        }));
+    }
+
+    function getQuantityLimit() {
+
+        return 99;
+    }
+
+    function sanitizeQuantityInput(value) {
+        return String(value).replace(/[^0-9]/g, '');
+    }
+
+    function normalizeQuantity(value) {
+        const parsed = Number.parseInt(value, 10);
+        const limit = getQuantityLimit();
+
+        if (!Number.isFinite(parsed)) {
+            return 1;
+        }
+
+        return Math.max(1, Math.min(limit, parsed));
     }
 
     function updateSummary() {
@@ -97,7 +128,6 @@
             const image = product?.images?.[0]?.url || '{{ asset('images/image_1.jpg') }}';
             const size = item.variant?.symbol || 'N/A';
             const price = Number(item.amount || 0);
-
             return `
                 <div class="cart-item" data-id="${item.id}">
                     <label class="cart-item__checkbox">
@@ -116,9 +146,16 @@
                         </div>
                     </div>
                     <div class="cart-item__controls">
-                        <button class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
-                        <span class="cart-item__count">${item.quantity}</span>
-                        <button class="cart-item__ctrl-btn" data-action="dec" aria-label="Decrease">−</button>
+                        <button type="button" class="cart-item__ctrl-btn" data-action="dec" aria-label="Decrease">−</button>
+                        <input
+                            class="cart-item__count-input"
+                            type="text"
+                            maxlength="2"
+                            inputmode="numeric"
+                            value="${item.quantity}"
+                            aria-label="Quantity for ${product?.name ?? 'product'}"
+                        >
+                        <button type="button" class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
                     </div>
                     <button class="cart-item__delete" aria-label="Remove item" title="Remove">
                         <span class="material-symbols-outlined">delete</span>
@@ -134,35 +171,68 @@
     async function loadCart() {
         const response = await fetch('{{ route('cart.get') }}');
         const data = await response.json();
-        cartState.items = data.items || [];
+        cartState.items = hydrateCartItems(data.items);
         renderCart();
     }
 
     async function syncQuantity(itemId, quantity) {
-        const response = await fetch(`/api/cart/item/${itemId}`, {
+        const response = await fetch(cartUpdateUrlTemplate.replace('__ITEM_ID__', encodeURIComponent(itemId)), {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
             },
+            credentials: 'same-origin',
             body: JSON.stringify({ quantity }),
         });
 
         if (!response.ok) {
-            throw new Error('Failed to update item quantity');
+            const payload = await response.json().catch(() => ({}));
+            throw new Error(payload.message || 'Failed to update item quantity');
         }
+
+        return response.json().catch(() => ({}));
     }
 
     async function removeItem(itemId) {
-        const response = await fetch(`/api/cart/item/${itemId}`, {
+        const response = await fetch(cartRemoveUrlTemplate.replace('__ITEM_ID__', encodeURIComponent(itemId)), {
             method: 'DELETE',
             headers: {
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
             },
+            credentials: 'same-origin',
         });
 
         if (!response.ok) {
-            throw new Error('Failed to remove item');
+            const payload = await response.json().catch(() => ({}));
+            throw new Error(payload.message || 'Failed to remove item');
+        }
+    }
+
+    async function updateCartQuantity(card, item, nextQuantity) {
+        const normalized = normalizeQuantity(nextQuantity);
+        const quantityInput = card.querySelector('.cart-item__count-input');
+        const previousQuantity = item.quantity;
+
+        if (quantityInput) {
+            quantityInput.value = normalized;
+        }
+
+        if (normalized === previousQuantity) {
+            return;
+        }
+
+        try {
+            await syncQuantity(item.id, normalized);
+            item.quantity = normalized;
+            updateSummary();
+        } catch (error) {
+            if (quantityInput) {
+                quantityInput.value = previousQuantity;
+            }
+            alert(error.message);
         }
     }
 
@@ -178,19 +248,16 @@
             return;
         }
 
+        const currentQuantity = Number(item.quantity) || 1;
+
         const ctrlBtn = e.target.closest('.cart-item__ctrl-btn');
         if (ctrlBtn) {
+            const limit = getQuantityLimit();
             const nextQuantity = ctrlBtn.dataset.action === 'inc'
-                ? item.quantity + 1
-                : Math.max(1, item.quantity - 1);
+                ? Math.min(limit, currentQuantity + 1)
+                : Math.max(1, currentQuantity - 1);
 
-            try {
-                await syncQuantity(itemId, nextQuantity);
-                item.quantity = nextQuantity;
-                renderCart();
-            } catch (error) {
-                alert(error.message);
-            }
+            await updateCartQuantity(card, item, nextQuantity);
             return;
         }
 
@@ -203,6 +270,48 @@
                 alert(error.message);
             }
         }
+    });
+
+    cartList.addEventListener('change', async e => {
+        const quantityInput = e.target.closest('.cart-item__count-input');
+        if (!quantityInput) {
+            return;
+        }
+
+        const card = quantityInput.closest('.cart-item');
+        const item = cartState.items.find(entry => entry.id === card?.dataset.id);
+
+        if (!card || !item) {
+            return;
+        }
+
+        await updateCartQuantity(card, item, quantityInput.value);
+    });
+
+    cartList.addEventListener('input', e => {
+        const quantityInput = e.target.closest('.cart-item__count-input');
+        if (!quantityInput) {
+            return;
+        }
+
+        const card = quantityInput.closest('.cart-item');
+
+        if (!card) {
+            return;
+        }
+
+        const maxQuantityLength = String(getQuantityLimit()).length;
+        quantityInput.value = sanitizeQuantityInput(quantityInput.value).slice(0, maxQuantityLength);
+    });
+
+    cartList.addEventListener('keydown', e => {
+        const quantityInput = e.target.closest('.cart-item__count-input');
+        if (!quantityInput || e.key !== 'Enter') {
+            return;
+        }
+
+        e.preventDefault();
+        quantityInput.blur();
     });
 
     loadCart().catch(() => {
