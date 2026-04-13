@@ -17,11 +17,19 @@ class CatalogController extends Controller
 {
     public function shop(Request $request): View
     {
-        $products = $this->baseQuery($request)
-            ->paginate(16)
+        $allowedSex = ['men', 'women', 'kids'];
+        $activeSex = in_array($request->query('sex'), $allowedSex, true) ? $request->query('sex') : null;
+
+        $filters = [];
+        if ($activeSex !== null) {
+            $filters['sex'] = $activeSex;
+        }
+
+        $products = $this->baseQuery($request, $filters)
+            ->paginate(20)
             ->withQueryString();
 
-        return view('shop', compact('products'));
+        return view('shop', compact('products', 'activeSex'));
     }
 
     public function search(FilterProductsRequest $request): View
