@@ -137,9 +137,34 @@
                     @endforelse
                 </div>
 
-                <div class="mt-4">
-                    {{ $products->links() }}
-                </div>
+                @if($products->hasPages())
+                    <nav class="search-pagination mt-4" aria-label="Search pagination">
+                        @if($products->onFirstPage())
+                            <span class="search-pagination__btn is-disabled" aria-disabled="true">Prev</span>
+                        @else
+                            <a class="search-pagination__btn" href="{{ $products->previousPageUrl() }}">Prev</a>
+                        @endif
+
+                        @php
+                            $start = max(1, $products->currentPage() - 1);
+                            $end = min($products->lastPage(), $products->currentPage() + 1);
+                        @endphp
+
+                        @foreach($products->getUrlRange($start, $end) as $page => $url)
+                            @if($page == $products->currentPage())
+                                <span class="search-pagination__btn is-active" aria-current="page">{{ $page }}</span>
+                            @else
+                                <a class="search-pagination__btn" href="{{ $url }}">{{ $page }}</a>
+                            @endif
+                        @endforeach
+
+                        @if($products->hasMorePages())
+                            <a class="search-pagination__btn" href="{{ $products->nextPageUrl() }}">Next</a>
+                        @else
+                            <span class="search-pagination__btn is-disabled" aria-disabled="true">Next</span>
+                        @endif
+                    </nav>
+                @endif
             </div>
         </div>
     </div>

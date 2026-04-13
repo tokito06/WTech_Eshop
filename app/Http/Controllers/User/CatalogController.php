@@ -23,7 +23,7 @@ class CatalogController extends Controller
     {
         $products = $this->baseQuery($request)
             ->latest('created_at')
-            ->paginate(16)
+            ->paginate(12)
             ->withQueryString();
 
         return view('search', compact('products'));
