@@ -67,7 +67,6 @@
             <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>lowest price</option>
             <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>highest price</option>
         </select>
-        <span class="material-symbols-outlined" style="font-size:18px; color:var(--dark-gray-color);">expand_more</span>
     </div>
 </form>
 @endsection
