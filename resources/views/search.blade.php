@@ -146,12 +146,13 @@
                         @endif
 
                         @php
-                            $start = max(1, $products->currentPage() - 1);
-                            $end = min($products->lastPage(), $products->currentPage() + 1);
+                            $lastPage = max(1, $products->lastPage());
+                            $currentPage = min(max(1, $products->currentPage()), $lastPage);
+                            $start = max(1, $currentPage - 1);
+                            $end = min($lastPage, $currentPage + 1);
                         @endphp
-
-                        @foreach($products->getUrlRange($start, $end) as $page => $url)
-                            @if($page == $products->currentPage())
+                            @foreach($products->getUrlRange($start, $end) as $page => $url)
+                                @if($page == $currentPage)
                                 <span class="search-pagination__btn is-active" aria-current="page">{{ $page }}</span>
                             @else
                                 <a class="search-pagination__btn" href="{{ $url }}">{{ $page }}</a>
