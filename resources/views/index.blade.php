@@ -53,7 +53,7 @@
                 <div class="categories-inner">
                     <div class="categories-scroll" id="cat-scroll">
                         @foreach($categories as $category)
-                        <a class="cat-card clear-link" href="{{ route('search') }}?category={{ $category->id }}">
+                        <a class="cat-card clear-link" href="{{ route('search') }}?category_id={{ $category->id }}">
                             <div class="cat-card__img">
                                 <span class="material-symbols-outlined cat-card__icon" aria-hidden="true">{{ $category->icon }}</span>
                             </div>
