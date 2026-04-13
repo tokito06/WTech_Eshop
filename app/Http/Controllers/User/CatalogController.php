@@ -88,6 +88,24 @@ class CatalogController extends Controller
                 }
             );
 
+        $sort = $filters['sort'] ?? null;
+
+        if ($sort === 'price_asc') {
+            $query->withMin('variants', 'price')
+                ->orderBy('variants_min_price')
+                ->latest('created_at');
+
+            return $query;
+        }
+
+        if ($sort === 'price_desc') {
+            $query->withMin('variants', 'price')
+                ->orderByDesc('variants_min_price')
+                ->latest('created_at');
+
+            return $query;
+        }
+
         return $query->latest('created_at');
     }
 }

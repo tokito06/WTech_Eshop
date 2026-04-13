@@ -46,6 +46,7 @@ class FilterProductsRequest extends FormRequest
             'sex' => ['nullable', 'in:men,women,kids,unisex'],
             'sizes' => ['nullable', 'array'],
             'sizes.*' => ['string', 'max:4'],
+            'sort' => ['nullable', 'in:price_asc,price_desc,newest'],
         ];
     }
 
