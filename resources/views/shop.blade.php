@@ -25,25 +25,8 @@
         <!-- Product Grid -->
         <div class="row g-3 g-md-4">
             @forelse($products as $product)
-                @php
-                    $image = $product->images->first();
-                    $imageUrl = $image ? $image->url : asset('images/image_1.jpg');
-                    $price = $product->variants->min('price') ?? 0;
-                @endphp
                 <div class="col-6 col-lg-4 col-xxl-3">
-                    <div class="product-card">
-                        <button class="product-card__fav"><span class="material-symbols-outlined">favorite</span></button>
-                        <a href="{{ route('product', $product) }}" class="clear-link">
-                            <div class="product-card__img">
-                                <img src="{{ $imageUrl }}" alt="{{ $product->name }} image">
-                            </div>
-                            <div class="product-card__body">
-                                <h3 class="product-card__name">{{ $product->name }}</h3>
-                                <p class="product-card__desc">{{ \Illuminate\Support\Str::limit($product->description, 120) }}</p>
-                                <span class="product-card__price">{{ number_format((float) $price, 2, ',', ' ') }} €</span>
-                            </div>
-                        </a>
-                    </div>
+                    <x-product-card :product="$product" :show-sizes="false" />
                 </div>
             @empty
                 <div class="col-12">

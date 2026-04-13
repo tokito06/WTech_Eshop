@@ -152,14 +152,8 @@
             <div class="col-12 col-md-9 col-lg-10">
                 <div class="row g-3" id="products-grid">
                     @forelse($products as $product)
-                        @php
-                            $image = $product->images->first();
-                            $imageUrl = $image ? $image->url : asset('images/image_1.jpg');
-                            $sizes = $product->variants->pluck('symbol')->take(4);
-                            $price = $product->variants->min('price') ?? 0;
-                        @endphp
                         <div class="col-6 col-lg-4 col-xxl-3">
-                            @include('components.product-card', ['product' => $product])
+                            <x-product-card :product="$product" :show-sizes="true" />
                         </div>
                     @empty
                         <div class="col-12">

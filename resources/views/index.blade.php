@@ -83,7 +83,7 @@
             <div class="row g-3 g-md-4">
                 @foreach($menProducts as $product)
                 <div class="col-6 col-md-4 col-lg-3">
-                    @include('components.product-card', ['product' => $product])
+                    <x-product-card :product="$product" :show-sizes="false" />
                 </div>
                 @endforeach
             </div>
@@ -104,7 +104,7 @@
             <div class="row g-3 g-md-4">
                 @foreach($womenProducts as $product)
                 <div class="col-6 col-md-4 col-lg-3">
-                    @include('components.product-card', ['product' => $product])
+                    <x-product-card :product="$product" :show-sizes="false" />
                 </div>
                 @endforeach
             </div>
@@ -125,7 +125,7 @@
             <div class="row g-3 g-md-4">
                 @foreach($trendingProducts as $product)
                 <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    @include('components.product-card', ['product' => $product])
+                    <x-product-card :product="$product" :show-sizes="false" />
                 </div>
                 @endforeach
             </div>
