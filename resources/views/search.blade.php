@@ -6,13 +6,24 @@
 <link rel="stylesheet" href="{{ asset('css/search.css') }}">
 @endsection
 
-@section('subnav')
-<!-- Category Nav -->
+@php
+    $activeSex = request('sex');
+    $sexLabels = [
+        'men' => 'Men',
+        'women' => 'Women',
+        'kids' => 'Kids',
+    ];
+@endphp
+
+
+@section("subnav")
 <nav class="category-nav">
     <ul class="nav" style="scrollbar-width:none;">
-        <li class="nav-item"><a class="nav-link active" href="#">Men</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Women</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Kids</a></li>
+        @foreach($sexLabels as $value => $label)
+            <li class="nav-item">
+                <a class="nav-link {{ $activeSex === $value ? 'active' : '' }}" href="{{ route('search', array_merge(request()->except('page'), ['sex' => $value])) }}">{{ $label }}</a>
+            </li>
+        @endforeach
     </ul>
 </nav>
 
