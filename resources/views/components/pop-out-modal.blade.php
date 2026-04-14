@@ -33,8 +33,7 @@
                                 <button type="submit" class="{{ $confirmClass }}">{{ $confirmText }}</button>
                             </form>
                         @else
-                            <button type="button" class="{{ $confirmClass }}">{{ $confirmText }}</button>
-                        @endif
+                            <button type="button" class="{{ $confirmClass }}" data-bs-dismiss="modal">{{ $confirmText }}</button>                        @endif
                     @endisset
                 </div>
             </div>
