@@ -116,7 +116,7 @@
         <div class="product-toast__content product-toast__row">
             <span class="material-symbols-outlined">shopping_cart</span>
             <div>
-                <span>Added <strong id="toast-qty">1</strong> item(s) to bag!</span>
+                <span>Cart update: <strong id="toast-qty">1</strong> item(s)</span>
                 <small id="toast-note" class="product-toast__note"></small>
             </div>
             <button type="button" class="btn-close product-toast__close" data-bs-dismiss="toast" aria-label="Close"></button>
