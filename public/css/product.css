@@ -302,6 +302,12 @@
     margin-left: auto;
 }
 
+.product-toast__note {
+    display: block;
+    font-size: 0.78rem;
+    color: #555;
+}
+
 /* Responsive */
 @media (max-width: 575px) {
     :root { --thumb-size: 36px; }

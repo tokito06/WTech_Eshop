@@ -115,7 +115,10 @@
     <div id="cartToast" class="toast align-items-center border-0" role="alert" aria-live="assertive">
         <div class="product-toast__content product-toast__row">
             <span class="material-symbols-outlined">shopping_cart</span>
-            <span>Added <strong id="toast-qty">1</strong> item(s) to bag!</span>
+            <div>
+                <span>Added <strong id="toast-qty">1</strong> item(s) to bag!</span>
+                <small id="toast-note" class="product-toast__note"></small>
+            </div>
             <button type="button" class="btn-close product-toast__close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
@@ -144,6 +147,16 @@
     const sizeSelect = document.getElementById('product-size');
     const priceEl = document.getElementById('product-price');
     const addBtn   = document.getElementById('add-to-bag');
+    const toastEl = document.getElementById('cartToast');
+    const toastQtyEl = document.getElementById('toast-qty');
+    const toastNoteEl = document.getElementById('toast-note');
+
+    function showCartToast(quantity, note = '') {
+        toastQtyEl.textContent = String(Math.max(0, Number(quantity) || 0));
+        toastNoteEl.textContent = note;
+
+        bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 2500 }).show();
+    }
 
     function setQty(val) {
         const n = Math.max(1, Math.min(99, parseInt(val) || 1));
@@ -178,7 +191,7 @@
         const quantity = parseInt(qtyInput.value, 10) || 1;
 
         if (!variantId) {
-            alert('Variant is not available for this product.');
+            showCartToast(0, 'Variant is not available for this product.');
             return;
         }
 
@@ -197,10 +210,17 @@
                 throw new Error(data.message || 'Failed to add item');
             }
 
-            document.getElementById('toast-qty').textContent = quantity;
-            bootstrap.Toast.getOrCreateInstance(document.getElementById('cartToast'), { delay: 2500 }).show();
+            const addedQuantity = Number(data.added_quantity ?? quantity);
+            const wasCapped = Boolean(data.capped) || addedQuantity < quantity;
+
+            showCartToast(
+                addedQuantity,
+                wasCapped
+                ? (data.message || `Only ${addedQuantity} item(s) were added due to stock limit.`)
+                : ''
+            );
         } catch (error) {
-            alert(error.message || 'Unable to add item to cart.');
+            showCartToast(0, error.message || 'Unable to add item to cart.');
         }
     });
 
