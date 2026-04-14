@@ -76,8 +76,7 @@
                     <div class="product__badges">
                         <span class="product__category-badge">{{ $product?->category?->name ?? 'Category' }}</span>
                         <span class="product__category-badge">{{ $product?->brand?->name ?? 'Brand' }}</span>
-                        <span class="product__category-badge">{{ ucfirst($product->sex ?? 'Unspecified') }}</span>
-                    </div>
+                        <span class="product__category-badge">{{ ucfirst($product?->sex ?? 'Unspecified') }}</span>                    </div>
                     <h1>{{ $product->name ?? 'Product' }}</h1>
 
                     <p class="product__description">
