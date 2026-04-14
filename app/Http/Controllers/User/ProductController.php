@@ -13,11 +13,11 @@ class ProductController extends Controller
         if (!$product) {
             $product = Product::query()
                 ->where('status', 'active')
-                ->with(['variants', 'images', 'category'])
+                ->with(['variants', 'images', 'category', 'brand'])
                 ->latest('created_at')
                 ->first();
         } else {
-            $product->loadMissing(['variants', 'images', 'category']);
+            $product->loadMissing(['variants', 'images', 'category', 'brand']);
         }
 
         $variantId = $product?->variants?->first()?->id;
