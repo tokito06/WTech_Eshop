@@ -224,7 +224,6 @@
         searchEditable.addEventListener('input', syncSearchQuery);
         searchEditable.addEventListener('blur', () => {
             syncSearchQuery();
-            searchForm.requestSubmit();
         });
         searchEditable.addEventListener('keydown', event => {
             if (event.key !== 'Enter') {
