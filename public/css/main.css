@@ -239,7 +239,7 @@ main { flex: 1; }
     padding: clamp(10px, 1.2vw, 16px);
     border-radius: 14px;
     border: none;
-    background: linear-gradient(130deg, var(--highlight-color), #cbd0ff);
+    background-color: var(--highlight-color);
     font-family: "Anaheim", sans-serif;
     font-size: clamp(0.95rem, 1.1vw, 1.2rem);
     font-weight: 600;
