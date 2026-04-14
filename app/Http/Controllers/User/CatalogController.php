@@ -37,7 +37,7 @@ class CatalogController extends Controller
         $filters = $request->validated();
 
         $products = $this->baseQuery($request, $filters)
-            ->paginate(16)
+            ->paginate(12)
             ->withQueryString();
 
         $categories = Category::query()
