@@ -89,6 +89,15 @@
     cursor: pointer;
     transition: color 0.2s;
 }
+.filter-category label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.filter-category input {
+    display: none;
+}
 .filter-category li:hover { color: #000; }
 .filter-category li.active { color: #000; font-weight: 600; }
 
@@ -149,6 +158,7 @@
 }
 .size-btn:hover  { border-color: #999; }
 .size-btn.active { background-color: var(--input-form); border-color: #aaa; }
+.size-btn input { display: none; }
 
 /* Filters accordion toggle */
 .filters-toggle {

@@ -53,7 +53,7 @@
                 <div class="categories-inner">
                     <div class="categories-scroll" id="cat-scroll">
                         @foreach($categories as $category)
-                        <a class="cat-card clear-link" href="{{ route('search') }}?category={{ $category->id }}">
+                        <a class="cat-card clear-link" href="{{ route('search') }}?category_id={{ $category->id }}">
                             <div class="cat-card__img">
                                 <span class="material-symbols-outlined cat-card__icon" aria-hidden="true">{{ $category->icon }}</span>
                             </div>
@@ -83,7 +83,7 @@
             <div class="row g-3 g-md-4">
                 @foreach($menProducts as $product)
                 <div class="col-6 col-md-4 col-lg-3">
-                    @include('components.product-card', ['product' => $product])
+                    <x-product-card :product="$product" :show-sizes="false" />
                 </div>
                 @endforeach
             </div>
@@ -104,7 +104,7 @@
             <div class="row g-3 g-md-4">
                 @foreach($womenProducts as $product)
                 <div class="col-6 col-md-4 col-lg-3">
-                    @include('components.product-card', ['product' => $product])
+                    <x-product-card :product="$product" :show-sizes="false" />
                 </div>
                 @endforeach
             </div>
@@ -125,7 +125,7 @@
             <div class="row g-3 g-md-4">
                 @foreach($trendingProducts as $product)
                 <div class="col-6 col-md-4 col-lg-3 col-xxl-2">
-                    @include('components.product-card', ['product' => $product])
+                    <x-product-card :product="$product" :show-sizes="false" />
                 </div>
                 @endforeach
             </div>
