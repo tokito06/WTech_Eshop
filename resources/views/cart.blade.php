@@ -66,6 +66,16 @@
         </div>
     </div>
 </main>
+
+<div class="toast-container cart-toast-container">
+    <div id="cartStockToast" class="toast align-items-center border-0 cart-stock-toast" role="alert" aria-live="assertive">
+        <div class="cart-stock-toast__content">
+            <span class="material-symbols-outlined">info</span>
+            <span id="cart-stock-toast-message">Only 1 item is available.</span>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -73,6 +83,8 @@
     const cartState = { items: [] };
     const cartList = document.getElementById('cart-items-list');
     const emptyState = document.getElementById('cart-empty');
+    const cartStockToast = document.getElementById('cartStockToast');
+    const cartStockToastMessage = document.getElementById('cart-stock-toast-message');
     const cartUpdateUrlTemplate = '{{ route('cart.update', ['item' => '__ITEM_ID__']) }}';
     const cartRemoveUrlTemplate = '{{ route('cart.remove', ['item' => '__ITEM_ID__']) }}';
 
@@ -89,7 +101,20 @@
         }));
     }
 
-    function getQuantityLimit() {
+    function showStockToast(message) {
+        if (!message || !cartStockToast || !cartStockToastMessage) {
+            return;
+        }
+
+        cartStockToastMessage.textContent = message;
+        bootstrap.Toast.getOrCreateInstance(cartStockToast, { delay: 2500 }).show();
+    }
+
+    function getQuantityLimit(item) {
+        const inventory = Number(item?.variant?.inventory);
+        if (Number.isFinite(inventory) && inventory > 0) {
+            return Math.min(99, inventory);
+        }
 
         return 99;
     }
@@ -98,9 +123,9 @@
         return String(value).replace(/[^0-9]/g, '');
     }
 
-    function normalizeQuantity(value) {
+    function normalizeQuantity(value, item) {
         const parsed = Number.parseInt(value, 10);
-        const limit = getQuantityLimit();
+        const limit = getQuantityLimit(item);
 
         if (!Number.isFinite(parsed)) {
             return 1;
@@ -128,6 +153,7 @@
             const image = product?.images?.[0]?.url || '{{ asset('images/image_1.jpg') }}';
             const size = item.variant?.symbol || 'N/A';
             const price = Number(item.amount || 0);
+            const quantityLimit = getQuantityLimit(item);
             return `
                 <div class="cart-item" data-id="${item.id}">
                     <label class="cart-item__checkbox">
@@ -150,9 +176,10 @@
                         <input
                             class="cart-item__count-input"
                             type="text"
-                            maxlength="2"
+                            maxlength="${String(quantityLimit).length}"
                             inputmode="numeric"
                             value="${item.quantity}"
+                            data-max="${quantityLimit}"
                             aria-label="Quantity for ${product?.name ?? 'product'}"
                         >
                         <button type="button" class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
@@ -212,9 +239,15 @@
     }
 
     async function updateCartQuantity(card, item, nextQuantity) {
-        const normalized = normalizeQuantity(nextQuantity);
+        const requestedQuantity = Number.parseInt(nextQuantity, 10);
+        const quantityLimit = getQuantityLimit(item);
+        const normalized = normalizeQuantity(nextQuantity, item);
         const quantityInput = card.querySelector('.cart-item__count-input');
         const previousQuantity = item.quantity;
+
+        if (Number.isFinite(requestedQuantity) && requestedQuantity > quantityLimit) {
+            showStockToast(`Only ${quantityLimit} item(s) are available for this size.`);
+        }
 
         if (quantityInput) {
             quantityInput.value = normalized;
@@ -225,14 +258,24 @@
         }
 
         try {
-            await syncQuantity(item.id, normalized);
-            item.quantity = normalized;
+            const payload = await syncQuantity(item.id, normalized);
+            const appliedQuantity = Number(payload.quantity ?? normalized);
+
+            item.quantity = appliedQuantity;
+            if (quantityInput) {
+                quantityInput.value = appliedQuantity;
+            }
+
+            if (Boolean(payload.capped) || appliedQuantity < normalized) {
+                showStockToast(payload.message || `Only ${appliedQuantity} item(s) are available for this size.`);
+            }
+
             updateSummary();
         } catch (error) {
             if (quantityInput) {
                 quantityInput.value = previousQuantity;
             }
-            alert(error.message);
+            showStockToast(error.message || 'Unable to update item quantity.');
         }
     }
 
@@ -252,9 +295,15 @@
 
         const ctrlBtn = e.target.closest('.cart-item__ctrl-btn');
         if (ctrlBtn) {
-            const limit = getQuantityLimit();
+            const limit = getQuantityLimit(item);
+
+            if (ctrlBtn.dataset.action === 'inc' && currentQuantity >= limit) {
+                showStockToast(`Only ${limit} item(s) are available for this size.`);
+                return;
+            }
+
             const nextQuantity = ctrlBtn.dataset.action === 'inc'
-                ? Math.min(limit, currentQuantity + 1)
+                ? currentQuantity + 1
                 : Math.max(1, currentQuantity - 1);
 
             await updateCartQuantity(card, item, nextQuantity);
@@ -300,7 +349,8 @@
             return;
         }
 
-        const maxQuantityLength = String(getQuantityLimit()).length;
+        const item = cartState.items.find(entry => entry.id === card.dataset.id);
+        const maxQuantityLength = String(getQuantityLimit(item)).length;
         quantityInput.value = sanitizeQuantityInput(quantityInput.value).slice(0, maxQuantityLength);
     });
 

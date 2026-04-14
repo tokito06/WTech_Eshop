@@ -291,6 +291,36 @@
 .cart-empty .material-symbols-outlined { font-size: clamp(48px, 6vw, 96px); }
 .cart-empty p { font-size: clamp(1rem, 1.5vw, 1.8rem); }
 
+.cart-toast-container {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 1090;
+}
+
+.cart-stock-toast {
+    min-width: 240px;
+    max-width: 340px;
+}
+
+.cart-stock-toast__content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--highlight-color);
+}
+
+.cart-stock-toast__content .material-symbols-outlined {
+    font-size: 18px;
+}
+
+#cart-stock-toast-message {
+    font-size: 0.86rem;
+    line-height: 1.25;
+}
+
 /* Responsive */
 @media (max-width: 760px) {
     .cart-summary { position: static; }
