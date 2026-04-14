@@ -33,26 +33,14 @@
                             Log out?
                         </button>
 
-                        <!-- Logout Confirmation Modal -->
-                        <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-body p-4">
-                                        <h2 class="h5 mb-3" id="logoutConfirmModalLabel">Are you sure?</h2>
-                                        <p class="text-muted mb-4">
-                                            Are you sure you want to log out? You will need to sign in again to access your profile.
-                                        </p>
-                                        <div class="d-flex justify-content-end gap-2">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <form method="POST" action="{{ route('logout') }}">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger">Log Out</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <x-pop-out-modal
+                            modal-id="logoutConfirmModal"
+                            title="Are you sure?"
+                            message="Are you sure you want to log out? You will need to sign in again to access your profile."
+                            action="{{ route('logout') }}"
+                            confirm-text="Log Out"
+                            confirm-class="btn btn-danger"
+                        />
                     </div>
                 </div>
 
