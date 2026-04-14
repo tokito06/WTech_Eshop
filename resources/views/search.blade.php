@@ -12,7 +12,7 @@
 
 <!-- Search bar -->
 <form class="search-bar" method="get" action="{{ route('search') }}" id="search-filters-form">
-    <input type="hidden" name="q" value="{{ request('q') }}">
+    <input type="hidden" id="search-query-hidden" name="q" value="{{ request('q') }}">
 
     @if(request()->filled('category_id'))
         <input type="hidden" name="category_id" value="{{ request('category_id') }}">
@@ -38,9 +38,16 @@
         <input type="hidden" name="sizes[]" value="{{ $selectedSize }}">
     @endforeach
 
-    <div class="search-tag">
-        "{{ request('q', 'All products') }}"
-        <a class="search-tag__close" href="{{ route('search', array_merge(request()->except(['q', 'page']), request()->filled('sex') ? ['sex' => request('sex')] : [])) }}" aria-label="Clear search">✕</a>
+    <div class="search-tag" id="search-tag">
+        <input
+            id="search-query-editable"
+            class="search-tag__input"
+            type="text"
+            value="{{ request('q', '') }}"
+            placeholder="All products"
+            aria-label="Edit search query"
+        >
+        <button class="search-tag__close" id="search-tag-clear" type="button" aria-label="Clear search">✕</button>
     </div>
 
     <div class="sort-select">
@@ -200,6 +207,43 @@
 
 @section('scripts')
 <script>
+    const searchForm = document.getElementById('search-filters-form');
+    const searchEditable = document.getElementById('search-query-editable');
+    const searchHidden = document.getElementById('search-query-hidden');
+    const searchClear = document.getElementById('search-tag-clear');
+
+    const syncSearchQuery = () => {
+        if (!searchEditable || !searchHidden) {
+            return;
+        }
+
+        searchHidden.value = searchEditable.value.trim();
+    };
+
+    if (searchEditable && searchForm) {
+        searchEditable.addEventListener('input', syncSearchQuery);
+        searchEditable.addEventListener('blur', () => {
+            syncSearchQuery();
+        });
+        searchEditable.addEventListener('keydown', event => {
+            if (event.key !== 'Enter') {
+                return;
+            }
+
+            event.preventDefault();
+            syncSearchQuery();
+            searchForm.requestSubmit();
+        });
+    }
+
+    if (searchClear && searchEditable && searchForm) {
+        searchClear.addEventListener('click', () => {
+            searchEditable.value = '';
+            syncSearchQuery();
+            searchForm.requestSubmit();
+        });
+    }
+
     const filtersForm = document.getElementById('filters-body');
 
     const submitFilters = () => {

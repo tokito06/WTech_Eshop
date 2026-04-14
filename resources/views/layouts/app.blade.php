@@ -23,9 +23,16 @@
 
 <!-- Header -->
 <nav class="navbar">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-        <a class="navbar-brand" href="{{ route('home') }}">RuPo</a>
-        <div class="d-flex align-items-center gap-1">
+    <div class="container-fluid d-flex align-items-center gap-3">
+        <a class="navbar-brand flex-shrink-0" href="{{ route('home') }}">RuPo</a>
+
+        @unless(request()->routeIs('profile', 'search'))
+            <form class="navbar-search-wrap" method="GET" action="{{ route('search') }}">
+                <input class="navbar-search" type="search" name="q" value="{{ request('q') }}" placeholder="Search" aria-label="Search products">
+            </form>
+        @endunless
+
+        <div class="d-flex align-items-center gap-1 flex-shrink-0 ms-auto">
             <a class="header__icon" href="{{ route('favourites') }}" title="Liked">
                 <span class="material-symbols-outlined">favorite</span>
             </a>

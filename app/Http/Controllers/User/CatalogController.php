@@ -52,6 +52,7 @@ class CatalogController extends Controller
 
         $sizes = ProductVariant::query()
             ->whereHas('product', fn (Builder $query) => $query->where('status', 'active'))
+            ->where('inventory', '>', 0)
             ->select('symbol')
             ->distinct()
             ->orderBy('symbol')
@@ -68,17 +69,34 @@ class CatalogController extends Controller
             ->when($request->filled('q'), function ($query) use ($request) {
                 $term = trim((string) $request->query('q'));
 
-                $query->where(function ($q) use ($term) {
-                    $q->where('name', 'like', '%' . $term . '%')
-                        ->orWhere('description', 'like', '%' . $term . '%');
-                });
+                if ($term === '') {
+                    return;
+                }
+
+                $query->where('name', 'like', '%' . $term . '%');
             })
             ->when(!empty($filters['category_id']), fn (Builder $query) => $query->where('category_id', $filters['category_id']))
             ->when(!empty($filters['brand_id']), fn (Builder $query) => $query->where('brand_id', $filters['brand_id']))
             ->when(!empty($filters['sex']), fn (Builder $query) => $query->where('sex', $filters['sex']))
             ->when(
                 !empty($filters['sizes']),
-                fn (Builder $query) => $query->whereHas('variants', fn (Builder $variantQuery) => $variantQuery->whereIn(DB::raw('UPPER(TRIM(symbol))'), $filters['sizes']))
+                function (Builder $query) use ($filters) {
+                    $sizes = array_values(array_unique(array_filter(
+                        (array) $filters['sizes']
+                    )));
+
+                    if (empty($sizes)) {
+                        return;
+                    }
+
+                    foreach ($sizes as $size) {
+                        $query->whereHas('variants', function (Builder $variantQuery) use ($size) {
+                            $variantQuery
+                                ->where(DB::raw('UPPER(TRIM(symbol))'), $size)
+                                ->where('inventory', '>', 0);
+                        });
+                    }
+                }
             )
             ->when(
                 (array_key_exists('price_min', $filters) && $filters['price_min'] !== null)
