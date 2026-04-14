@@ -68,10 +68,7 @@ class CatalogController extends Controller
             ->when($request->filled('q'), function ($query) use ($request) {
                 $term = trim((string) $request->query('q'));
 
-                $query->where(function ($q) use ($term) {
-                    $q->where('name', 'like', '%' . $term . '%')
-                        ->orWhere('description', 'like', '%' . $term . '%');
-                });
+                $query->where('name', 'like', '%' . $term . '%');
             })
             ->when(!empty($filters['category_id']), fn (Builder $query) => $query->where('category_id', $filters['category_id']))
             ->when(!empty($filters['brand_id']), fn (Builder $query) => $query->where('brand_id', $filters['brand_id']))
