@@ -144,9 +144,9 @@
 .size-btn {
     width:  clamp(32px, 3vw, 44px);
     height: clamp(32px, 3vw, 44px);
-    border: 2px solid var(--gray-color);
-    border-radius: 6px;
-    background: var(--white-color);
+    border: 2px solid rgba(123, 123, 123, 0.34);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.84);
     font-family: "Anaheim", sans-serif;
     font-size: clamp(0.75rem, 0.9vw, 1rem);
     font-weight: 600;
@@ -157,7 +157,10 @@
     justify-content: center;
 }
 .size-btn:hover  { border-color: #999; }
-.size-btn.active { background-color: var(--input-form); border-color: #aaa; }
+.size-btn.active {
+    border-color: rgba(156, 161, 229, 0.64);
+    background: rgba(181, 186, 255, 0.3);
+}
 .size-btn input { display: none; }
 
 /* Filters accordion toggle */
@@ -226,4 +229,20 @@
 /* Responsive */
 @media (max-width: 575px) {
     .search-bar { padding: 12px 16px; }
+}
+
+.filters .btn-dark,
+.filters .btn-outline-secondary {
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.filters .btn-dark {
+    border: none;
+    background: linear-gradient(130deg, var(--highlight-color), #c9ceff);
+    color: #101222;
+}
+
+.filters .btn-outline-secondary {
+    border-color: rgba(123, 123, 123, 0.44);
 }
