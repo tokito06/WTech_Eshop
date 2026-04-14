@@ -38,7 +38,6 @@ class CatalogController extends Controller
 
         $products = $this->baseQuery($request, $filters)
             ->paginate(16)
-            ->latest('created_at')
             ->withQueryString();
 
         $categories = Category::query()
