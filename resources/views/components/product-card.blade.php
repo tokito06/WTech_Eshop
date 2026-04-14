@@ -6,11 +6,12 @@
 @php
     $image = $product->images->first();
     $imageUrl = $image ? $image->url : asset('images/image_1.jpg');
-    $sizes = $product->variants->pluck('symbol')->take(4);
+    $variants = $product->variants->take(4);
     $price = $product->variants->min('price') ?? 0;
+    $isOutOfStock = ((int) $product->variants->sum('inventory')) <= 0;
 @endphp
 
-<div class="product-card">
+<div @class(['product-card', 'product-card--out-of-stock' => $isOutOfStock])>
     <button class="product-card__fav" aria-label="Like">
         <span class="material-symbols-outlined">favorite</span>
     </button>
@@ -19,8 +20,11 @@
             <img src="{{ $imageUrl }}" alt="{{ $product->name }} image">
             @if($showSizes)
                 <div class="product-card__sizes">
-                    @foreach($sizes as $size)
-                        <span class="product-card__size-tag">{{ $size }}</span>
+                    @foreach($variants as $variant)
+                        <span @class([
+                            'product-card__size-tag',
+                            'product-card__size-tag--out-of-stock' => ((int) $variant->inventory) <= 0,
+                        ])>{{ $variant->symbol }}</span>
                     @endforeach
                 </div>
             @endif

@@ -4,6 +4,7 @@
 
 @section('extra-css')
 <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+<link rel="stylesheet" href="{{ asset('css/product.css') }}">
 @endsection
 
 @section('content')
