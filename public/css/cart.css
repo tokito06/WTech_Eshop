@@ -120,7 +120,6 @@
     font-weight: 700;
     color: inherit;
     text-align: center;
-    font-family: "Anaheim", sans-serif;
     outline: none;
     box-shadow: none;
     padding: 0 6px;
@@ -265,7 +264,6 @@
     width: 100%;
     border: none;
     background-color: var(--highlight-color);
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.95rem, 1.2vw, 1.5rem);
     font-weight: 600;
     padding: clamp(10px, 1.2vw, 18px);

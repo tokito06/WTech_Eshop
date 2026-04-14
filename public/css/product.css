@@ -185,7 +185,6 @@
     background: var(--white-color);
     border: 1px solid rgba(123, 123, 123, 0.3);
     border-radius: 12px;
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.9rem, 1.1vw, 1.3rem);
     cursor: pointer;
 }
@@ -233,7 +232,6 @@
     border: none;
     border-radius: 5px;
     text-align: center;
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.95rem, 1.2vw, 1.4rem);
     font-weight: 700;
     background: var(--white-color);
@@ -269,7 +267,6 @@
     border: none;
     background-color: var(--highlight-color);
     border-radius: 10px;
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(14px, 1.4vw, 24px);
     cursor: pointer;
     transition: background-color 0.2s;

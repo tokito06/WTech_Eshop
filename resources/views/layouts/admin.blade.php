@@ -55,7 +55,6 @@
     padding: 5px 14px;
     border-radius: 20px;
     font-size: clamp(0.8rem, 0.95vw, 1rem);
-    font-family: "Anaheim", sans-serif;
     color: #000;
     text-decoration: none;
     transition: background-color 0.2s;

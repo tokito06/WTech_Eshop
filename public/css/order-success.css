@@ -88,7 +88,6 @@
     width: 100%;
     border: none;
     background-color: var(--highlight-color);
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.95rem, 1.1vw, 1.3rem);
     font-weight: 600;
     padding: clamp(12px, 1.3vw, 18px);
