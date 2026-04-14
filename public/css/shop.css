@@ -14,7 +14,6 @@
     background-color: var(--input-form);
     border: none;
     border-radius: 12px;
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.9rem, 1.1vw, 1.2rem);
     color: #333;
     outline: none;

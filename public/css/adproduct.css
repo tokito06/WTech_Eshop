@@ -16,7 +16,6 @@
     border: none;
     border-radius: 8px;
     background-color: var(--input-form);
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.9rem, 1vw, 1.1rem);
     outline: none;
     transition: box-shadow 0.2s;
@@ -38,7 +37,6 @@
     border: 1px solid rgba(156, 161, 229, 0.3);
     border-radius: 12px;
     background: linear-gradient(130deg, var(--highlight-color), #ccd1ff);
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.85rem, 1vw, 1.1rem);
     font-weight: 700;
     color: #121426;
@@ -73,7 +71,6 @@
     border: 1px solid rgba(123, 123, 123, 0.26);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.8);
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.75rem, 0.9vw, 1rem);
     cursor: pointer;
     transition: background-color 0.2s, border-color 0.2s;

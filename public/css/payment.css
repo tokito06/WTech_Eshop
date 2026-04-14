@@ -38,7 +38,6 @@
     border: 2px solid var(--gray-color);
     border-radius: 12px;
     background-color: var(--white-color);
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(1rem, 1.5vw, 1.4rem);
     font-weight: 600;
     cursor: pointer;
@@ -91,7 +90,6 @@
     border: none;
     border-bottom: 2px solid var(--gray-color);
     background: transparent;
-    font-family: "Anaheim", sans-serif;
     font-size: clamp(0.9rem, 1.1vw, 1.2rem);
     color: var(--dark-gray-color);
     outline: none;
