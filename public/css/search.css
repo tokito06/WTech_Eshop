@@ -31,6 +31,7 @@
     color: #555;
     padding: 0 2px;
     transition: color 0.2s;
+    text-decoration: none;
 }
 .search-tag__close:hover { color: #e05555; }
 
