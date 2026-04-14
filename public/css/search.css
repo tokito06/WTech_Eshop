@@ -20,6 +20,30 @@
     font-weight: 600;
     font-style: italic;
     cursor: default;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-tag:hover,
+.search-tag:focus-within {
+    transform: scale(1.05);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.search-tag__input {
+    border: none;
+    background: transparent;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    min-width: 90px;
+    width: clamp(120px, 18vw, 260px);
+    outline: none;
+    color: #000;
+}
+
+.search-tag__input::placeholder {
+    color: #7a7a7a;
+    opacity: 1;
 }
 
 .search-tag__close {

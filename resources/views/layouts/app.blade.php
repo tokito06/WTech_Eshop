@@ -26,7 +26,7 @@
     <div class="container-fluid d-flex align-items-center gap-3">
         <a class="navbar-brand flex-shrink-0" href="{{ route('home') }}">RuPo</a>
 
-        @unless(request()->routeIs('profile'))
+        @unless(request()->routeIs('profile', 'search'))
             <form class="navbar-search-wrap" method="GET" action="{{ route('search') }}">
                 <input class="navbar-search" type="search" name="q" value="{{ request('q') }}" placeholder="Search" aria-label="Search products">
             </form>
