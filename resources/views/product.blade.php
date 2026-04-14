@@ -168,9 +168,17 @@
         qtyMinus.disabled = n <= 1;
     }
 
+    function sanitizeQtyInput(value) {
+        return String(value).replace(/[^0-9]/g, '').slice(0, 2);
+    }
+
     qtyMinus.addEventListener('click', () => setQty(+qtyInput.value - 1));
     qtyPlus.addEventListener ('click', () => setQty(+qtyInput.value + 1));
-    qtyInput.addEventListener('input', () => setQty(qtyInput.value));
+    qtyInput.addEventListener('input', () => {
+        // Allow temporary empty value while user is typing.
+        qtyInput.value = sanitizeQtyInput(qtyInput.value);
+    });
+    qtyInput.addEventListener('blur', () => setQty(qtyInput.value));
 
     function syncVariantSelection() {
         const selected = sizeSelect?.selectedOptions?.[0];
@@ -192,6 +200,7 @@
         @endguest
 
         const variantId = addBtn.dataset.variantId;
+        setQty(qtyInput.value);
         const quantity = parseInt(qtyInput.value, 10) || 1;
 
         if (!variantId) {
