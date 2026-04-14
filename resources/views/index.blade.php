@@ -40,7 +40,7 @@
     </section>
 
     <!-- Categories Scroll -->
-    <section class="home-section" style="background:#fafafa; border-bottom:1px solid var(--gray-color);">
+    <section class="home-section categories-section">
         <div class="container">
             <h2 class="section-title">Explore our categories</h2>
             <div class="categories-wrapper">
@@ -93,7 +93,7 @@
 
     <!-- New for Women -->
     @if($womenProducts->isNotEmpty())
-    <section class="home-section" style="background:#fafafa;">
+    <section class="home-section home-section--soft">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title mb-0">New for Women</h2>
