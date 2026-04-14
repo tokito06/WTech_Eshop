@@ -1,5 +1,6 @@
 .cart-section {
     padding: clamp(20px, 3vw, 60px) 0;
+    background: transparent;
 }
 
 .cart-section .container {
@@ -223,10 +224,11 @@
 }
 
 .cart-summary {
-    background: var(--white-color);
-    border-radius: 12px;
     padding: clamp(16px, 2vw, 32px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--surface-border);
+    border-radius: 22px;
+    background: var(--surface-bg);
+    box-shadow: var(--surface-shadow);
 }
 
 .cart-summary__title {
@@ -268,9 +270,10 @@
     font-weight: 600;
     padding: clamp(10px, 1.2vw, 18px);
     margin-top: clamp(16px, 2vw, 32px);
-    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s;
+    border-radius: 12px;
+    font-weight: 800;
 }
 .cart-summary__btn:hover { background-color: var(--highlight-dark-color); }
 

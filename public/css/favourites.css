@@ -1,5 +1,6 @@
 .liked-section {
     padding: clamp(20px, 3vw, 50px) 0;
+    background: transparent;
 }
 
 .liked-section .container {
@@ -11,7 +12,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: clamp(20px, 3vw, 40px);
+    margin-bottom: clamp(18px, 2vw, 28px);
 }
 
 .liked-title .material-symbols-outlined {

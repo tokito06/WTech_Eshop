@@ -7,7 +7,7 @@
 }
 
 .auth__left {
-    background-color: var(--bg-primary-color);
+    background: linear-gradient(140deg, rgba(255, 168, 131, 0.95), rgba(255, 205, 182, 0.92));
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,7 +46,10 @@
 .auth__left-decor span:nth-child(3) { width: clamp(40px,5vw,80px);  height: clamp(40px,5vw,80px); }
 
 .auth__right {
-    background-color: var(--white-color);
+    background:
+        radial-gradient(circle at 8% 8%, rgba(181, 186, 255, 0.18), transparent 35%),
+        radial-gradient(circle at 92% 88%, rgba(255, 168, 131, 0.18), transparent 35%),
+        var(--white-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,21 +67,22 @@
 }
 
 .register-card {
-    background: var(--white-color);
-    border-radius: 24px;
+    background: var(--surface-bg);
+    border-radius: 28px;
     padding: clamp(28px, 4vw, 56px) clamp(24px, 4vw, 52px);
     width: 100%;
     max-width: 500px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    box-shadow: var(--surface-shadow);
+    border: 1px solid var(--surface-border);
 }
 
 /* Auth Select */
 .auth__select {
     width: 100%;
     padding: clamp(10px, 1.2vw, 15px) clamp(14px, 1.5vw, 20px);
-    border-radius: 20px;
-    border: none;
-    background-color: var(--input-form);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 168, 131, 0.3);
+    background-color: rgba(255, 255, 255, 0.88);
     outline: none;
     font-family: "Anaheim", sans-serif;
     font-size: clamp(0.9rem, 1.1vw, 1.1rem);

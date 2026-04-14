@@ -3,7 +3,7 @@
 @section('title', 'Shop')
 
 @section('extra-css')
-<link rel="stylesheet" href="{{ asset('css/main_page.css') }}">
+<link rel="stylesheet" href="{{ asset('css/shop.css') }}">
 <link rel="stylesheet" href="{{ asset('css/product.css') }}">
 @endsection
 

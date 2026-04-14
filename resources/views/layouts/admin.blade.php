@@ -24,7 +24,7 @@
 <!-- Admin Header -->
 <nav class="navbar">
     <div class="container-fluid d-flex align-items-center gap-3">
-        <a class="navbar-brand flex-shrink-0" href="{{ route('admin.products') }}">RuPo</a>
+        <a class="navbar-brand flex-shrink-0" href="{{ route('home') }}">RuPo</a>
 
         <div class="d-flex gap-1 flex-shrink-0">
             <a href="{{ route('admin.products') }}"

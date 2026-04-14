@@ -3,16 +3,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: transparent;
 }
 
 .success-card {
-    background: var(--white-color);
-    border-radius: 16px;
+    background: var(--surface-bg);
+    border-radius: 26px;
     padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    box-shadow: var(--surface-shadow);
     text-align: center;
     max-width: 560px;
     width: 100%;
+    border: 1px solid var(--surface-border);
 }
 
 .success-icon {
@@ -44,14 +46,15 @@
 }
 
 .success-order-info {
-    background: #fafafa;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.76);
+    border-radius: 14px;
     padding: clamp(14px, 2vw, 24px) clamp(16px, 2.5vw, 32px);
     margin-bottom: clamp(24px, 3vw, 40px);
     text-align: left;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    border: 1px solid rgba(123, 123, 123, 0.2);
 }
 
 .success-order-info__row {

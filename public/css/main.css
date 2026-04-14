@@ -10,6 +10,11 @@
     --white-color:          #ffffff;
     --input-form:           #FFDEDE;
     --font-base:            clamp(14px, 1vw, 20px);
+    --surface-bg:           rgba(255, 255, 255, 0.9);
+    --surface-bg-soft:      rgba(248, 249, 255, 0.86);
+    --surface-border:       rgba(123, 123, 123, 0.22);
+    --surface-shadow:       0 14px 30px rgba(18, 20, 42, 0.1);
+    --surface-shadow-soft:  0 8px 20px rgba(18, 20, 42, 0.08);
 }
 
 /* Base and cleaning */
@@ -20,19 +25,24 @@ html { font-size: var(--font-base); }
 body {
     font-family: "Anaheim", sans-serif;
     overflow-x: hidden;
-    background-color: var(--white-color);
+    background:
+        radial-gradient(circle at 8% 6%, rgba(181, 186, 255, 0.18), transparent 30%),
+        radial-gradient(circle at 92% 86%, rgba(255, 168, 131, 0.18), transparent 28%),
+        var(--white-color);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    color: #171827;
 }
 
 main { flex: 1; }
 
 /* Header */
 .navbar {
-    background-color: var(--bg-primary-color) !important;
+    background: linear-gradient(110deg, rgba(255, 168, 131, 0.95), rgba(255, 196, 164, 0.95)) !important;
     min-height: 80px;
     padding: 0 clamp(16px, 3vw, 60px);
+    box-shadow: 0 8px 20px rgba(102, 69, 53, 0.18);
 }
 
 .navbar-brand {
@@ -47,7 +57,7 @@ main { flex: 1; }
     padding: 10px;
     border-radius: 50%;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: transform 0.2s, background-color 0.2s, opacity 0.2s;
     color: #000;
     text-decoration: none;
 }
@@ -138,7 +148,7 @@ main { flex: 1; }
 }
 
 .product-card__body {
-    padding: clamp(8px, 1vw, 14px) 2px;
+    padding: clamp(12px, 1.1vw, 16px) 4px 4px;
 }
 
 .product-card__name {
@@ -212,9 +222,9 @@ main { flex: 1; }
 .auth__input {
     width: 100%;
     padding: clamp(10px, 1.2vw, 16px) clamp(14px, 1.5vw, 20px);
-    border-radius: 20px;
-    border: none;
-    background-color: var(--input-form);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 168, 131, 0.3);
+    background-color: rgba(255, 255, 255, 0.88);
     outline: none;
     font-family: "Anaheim", sans-serif;
     font-size: clamp(0.9rem, 1.1vw, 1.2rem);
@@ -227,7 +237,7 @@ main { flex: 1; }
 .auth__btn {
     width: 100%;
     padding: clamp(10px, 1.2vw, 16px);
-    border-radius: 20px;
+    border-radius: 14px;
     border: none;
     background-color: var(--highlight-color);
     font-family: "Anaheim", sans-serif;
@@ -260,7 +270,8 @@ main { flex: 1; }
 
 /* Footer */
 footer {
-    background-color: var(--gray-color);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(217, 217, 217, 0.65));
+    border-top: 1px solid var(--surface-border);
     font-size: clamp(0.75rem, 1vw, 1.1rem);
 }
 footer a {
@@ -273,8 +284,8 @@ footer a:hover { opacity: 0.6; }
 
 /* Checkout Steps */
 .checkout-steps {
-    background-color: var(--white-color);
-    border-bottom: 1px solid var(--gray-color);
+    background-color: var(--white-color);   
+    border-bottom: 1px solid var(--surface-border);
     padding: 12px clamp(16px, 3vw, 60px);
 }
 
@@ -321,7 +332,7 @@ footer a:hover { opacity: 0.6; }
 }
 
 .checkout-steps__item.active .checkout-steps__num {
-    background-color: var(--highlight-color);
+    background: linear-gradient(130deg, var(--highlight-color), #cdd2ff);
     color: #000;
 }
 

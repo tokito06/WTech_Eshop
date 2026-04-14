@@ -211,3 +211,12 @@
     .cat-arrow--prev { left: -10px; }
     .cat-arrow--next { right: -10px; }
 }
+
+.home-section--soft {
+    background: transparent;
+}
+
+.categories-section {
+    background:#fafafa; 
+    border-bottom:1px solid var(--gray-color);
+}

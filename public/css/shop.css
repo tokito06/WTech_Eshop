@@ -7,24 +7,6 @@
     margin: clamp(20px, 3vw, 40px) 0;
 }
 
-.shop-filter-btn {
-    width: clamp(40px, 3.5vw, 52px);
-    height: clamp(40px, 3.5vw, 52px);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    flex-shrink: 0;
-    transition: background-color 0.2s;
-}
-.shop-filter-btn:hover { background-color: var(--gray-color); }
-.shop-filter-btn .material-symbols-outlined {
-    font-size: clamp(22px, 2.5vw, 32px);
-}
-
 .shop-search {
     flex: 1;
     max-width: 760px;
@@ -56,13 +38,12 @@
     justify-content: center;
     text-decoration: none;
     flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
     transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .shop-search-btn:hover {
     background-color: #ffcaca;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .shop-search-btn:active {

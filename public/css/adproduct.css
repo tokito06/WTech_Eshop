@@ -1,7 +1,7 @@
 /* Admin main */
 .admin-main {
     padding: clamp(30px, 4vw, 70px) 0;
-    background-color: var(--white-color);
+    background: transparent;
     min-height: calc(100vh - 80px);
 }
 
@@ -35,12 +35,13 @@
 /* Add product button */
 .admin-add-btn {
     padding: clamp(8px, 0.8vw, 12px) clamp(16px, 1.5vw, 28px);
-    border: none;
-    border-radius: 8px;
-    background-color: var(--bg-primary-color);
+    border: 1px solid rgba(156, 161, 229, 0.3);
+    border-radius: 12px;
+    background: linear-gradient(130deg, var(--highlight-color), #ccd1ff);
     font-family: "Anaheim", sans-serif;
     font-size: clamp(0.85rem, 1vw, 1.1rem);
     font-weight: 700;
+    color: #121426;
     cursor: pointer;
     white-space: nowrap;
     transition: opacity 0.2s;
@@ -49,8 +50,10 @@
 
 /* Table card */
 .admin-table-card {
-    border: 1.5px solid var(--gray-color);
-    border-radius: 14px;
+    border: 1px solid var(--surface-border);
+    border-radius: 20px;
+    background: var(--surface-bg);
+    box-shadow: var(--surface-shadow-soft);
     overflow: hidden;
 }
 
@@ -59,16 +62,17 @@
     display: flex;
     align-items: center;
     padding: clamp(10px, 1vw, 16px) clamp(12px, 1.5vw, 24px);
-    border-bottom: 1.5px solid var(--gray-color);
+    border-bottom: 1px solid rgba(123, 123, 123, 0.24);
+    background: rgba(255, 255, 255, 0.72);
     gap: 8px;
     flex-wrap: wrap;
 }
 
 .admin-filter-btn {
     padding: 4px clamp(10px, 1vw, 16px);
-    border: 1.5px solid var(--gray-color);
-    border-radius: 20px;
-    background: transparent;
+    border: 1px solid rgba(123, 123, 123, 0.26);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.8);
     font-family: "Anaheim", sans-serif;
     font-size: clamp(0.75rem, 0.9vw, 1rem);
     cursor: pointer;
@@ -76,8 +80,8 @@
 }
 .admin-filter-btn:hover { background-color: var(--gray-color); }
 .admin-filter-btn.active {
-    background-color: var(--gray-color);
-    border-color: #aaa;
+    border-color: rgba(156, 161, 229, 0.48);
+    background: rgba(181, 186, 255, 0.34);
     font-weight: 600;
 }
 
@@ -116,8 +120,8 @@
 
 /* Table header row */
 .admin-table-header {
-    background-color: #f5f5f5;
-    border-bottom: 1.5px solid var(--gray-color);
+    background: rgba(181, 186, 255, 0.16);
+    border-bottom: 1px solid rgba(123, 123, 123, 0.2);
     padding-top: clamp(8px, 0.8vw, 14px);
     padding-bottom: clamp(8px, 0.8vw, 14px);
     font-size: clamp(0.75rem, 0.9vw, 1rem);
@@ -133,7 +137,7 @@
     transition: background-color 0.15s;
 }
 .admin-row:last-child { border-bottom: none; }
-.admin-row:hover { background-color: #fafafa; }
+.admin-row:hover { background-color: rgba(181, 186, 255, 0.16); }
 
 /* Row cells */
 .admin-radio {
