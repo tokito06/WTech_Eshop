@@ -10,7 +10,6 @@
     position: relative;
     width: 100%;
     aspect-ratio: 4 / 3;
-    background: linear-gradient(140deg, rgba(255, 255, 255, 0.88), rgba(240, 241, 255, 0.8));
     border: 1px solid var(--surface-border);
     border-radius: 18px;
     display: flex;
@@ -133,7 +132,7 @@
     padding: clamp(14px, 1.5vw, 18px);
     border: 1px solid rgba(156, 161, 229, 0.34);
     border-radius: 12px;
-    background: linear-gradient(130deg, var(--highlight-color), #c9ceff);
+    background: var(--highlight-color);
     color: #121426;
     font-family: "Anaheim", sans-serif;
     font-size: clamp(1.2rem, 2vw, 2rem);
@@ -142,7 +141,7 @@
     margin-top: clamp(8px, 1vw, 16px);
     transition: opacity 0.2s, transform 0.15s;
 }
-.add-product-btn:hover  { opacity: 0.82; }
+.add-product-btn:hover  { opacity: 0.8; }
 .add-product-btn:active { transform: scale(0.99); }
 
 /* Responsive */
