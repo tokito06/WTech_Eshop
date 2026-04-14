@@ -69,6 +69,10 @@ class CatalogController extends Controller
             ->when($request->filled('q'), function ($query) use ($request) {
                 $term = trim((string) $request->query('q'));
 
+                if ($term === '') {
+                    return;
+                }
+
                 $query->where('name', 'like', '%' . $term . '%');
             })
             ->when(!empty($filters['category_id']), fn (Builder $query) => $query->where('category_id', $filters['category_id']))
@@ -77,10 +81,9 @@ class CatalogController extends Controller
             ->when(
                 !empty($filters['sizes']),
                 function (Builder $query) use ($filters) {
-                    $sizes = array_values(array_unique(array_filter(array_map(
-                        static fn ($size) => strtoupper(trim((string) $size)),
+                    $sizes = array_values(array_unique(array_filter(
                         (array) $filters['sizes']
-                    ))));
+                    )));
 
                     if (empty($sizes)) {
                         return;
