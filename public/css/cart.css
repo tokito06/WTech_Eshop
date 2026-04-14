@@ -84,10 +84,10 @@
 
 .cart-item__controls {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 8px;
     flex-shrink: 0;
 }
 
@@ -109,11 +109,36 @@
 .cart-item__ctrl-btn:hover  { background-color: var(--highlight-color); }
 .cart-item__ctrl-btn:active { background-color: var(--highlight-dark-color); }
 
-.cart-item__count {
+.cart-item__count-input {
+    width: clamp(56px, 4.5vw, 84px);
+    height: clamp(32px, 3vw, 52px);
+    border: 1px solid var(--gray-color);
+    border-radius: 6px;
+    background: var(--white-color);
     font-size: clamp(1rem, 1.4vw, 1.8rem);
     font-weight: 700;
-    min-width: 28px;
+    color: inherit;
     text-align: center;
+    font-family: "Anaheim", sans-serif;
+    outline: none;
+    box-shadow: none;
+    padding: 0 6px;
+    -moz-appearance: textfield;
+}
+
+.cart-item__count-input::-webkit-outer-spin-button,
+.cart-item__count-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.cart-item__count-input:focus {
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 0 3px rgba(255, 166, 0, 0.15);
+}
+
+.cart-item__count-input:hover {
+    border-color: var(--highlight-color);
 }
 
 .cart-item__checkbox {
@@ -271,4 +296,9 @@
 @media (max-width: 575px) {
     .cart-item { flex-wrap: wrap; }
     .cart-item__image { width: 72px; height: 72px; }
+    .cart-item__controls {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: calc(72px + 12px);
+    }
 }
