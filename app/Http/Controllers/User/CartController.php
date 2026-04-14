@@ -40,31 +40,74 @@ class CartController extends Controller
             'variant_id' => $variant->id,
         ]);
 
-        $item->quantity = ($item->exists ? $item->quantity : 0) + $data['quantity'];
+        $currentQuantity = $item->exists ? (int) $item->quantity : 0;
+        $requestedQuantity = (int) $data['quantity'];
+        $maxAdditional = max(0, (int) $variant->inventory - $currentQuantity);
+        $addedQuantity = min($requestedQuantity, $maxAdditional);
+
+        if ($addedQuantity <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No more items are available for this size.',
+                'added_quantity' => 0,
+                'quantity' => $currentQuantity,
+                'capped' => true,
+            ], 422);
+        }
+
+        $item->quantity = $currentQuantity + $addedQuantity;
         $item->amount = (float) $variant->price;
         $item->save();
 
+        $capped = $addedQuantity < $requestedQuantity;
+
         return response()->json([
             'success' => true,
-            'message' => 'Item added to cart',
+            'message' => $capped
+                ? "Only {$addedQuantity} item(s) were added to cart due to stock limit."
+                : 'Item added to cart',
+            'added_quantity' => $addedQuantity,
+            'quantity' => (int) $item->quantity,
+            'capped' => $capped,
         ]);
     }
 
     public function update(Request $request, CartItem $item): JsonResponse
     {
         $this->ensureOwnership($request, $item);
+        $item->loadMissing('variant');
 
         $data = $request->validate([
             'quantity' => ['required', 'integer', 'min:1', 'max:99'],
         ]);
 
+        $requestedQuantity = (int) $data['quantity'];
+        $maxAvailable = (int) ($item->variant->inventory ?? 0);
+
+        if ($maxAvailable < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No more items are available for this size.',
+                'quantity' => (int) $item->quantity,
+                'capped' => true,
+            ], 422);
+        }
+
+        $appliedQuantity = min($requestedQuantity, $maxAvailable);
+
         $item->update([
-            'quantity' => $data['quantity'],
+            'quantity' => $appliedQuantity,
         ]);
+
+        $capped = $appliedQuantity < $requestedQuantity;
 
         return response()->json([
             'success' => true,
-            'message' => 'Item updated',
+            'message' => $capped
+                ? "Only {$appliedQuantity} item(s) are available for this size."
+                : 'Item updated',
+            'quantity' => $appliedQuantity,
+            'capped' => $capped,
         ]);
     }
 
