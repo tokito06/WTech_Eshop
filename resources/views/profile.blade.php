@@ -24,10 +24,23 @@
                                 Admin panel
                             </a>
                         @endif
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button class="btn-logout" type="submit" onclick="return confirm('Are you sure you want to log out?')">Log out?</button>
-                        </form>
+                        <button
+                            class="btn-logout"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#logoutConfirmModal"
+                        >
+                            Log out?
+                        </button>
+
+                        <x-pop-out-modal
+                            modal-id="logoutConfirmModal"
+                            title="Are you sure?"
+                            message="Are you sure you want to log out? You will need to sign in again to access your profile."
+                            action="{{ route('logout') }}"
+                            confirm-text="Log Out"
+                            confirm-class="btn btn-danger"
+                        />
                     </div>
                 </div>
 
