@@ -21,8 +21,14 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('shop') }}">Shop</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('search') }}">{{ ucfirst($product->sex ?? 'All') }}</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('search') }}">{{ $product?->category?->name ?? 'Products' }}</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('search', ['sex' => $product->sex]) }}">{{ ucfirst($product->sex ?? 'All') }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('search', array_filter(['sex' => $product->sex, 'category_id' => $product->category_id])) }}">
+                        {{ $product?->category?->name ?? 'Products' }}
+                    </a>
+                </li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $product->name ?? 'Product' }}</li>
             </ol>
         </nav>
