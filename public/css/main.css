@@ -387,13 +387,37 @@ footer a:hover { opacity: 0.6; }
 
 /* Responsive */
 @media (max-width: 575px) {
-    .navbar { 
+    .navbar {
         padding: 0 16px;
         min-height: 60px;
     }
 
+    .navbar .container-fluid {
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: 10px;
+    }
+
+    .navbar-brand {
+        order: 1;
+    }
+
+    .navbar .container-fluid > .d-flex:last-child {
+        order: 2;
+        margin-left: auto;
+    }
+
     .navbar-search-wrap {
+        order: 3;
+        flex: 1 1 100%;
+        width: 100%;
         max-width: 100%;
+        margin-inline: 0;
         transform: none;
+    }
+
+    .navbar-search {
+        width: 100%;
+        margin-bottom: 8px;
     }
 }
