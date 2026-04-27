@@ -17,7 +17,7 @@ Route::get('/shop', [CatalogController::class, 'shop'])->name('shop');
 Route::get('/search', [CatalogController::class, 'search'])->name('search');
 Route::get('/product/{product?}', [UserProductController::class, 'show'])->name('product');
 
-Route::view('/cart', 'cart')->name('cart');
+Route::get('/cart', [CartController::class, 'show'])->name('cart');
 Route::get('/api/cart', [CartController::class, 'index'])->name('cart.get');
 Route::post('/api/cart/add', [CartController::class, 'store'])->name('cart.add');
 Route::put('/api/cart/item/{item}', [CartController::class, 'update'])->name('cart.update');

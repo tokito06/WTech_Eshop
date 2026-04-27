@@ -8,9 +8,23 @@ use App\Models\CartItem;
 use App\Models\ProductVariant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CartController extends Controller
 {
+    public function show(Request $request): View
+    {
+        $cart = $this->resolveCart($request);
+        $cart->load([
+            'items.variant.product.images',
+        ]);
+
+        return view('cart', [
+            'cart' => $cart,
+            'items' => $cart->items,
+        ]);
+    }
+
     public function index(Request $request): JsonResponse
     {
         $cart = $this->resolveCart($request);

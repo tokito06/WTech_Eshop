@@ -23,6 +23,11 @@
 <main class="cart-section">
     <div class="container">
 
+        @php
+            $cartItems = $items ?? collect();
+            $itemsTotal = $cart?->total ?? 0;
+        @endphp
+
         <div class="cart-title">
             <span class="material-symbols-outlined">shopping_cart</span>
             <h1>Cart</h1>
@@ -33,12 +38,62 @@
             <!-- Goods list -->
             <section class="col-12 col-lg-8">
 
-                <div class="cart-empty" id="cart-empty">
+                <div class="cart-empty" id="cart-empty" style="{{ $cartItems->isEmpty() ? '' : 'display: none;' }}">
                     <span class="material-symbols-outlined">shopping_cart</span>
                     <p>Your cart is empty</p>
                 </div>
 
-                <div id="cart-items-list"></div>
+                <div id="cart-items-list">
+                    @if($cartItems->isNotEmpty())
+                        <h2 class="cart-items__title">Items</h2>
+                        @foreach($cartItems as $item)
+                            @php
+                                $product = $item->variant?->product;
+                                $image = $product?->images?->first()?->url ?? asset('images/image_1.jpg');
+                                $size = $item->variant?->symbol ?? 'N/A';
+                                $price = (float) ($item->amount ?? 0);
+                                $inventory = (int) ($item->variant?->inventory ?? 0);
+                                $quantityLimit = $inventory > 0 ? min(99, $inventory) : 99;
+                                $quantityMaxLength = strlen((string) $quantityLimit);
+                            @endphp
+                            <div class="cart-item" data-id="{{ $item->id }}">
+                                <label class="cart-item__checkbox">
+                                    <input type="checkbox" aria-label="Select item">
+                                    <span class="cart-item__checkbox-box"></span>
+                                </label>
+                                <a class="cart-item__link" href="{{ $product ? route('product', ['product' => $product->id]) : route('product') }}" aria-label="View {{ $product?->name ?? 'product' }}">
+                                    <div class="cart-item__image">
+                                        <img class="img__container" src="{{ $image }}" alt="{{ $product?->name ?? 'Product' }} image">
+                                    </div>
+                                    <div class="cart-item__info">
+                                        <h3>{{ $product?->name ?? 'Product' }}</h3>
+                                        <p>{{ $product?->description ?? '' }}</p>
+                                        <div class="cart-item__meta">
+                                            <span class="cart-item__size-badge">{{ $size }}</span>
+                                            <span class="cart-item__price">{{ number_format($price, 2, '.', '') }} €</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="cart-item__controls">
+                                    <button type="button" class="cart-item__ctrl-btn" data-action="dec" aria-label="Decrease">−</button>
+                                    <input
+                                        class="cart-item__count-input"
+                                        type="text"
+                                        maxlength="{{ $quantityMaxLength }}"
+                                        inputmode="numeric"
+                                        value="{{ $item->quantity }}"
+                                        data-max="{{ $quantityLimit }}"
+                                        aria-label="Quantity for {{ $product?->name ?? 'product' }}"
+                                    >
+                                    <button type="button" class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
+                                </div>
+                                <button class="cart-item__delete" aria-label="Remove item" title="Remove">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
             </section>
 
             <!-- Cart summary -->
@@ -48,7 +103,7 @@
                     <div class="cart-summary__amounts">
                         <div class="cart-summary__amount">
                             <span>Items amount</span>
-                            <span id="summary-items">0.00 €</span>
+                            <span id="summary-items">{{ number_format($itemsTotal, 2, '.', '') }} €</span>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Delivery</span>
@@ -56,10 +111,10 @@
                         </div>
                         <div class="cart-summary__amount">
                             <span>Total</span>
-                            <strong class="cart-summary__total" id="summary-total">0.00 €</strong>
+                            <strong class="cart-summary__total" id="summary-total">{{ number_format($itemsTotal, 2, '.', '') }} €</strong>
                         </div>
                     </div>
-                    <a href="{{ route('checkout') }}" class="cart-summary__btn cart-summary__btn--disabled" id="checkout-btn">Go to checkout</a>
+                    <a href="{{ route('checkout') }}" class="cart-summary__btn {{ $cartItems->isEmpty() ? 'cart-summary__btn--disabled' : '' }}" id="checkout-btn">Go to checkout</a>
                 </div>
             </section>
 
@@ -87,6 +142,7 @@
     const cartStockToastMessage = document.getElementById('cart-stock-toast-message');
     const cartUpdateUrlTemplate = '{{ route('cart.update', ['item' => '__ITEM_ID__']) }}';
     const cartRemoveUrlTemplate = '{{ route('cart.remove', ['item' => '__ITEM_ID__']) }}';
+    const initialCartItems = @json($cartItems->values());
 
     function formatPrice(value) {
         return Number(value || 0).toFixed(2) + ' €';
@@ -141,68 +197,14 @@
         emptyState.style.display = cartState.items.length ? 'none' : 'flex';
         const checkoutBtn = document.getElementById('checkout-btn');
         if (checkoutBtn) checkoutBtn.classList.toggle('cart-summary__btn--disabled', !cartState.items.length);
-    }
-
-    function renderCart() {
-        if (!cartState.items.length) {
-            cartList.innerHTML = '';
-            updateSummary();
-            return;
+        const title = cartList.querySelector('.cart-items__title');
+        if (!cartState.items.length && title) {
+            title.remove();
         }
-
-        const cards = cartState.items.map(item => {
-            const product = item.variant?.product;
-            const image = product?.images?.[0]?.url || '{{ asset('images/image_1.jpg') }}';
-            const size = item.variant?.symbol || 'N/A';
-            const price = Number(item.amount || 0);
-            const quantityLimit = getQuantityLimit(item);
-            return `
-                <div class="cart-item" data-id="${item.id}">
-                    <label class="cart-item__checkbox">
-                        <input type="checkbox" aria-label="Select item">
-                        <span class="cart-item__checkbox-box"></span>
-                    </label>
-                    <div class="cart-item__image">
-                        <img class="img__container" src="${image}" alt="Cart product image">
-                    </div>
-                    <div class="cart-item__info">
-                        <h3>${product?.name ?? 'Product'}</h3>
-                        <p>${product?.description ?? ''}</p>
-                        <div class="cart-item__meta">
-                            <span class="cart-item__size-badge">${size}</span>
-                            <span class="cart-item__price">${formatPrice(price)}</span>
-                        </div>
-                    </div>
-                    <div class="cart-item__controls">
-                        <button type="button" class="cart-item__ctrl-btn" data-action="dec" aria-label="Decrease">−</button>
-                        <input
-                            class="cart-item__count-input"
-                            type="text"
-                            maxlength="${String(quantityLimit).length}"
-                            inputmode="numeric"
-                            value="${item.quantity}"
-                            data-max="${quantityLimit}"
-                            aria-label="Quantity for ${product?.name ?? 'product'}"
-                        >
-                        <button type="button" class="cart-item__ctrl-btn" data-action="inc" aria-label="Increase">+</button>
-                    </div>
-                    <button class="cart-item__delete" aria-label="Remove item" title="Remove">
-                        <span class="material-symbols-outlined">delete</span>
-                    </button>
-                </div>
-            `;
-        }).join('');
-
-        cartList.innerHTML = `<h2 class="cart-items__title">Items</h2>${cards}`;
-        updateSummary();
     }
 
-    async function loadCart() {
-        const response = await fetch('{{ route('cart.get') }}');
-        const data = await response.json();
-        cartState.items = hydrateCartItems(data.items);
-        renderCart();
-    }
+    cartState.items = hydrateCartItems(initialCartItems);
+    updateSummary();
 
     async function syncQuantity(itemId, quantity) {
         const response = await fetch(cartUpdateUrlTemplate.replace('__ITEM_ID__', encodeURIComponent(itemId)), {
@@ -316,7 +318,8 @@
             try {
                 await removeItem(itemId);
                 cartState.items = cartState.items.filter(i => i.id !== itemId);
-                renderCart();
+                card.remove();
+                updateSummary();
             } catch (error) {
                 alert(error.message);
             }
@@ -366,8 +369,5 @@
         quantityInput.blur();
     });
 
-    loadCart().catch(() => {
-        emptyState.style.display = 'flex';
-    });
 </script>
 @endsection
