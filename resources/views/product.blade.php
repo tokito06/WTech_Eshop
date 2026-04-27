@@ -13,6 +13,9 @@
         $gallery = collect([(object) ['url' => asset('images/image_1.jpg')]]);
     }
     $firstVariant = $product?->variants?->first();
+    $isFavourited = auth()->check()
+        ? (bool) ($product?->is_favourited ?? $product?->isFavouritedBy(auth()->user()))
+        : false;
 @endphp
 <!-- Breadcrumb -->
 <div class="breadcrumb-bar">
@@ -109,7 +112,16 @@
                     </div>
 
                     <div class="product__actions">
-                        <button class="product__fav" title="Add to favourites">♡</button>
+                        <button
+                            class="product__fav {{ $isFavourited ? 'liked' : '' }}"
+                            title="{{ $isFavourited ? 'Remove from favourites' : 'Add to favourites' }}"
+                            data-favourite-toggle
+                            data-product-id="{{ $product->id }}"
+                            data-favourited="{{ $isFavourited ? '1' : '0' }}"
+                            aria-label="{{ $isFavourited ? 'Remove from favourites' : 'Add to favourites' }}"
+                        >
+                            <span class="material-symbols-outlined">{{ $isFavourited ? 'favorite' : 'favorite_border' }}</span>
+                        </button>
                         <button class="product__add" id="add-to-bag" data-variant-id="{{ $variantId ?? '' }}">Add to bag</button>
                     </div>
                 </div>

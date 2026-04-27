@@ -264,7 +264,17 @@
     cursor: pointer;
     font-size: clamp(18px, 1.8vw, 30px);
     flex-shrink: 0;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.product__fav.liked {
+    background-color: #e05555;
+    color: #fff;
+}
+
+.product__fav.liked .material-symbols-outlined {
+    color: #fff;
+    font-variation-settings: 'FILL' 0;
 }
 
 .product__add {

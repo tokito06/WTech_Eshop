@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     @yield('extra-css')
 </head>
-<body>
+<body data-auth="{{ auth()->check() ? '1' : '0' }}" data-login-url="{{ route('login') }}" data-favourite-url="{{ route('favourites.toggle') }}">
 
 <!-- Header -->
 <nav class="navbar">
@@ -65,6 +65,58 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('click', async event => {
+        const toggleBtn = event.target.closest('[data-favourite-toggle]');
+        if (!toggleBtn) return;
+
+        const body = document.body;
+        const isAuthed = body.dataset.auth === '1';
+        if (!isAuthed) {
+            window.location.href = body.dataset.loginUrl || '/login';
+            return;
+        }
+
+        const productId = toggleBtn.dataset.productId;
+        const toggleUrl = body.dataset.favouriteUrl;
+        if (!productId || !toggleUrl) return;
+
+        try {
+            const response = await fetch(toggleUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({ product_id: productId }),
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error('Unable to update favourites');
+            }
+
+            const isFavourited = Boolean(data.favourited);
+            toggleBtn.dataset.favourited = isFavourited ? '1' : '0';
+            toggleBtn.classList.toggle('liked', isFavourited);
+
+            const icon = toggleBtn.querySelector('.material-symbols-outlined');
+            if (icon) {
+                icon.textContent = isFavourited ? 'favorite' : 'favorite_border';
+            }
+
+            toggleBtn.setAttribute(
+                'aria-label',
+                isFavourited ? 'Remove from favourites' : 'Add to favourites'
+            );
+            if (toggleBtn.title !== undefined) {
+                toggleBtn.title = isFavourited ? 'Remove from favourites' : 'Add to favourites';
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+</script>
 @yield('scripts')
 </body>
 </html>

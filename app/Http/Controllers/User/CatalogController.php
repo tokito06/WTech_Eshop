@@ -66,6 +66,12 @@ class CatalogController extends Controller
         $query = Product::query()
             ->with(['images', 'variants'])
             ->where('status', 'active')
+            ->when($request->user(), function (Builder $query) use ($request) {
+                $query->withExists([
+                    'favouritedBy as is_favourited' => fn (Builder $favQuery) => $favQuery
+                        ->where('user_id', $request->user()->id),
+                ]);
+            })
             ->when($request->filled('q'), function ($query) use ($request) {
                 $term = trim((string) $request->query('q'));
 
