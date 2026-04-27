@@ -34,49 +34,17 @@
                 </div>
 
                 <div class="delivery-services" id="delivery-services">
+                    @foreach($deliveryMethods as $method)
                     <label class="service-card">
-                        <input type="radio" name="delivery-service" value="slovenska-posta">
-                        <span class="service-card__icon">🇸🇰</span>
-                        <span class="service-card__name">Slovenská pošta</span>
-                        <span class="service-card__desc">Post office pickup</span>
+                        <input type="radio" name="delivery_method_id" value="{{ $method->id }}">
+                        <span class="service-card__name">{{ $method->name }}</span>
+                        <span class="service-card__desc">{{ $method->brief }}</span>
                         <span class="service-card__meta">
-                            <span class="service-card__time"><span class="material-symbols-outlined">schedule</span>3-5 days</span>
-                            <span class="service-card__price">Free</span>
+                            <span class="service-card__time"><span class="material-symbols-outlined">schedule</span>{{ $method->expected_time }}-{{ $method->expected_time + 2 }} days</span>
+                            <span class="service-card__price">{{ $method->price == 0 ? 'Free' : 'from ' . number_format($method->price, 2) . ' €' }}</span>
                         </span>
                     </label>
-
-                    <label class="service-card">
-                        <input type="radio" name="delivery-service" value="packeta">
-                        <span class="service-card__icon">📦</span>
-                        <span class="service-card__name">Packeta</span>
-                        <span class="service-card__desc">Pickup point / home delivery</span>
-                        <span class="service-card__meta">
-                            <span class="service-card__time"><span class="material-symbols-outlined">schedule</span>2-3 days</span>
-                            <span class="service-card__price">from 1.99 €</span>
-                        </span>
-                    </label>
-
-                    <label class="service-card">
-                        <input type="radio" name="delivery-service" value="gls">
-                        <span class="service-card__icon">🚚</span>
-                        <span class="service-card__name">GLS Slovakia</span>
-                        <span class="service-card__desc">Courier to door</span>
-                        <span class="service-card__meta">
-                            <span class="service-card__time"><span class="material-symbols-outlined">schedule</span>1-2 days</span>
-                            <span class="service-card__price">from 2.99 €</span>
-                        </span>
-                    </label>
-
-                    <label class="service-card">
-                        <input type="radio" name="delivery-service" value="dhl">
-                        <span class="service-card__icon">✈️</span>
-                        <span class="service-card__name">DHL Express</span>
-                        <span class="service-card__desc">Express courier</span>
-                        <span class="service-card__meta">
-                            <span class="service-card__time"><span class="material-symbols-outlined">schedule</span>1-2 days</span>
-                            <span class="service-card__price">9.99 €</span>
-                        </span>
-                    </label>
+                    @endforeach
                 </div>
 
                 <p class="delivery-services__error" id="service-error">Please select a delivery service.</p>
@@ -89,17 +57,16 @@
                 <form class="delivery-form" id="delivery-form" action="{{ route('delivery.store') }}" method="POST" novalidate>
                     @csrf
                     <div class="delivery-form__row">
-                        <input class="delivery-input" type="text" id="name" placeholder="First name" required>
-                        <input class="delivery-input" type="text" id="surname" placeholder="Last name" required>
+                        <input class="delivery-input" type="text" id="name" name="first_name" placeholder="First name" required>
+                        <input class="delivery-input" type="text" id="surname" name="last_name" placeholder="Last name" required>
                     </div>
-                    <input class="delivery-input" type="email" id="email" placeholder="Email address" required>
-                    <input class="delivery-input" type="tel" id="phone" name="phone" placeholder="Phone number" required inputmode="tel">
-                    <input class="delivery-input" type="text" id="street" placeholder="Street and house number" required>
+                    <input class="delivery-input" type="tel" id="phone" name="phone_number" placeholder="Phone number" required inputmode="tel">
+                    <input class="delivery-input" type="text" id="street" name="street" placeholder="Street and house number" required>
                     <div class="delivery-form__row">
-                        <input class="delivery-input" type="text" id="city" placeholder="City" required>
-                        <input class="delivery-input" type="text" id="zip" placeholder="ZIP code" required inputmode="numeric">
+                        <input class="delivery-input" type="text" id="city" name="city" placeholder="City" required>
+                        <input class="delivery-input" type="text" id="zip" name="post_code" placeholder="ZIP code" required inputmode="numeric">
                     </div>
-                    <input class="delivery-input" type="text" id="country" placeholder="Country" required>
+                    <input class="delivery-input" type="text" id="country" name="country" placeholder="Country" required>
                 </form>
             </section>
 
