@@ -117,6 +117,44 @@
                 </div>
             </div>
 
+            <!-- Live preview -->
+            <div class="col-12 col-lg-3">
+                <div class="add-product-preview">
+                    <h3 class="add-product-preview__title">Preview</h3>
+                    <div class="add-product-preview__photo" id="preview-photo">
+                        <span class="add-product-preview__placeholder">No photo</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Name</span>
+                        <span class="add-product-preview__value" id="preview-name">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Description</span>
+                        <span class="add-product-preview__value" id="preview-description">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Category</span>
+                        <span class="add-product-preview__value" id="preview-category">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Audience</span>
+                        <span class="add-product-preview__value" id="preview-sex">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Brand</span>
+                        <span class="add-product-preview__value" id="preview-brand">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Price</span>
+                        <span class="add-product-preview__value" id="preview-price">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Sizes</span>
+                        <span class="add-product-preview__value" id="preview-sizes">—</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
         </form>
     </div>
@@ -124,18 +162,72 @@
 @endsection
 
 @section('scripts')
-<style>
-.add-product-select {
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-}
-</style>
 <script>
     const photoDrop    = document.getElementById('photo-drop');
     const photoInput   = document.getElementById('photo-input');
     const photoPreview = document.getElementById('photo-preview');
     const photoLabel   = document.getElementById('photo-label');
+
+    const previewPhotoWrap = document.getElementById('preview-photo');
+    const previewName = document.getElementById('preview-name');
+    const previewDescription = document.getElementById('preview-description');
+    const previewCategory = document.getElementById('preview-category');
+    const previewSex = document.getElementById('preview-sex');
+    const previewBrand = document.getElementById('preview-brand');
+    const previewPrice = document.getElementById('preview-price');
+    const previewSizes = document.getElementById('preview-sizes');
+
+    const nameInput = document.querySelector('input[name="name"]');
+    const descriptionInput = document.querySelector('textarea[name="description"]');
+    const categorySelect = document.querySelector('select[name="category_id"]');
+    const sexSelect = document.querySelector('select[name="sex"]');
+    const brandSelect = document.querySelector('select[name="brand_id"]');
+    const priceInput = document.querySelector('input[name="price"]');
+
+    function syncPreviewText(el, value) {
+        if (!el) return;
+        el.textContent = value && value.trim() ? value.trim() : '—';
+    }
+
+    function syncSelectText(el, select) {
+        if (!el || !select) return;
+        const option = select.selectedOptions[0];
+        const text = option && option.value ? option.textContent.trim() : '';
+        el.textContent = text || '—';
+    }
+
+    function syncSizes() {
+        const inputs = document.querySelectorAll('input[name^="inventory["]');
+        const selected = [];
+        inputs.forEach(input => {
+            const size = input.name.match(/inventory\[(.*)\]/)?.[1];
+            const value = parseInt(input.value, 10) || 0;
+            if (size && value > 0) {
+                selected.push(size);
+            }
+        });
+        previewSizes.textContent = selected.length ? selected.join(', ') : '—';
+    }
+
+    function syncPreview() {
+        syncPreviewText(previewName, nameInput?.value || '');
+        syncPreviewText(previewDescription, descriptionInput?.value || '');
+        syncSelectText(previewCategory, categorySelect);
+        syncSelectText(previewSex, sexSelect);
+        syncSelectText(previewBrand, brandSelect);
+        const price = priceInput?.value ? `${Number(priceInput.value).toFixed(2)} €` : '';
+        previewPrice.textContent = price || '—';
+        syncSizes();
+    }
+
+    [nameInput, descriptionInput, categorySelect, sexSelect, brandSelect, priceInput].forEach(el => {
+        el?.addEventListener('input', syncPreview);
+        el?.addEventListener('change', syncPreview);
+    });
+
+    document.querySelectorAll('input[name^="inventory["]').forEach(input => {
+        input.addEventListener('input', syncSizes);
+    });
 
     photoDrop.addEventListener('click', () => photoInput.click());
     photoDrop.addEventListener('dragover', e => { e.preventDefault(); photoDrop.classList.add('drag-over'); });
@@ -155,6 +247,13 @@
         photoPreview.src = URL.createObjectURL(file);
         photoPreview.style.display = 'block';
         photoLabel.style.display = 'none';
+
+        const img = document.createElement('img');
+        img.src = photoPreview.src;
+        previewPhotoWrap.innerHTML = '';
+        previewPhotoWrap.appendChild(img);
     }
+
+    syncPreview();
 </script>
 @endsection

@@ -141,6 +141,69 @@
 .add-product-btn:hover  { opacity: 0.8; }
 .add-product-btn:active { transform: scale(0.99); }
 
+/* Select and Preview */
+.add-product-select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.add-product-preview {
+    background: var(--white-color);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(18, 20, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.add-product-preview__title {
+    margin: 0;
+    font-size: clamp(1rem, 1.2vw, 1.3rem);
+    font-weight: 700;
+}
+
+.add-product-preview__photo {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    background: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.add-product-preview__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.add-product-preview__placeholder {
+    color: var(--dark-gray-color);
+}
+
+.add-product-preview__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
+}
+
+.add-product-preview__label {
+    color: var(--dark-gray-color);
+    font-weight: 600;
+}
+
+.add-product-preview__value {
+    text-align: right;
+    font-weight: 600;
+    color: #000;
+    max-width: 60%;
+}
+
 /* Responsive */
 @media (max-width: 575px) {
     .add-product-input--vendor { width: 100%; }
