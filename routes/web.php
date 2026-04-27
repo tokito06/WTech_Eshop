@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\CatalogController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\ProductController as UserProductController;
+use App\Http\Controllers\User\FavouriteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -53,7 +54,10 @@ Route::get('/order-success', function () {
 })->name('order.success');
 
 Route::middleware('auth')->group(function () {
-    Route::view('/favourites', 'favourites')->name('favourites');
+    Route::get('/favourites', [FavouriteController::class, 'index'])->name('favourites');
+    Route::post('/api/favourites/toggle', [FavouriteController::class, 'toggle'])->name('favourites.toggle');
+    Route::delete('/api/favourites/{product}', [FavouriteController::class, 'destroy'])->name('favourites.remove');
+  
     Route::view('/profile', 'profile')->name('profile');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
