@@ -187,6 +187,13 @@
     const previewNext = document.getElementById('preview-next');
     const previewImage = document.getElementById('preview-image');
     const previewPlaceholder = document.getElementById('preview-placeholder');
+    const previewName = document.getElementById('preview-name');
+    const previewDescription = document.getElementById('preview-description');
+    const previewCategory = document.getElementById('preview-category');
+    const previewSex = document.getElementById('preview-sex');
+    const previewBrand = document.getElementById('preview-brand');
+    const previewPrice = document.getElementById('preview-price');
+    const previewSizes = document.getElementById('preview-sizes');
 
     const nameInput = document.querySelector('input[name="name"]');
     const descriptionInput = document.querySelector('textarea[name="description"]');
