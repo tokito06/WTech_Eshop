@@ -274,6 +274,7 @@
     font-weight: 800;
 }
 .cart-summary__btn:hover { background-color: var(--highlight-dark-color); }
+.cart-summary__btn--disabled { opacity: 0.45; pointer-events: none; cursor: default; }
 
 /* Empty cart */
 .cart-empty {

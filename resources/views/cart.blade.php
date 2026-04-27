@@ -59,7 +59,7 @@
                             <strong class="cart-summary__total" id="summary-total">0.00 €</strong>
                         </div>
                     </div>
-                    <a href="{{ route('delivery') }}" class="cart-summary__btn">Go to checkout</a>
+                    <a href="{{ route('checkout') }}" class="cart-summary__btn cart-summary__btn--disabled" id="checkout-btn">Go to checkout</a>
                 </div>
             </section>
 
@@ -139,6 +139,8 @@
         document.getElementById('summary-items').textContent = formatPrice(total);
         document.getElementById('summary-total').textContent = formatPrice(total);
         emptyState.style.display = cartState.items.length ? 'none' : 'flex';
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (checkoutBtn) checkoutBtn.classList.toggle('cart-summary__btn--disabled', !cartState.items.length);
     }
 
     function renderCart() {
