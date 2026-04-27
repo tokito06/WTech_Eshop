@@ -114,7 +114,10 @@
                             <strong class="cart-summary__total">100.99 €</strong>
                         </div>
                     </div>
-                    <button class="cart-summary__btn" id="pay-btn">Pay</button>
+                    <form id="order-form" action="{{ route('order.store') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="cart-summary__btn" id="pay-btn">Pay</button>
+                    </form>
                 </div>
             </section>
 
@@ -151,8 +154,5 @@
         this.value = this.value.replace(/\D/g, '').substring(0, 4);
     });
 
-    document.getElementById('pay-btn').addEventListener('click', () => {
-        window.location.href = '{{ route('order.success') }}';
-    });
 </script>
 @endsection
