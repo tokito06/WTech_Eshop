@@ -68,8 +68,7 @@
             const response = await fetch(removeUrl, {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-                },
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,                },
             });
 
             if (!response.ok) {

@@ -10,7 +10,7 @@
     $price = $product->variants->min('price') ?? 0;
     $isOutOfStock = ((int) $product->variants->sum('inventory')) <= 0;
     $isFavourited = auth()->check()
-        ? (bool) ($product->is_favourited ?? $product->isFavouritedBy(auth()->user()))
+        ? (bool) ($product->is_favourited ?? false)
         : false;
 @endphp
 

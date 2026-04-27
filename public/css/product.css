@@ -278,7 +278,7 @@
 
 .product__fav.liked .material-symbols-outlined {
     color: #fff;
-    font-variation-settings: 'FILL' 0;
+    font-variation-settings: 'FILL' 1;
 }
 
 .product__add {

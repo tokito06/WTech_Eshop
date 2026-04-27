@@ -29,20 +29,12 @@ class FavouriteController extends Controller
 
         $user = $request->user();
         $productId = $data['product_id'];
-
-        $alreadyFavourited = $user->favourites()
-            ->where('product_id', $productId)
-            ->exists();
-
-        if ($alreadyFavourited) {
-            $user->favourites()->detach($productId);
-        } else {
-            $user->favourites()->attach($productId, ['added_at' => now()]);
-        }
-
+        $changes = $user->favourites()->toggle([
+            $productId => ['added_at' => now()],
+        ]);
         return response()->json([
             'success' => true,
-            'favourited' => !$alreadyFavourited,
+            'favourited' => in_array($productId, $changes['attached'], true),
         ]);
     }
 
