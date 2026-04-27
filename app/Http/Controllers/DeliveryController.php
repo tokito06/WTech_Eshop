@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeliveryStoreRequest;
 use App\Models\DeliveryInformation;
 use App\Models\DeliveryMethod;
 use Illuminate\Http\RedirectResponse;
@@ -17,20 +18,9 @@ class DeliveryController extends Controller
         return view('delivery', compact('deliveryMethods'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(DeliveryStoreRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'delivery_method_id' => ['required', 'uuid', 'exists:delivery_methods,id'],
-            'first_name'         => ['required', 'string', 'max:50'],
-            'last_name'          => ['required', 'string', 'max:50'],
-            'phone_number'       => ['required', 'string', 'max:20'],
-            'street'             => ['required', 'string', 'max:255'],
-            'city'               => ['required', 'string', 'max:100'],
-            'post_code'          => ['required', 'string', 'max:50'],
-            'country'            => ['required', 'string', 'max:100'],
-            'province'           => ['nullable', 'string', 'max:100'],
-            'house'              => ['nullable', 'string', 'max:50'],
-        ]);
+        $data = $request->validated();
 
         $userId = $request->user()?->id;
         $sessionId = $userId ? null : $request->session()->getId();

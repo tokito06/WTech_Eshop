@@ -56,6 +56,7 @@
 
                 <form class="delivery-form" id="delivery-form" action="{{ route('delivery.store') }}" method="POST" novalidate>
                     @csrf
+                    <input type="hidden" id="delivery-method-id" name="delivery_method_id">
                     <div class="delivery-form__row">
                         <input class="delivery-input" type="text" id="name" name="first_name" placeholder="First name" required>
                         <input class="delivery-input" type="text" id="surname" name="last_name" placeholder="Last name" required>
@@ -99,11 +100,14 @@
 
 @section('scripts')
 <script>
+    const deliveryMethodField = document.getElementById('delivery-method-id');
+
     document.querySelectorAll('.service-card input[type="radio"]').forEach(radio => {
         radio.addEventListener('change', () => {
             document.querySelectorAll('.service-card').forEach(c => c.classList.remove('service-card--selected'));
             radio.closest('.service-card').classList.add('service-card--selected');
             document.getElementById('service-error').classList.remove('delivery-services__error--visible');
+            deliveryMethodField.value = radio.value;
         });
     });
 
@@ -112,6 +116,10 @@
         const inputs = form.querySelectorAll('input[required]');
         const serviceChosen = document.querySelector('.service-card input[type="radio"]:checked');
         let valid = true;
+
+        if (serviceChosen) {
+            deliveryMethodField.value = serviceChosen.value;
+        }
 
         if (!serviceChosen) {
             document.getElementById('service-error').classList.add('delivery-services__error--visible');
