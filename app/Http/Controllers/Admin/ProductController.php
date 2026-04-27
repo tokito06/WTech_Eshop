@@ -55,7 +55,8 @@ class ProductController extends Controller
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'sex'         => ['required', 'in:men,women,kids,unisex'],
             'price'       => ['required', 'numeric', 'min:0'],
-            'image'       => ['nullable', 'image', 'max:4096'],
+            'images'      => ['nullable', 'array'],
+            'images.*'    => ['image', 'max:4096'],
             'inventory'   => ['nullable', 'array'],
             'inventory.*' => ['nullable', 'integer', 'min:0'],
         ]);
@@ -69,14 +70,20 @@ class ProductController extends Controller
             'status'      => 'active',
         ]);
 
-        if ($request->hasFile('image')) {
-            $path  = $request->file('image')->store('products', 'public');
-            $image = Image::create([
-                'name'     => $product->name,
-                'path'     => $path,
-                'position' => 0,
-            ]);
-            $product->images()->attach($image->id);
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $file) {
+                if (!$file) {
+                    continue;
+                }
+
+                $path  = $file->store('products', 'public');
+                $image = Image::create([
+                    'name'     => $product->name,
+                    'path'     => $path,
+                    'position' => $index,
+                ]);
+                $product->images()->attach($image->id);
+            }
         }
 
         foreach (self::SIZES as $symbol) {
