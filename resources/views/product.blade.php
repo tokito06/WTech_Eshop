@@ -21,8 +21,14 @@
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('shop') }}">Shop</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('search') }}">{{ ucfirst($product->sex ?? 'All') }}</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('search') }}">{{ $product?->category?->name ?? 'Products' }}</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('search', ['sex' => $product->sex]) }}">{{ ucfirst($product->sex ?? 'All') }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('search', array_filter(['sex' => $product->sex, 'category_id' => $product->category_id])) }}">
+                        {{ $product?->category?->name ?? 'Products' }}
+                    </a>
+                </li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $product->name ?? 'Product' }}</li>
             </ol>
         </nav>
@@ -113,19 +119,24 @@
     </div>
 </main>
 
-<!-- Toast -->
-<div class="toast-container product-toast">
-    <div id="cartToast" class="toast align-items-center border-0" role="alert" aria-live="assertive">
-        <div class="product-toast__content product-toast__row">
-            <span class="material-symbols-outlined">shopping_cart</span>
-            <div>
-                <span>Cart update: <strong id="toast-qty">1</strong> item(s)</span>
-                <small id="toast-note" class="product-toast__note"></small>
-            </div>
-            <button type="button" class="btn-close product-toast__close" data-bs-dismiss="toast" aria-label="Close"></button>
+<x-pop-out-modal
+    modal-id="cartToastModal"
+    title="Cart update"
+    footer-class="justify-content-center"
+>
+    <div class="d-flex align-items-center gap-3">
+        <span class="material-symbols-outlined fs-2">shopping_cart</span>
+        <div>
+            <div>Cart update: <strong id="toast-qty">1</strong> item(s)</div>
+            <small id="toast-note" class="text-muted d-block"></small>
         </div>
     </div>
-</div>
+
+    <x-slot:buttons>
+        <a href="{{ route('cart') }}" class="btn btn-outline-secondary">Go to cart</a>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+    </x-slot:buttons>
+</x-pop-out-modal>
 @endsection
 
 @section('scripts')
@@ -150,15 +161,23 @@
     const sizeSelect = document.getElementById('product-size');
     const priceEl = document.getElementById('product-price');
     const addBtn   = document.getElementById('add-to-bag');
-    const toastEl = document.getElementById('cartToast');
+    const modalEl = document.getElementById('cartToastModal');
     const toastQtyEl = document.getElementById('toast-qty');
     const toastNoteEl = document.getElementById('toast-note');
+    let cartModalTimer = null;
 
     function showCartToast(quantity, note = '') {
         toastQtyEl.textContent = String(Math.max(0, Number(quantity) || 0));
         toastNoteEl.textContent = note;
 
-        bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 2500 }).show();
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+
+        if (cartModalTimer) {
+            clearTimeout(cartModalTimer);
+        }
+
+        cartModalTimer = setTimeout(() => modal.hide(), 2500);
     }
 
     function setQty(val) {
