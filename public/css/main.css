@@ -402,7 +402,7 @@ footer a:hover { opacity: 0.6; }
         order: 1;
     }
 
-    .navbar .container-fluid > .d-flex:last-child {
+    .navbar .container-fluid > .d-flex {
         order: 2;
         margin-left: auto;
     }
