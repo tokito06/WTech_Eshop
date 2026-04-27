@@ -4,10 +4,12 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\CatalogController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\ProductController as UserProductController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -15,21 +17,43 @@ Route::get('/shop', [CatalogController::class, 'shop'])->name('shop');
 Route::get('/search', [CatalogController::class, 'search'])->name('search');
 Route::get('/product/{product?}', [UserProductController::class, 'show'])->name('product');
 
-Route::middleware('auth')->group(function () {
-    Route::view('/cart', 'cart')->name('cart');
-    Route::get('/api/cart', [CartController::class, 'index'])->name('cart.get');
-    Route::post('/api/cart/add', [CartController::class, 'store'])->name('cart.add');
-    Route::put('/api/cart/item/{item}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/api/cart/item/{item}', [CartController::class, 'destroy'])->name('cart.remove');
+Route::view('/cart', 'cart')->name('cart');
+Route::get('/api/cart', [CartController::class, 'index'])->name('cart.get');
+Route::post('/api/cart/add', [CartController::class, 'store'])->name('cart.add');
+Route::put('/api/cart/item/{item}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/api/cart/item/{item}', [CartController::class, 'destroy'])->name('cart.remove');
 
+Route::get('/checkout', function () {
+    return Auth::check()
+        ? redirect()->route('delivery')
+        : view('checkout-choice');
+})->name('checkout');
+
+Route::get('/checkout/to-login', function () {
+    session()->put('url.intended', route('delivery'));
+    return redirect()->route('login');
+})->name('checkout.to-login');
+
+Route::get('/checkout/to-register', function () {
+    session()->put('url.intended', route('delivery'));
+    return redirect()->route('register');
+})->name('checkout.to-register');
+
+Route::get('/delivery', [DeliveryController::class, 'create'])->name('delivery');
+Route::post('/delivery', [DeliveryController::class, 'store'])->name('delivery.store');
+Route::view('/payment', 'payment')->name('payment');
+Route::post('/order', [PaymentController::class, 'store'])->name('order.store');
+Route::get('/order-success', function () {
+    return view('order-success', [
+        'orderCode'     => session('order.code'),
+        'itemsTotal'    => session('order.items_total'),
+        'deliveryPrice' => session('order.delivery_price'),
+        'grandTotal'    => session('order.grand_total'),
+    ]);
+})->name('order.success');
+
+Route::middleware('auth')->group(function () {
     Route::view('/favourites', 'favourites')->name('favourites');
-    Route::view('/delivery', 'delivery')->name('delivery');
-    Route::post('/delivery', [DeliveryController::class, 'store'])->name('delivery.store');
-    Route::view('/payment', 'payment')->name('payment');
-    Route::view('/order-success', 'order-success')->name('order.success');
-});
-
-Route::middleware('auth')->group(function () {
     Route::view('/profile', 'profile')->name('profile');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
