@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\CartMerger;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -61,11 +62,15 @@ class RegisteredUserController extends Controller
             $userData['user_type'] = $validated['user_type'];
         }
 
+        $guestSessionId = $request->session()->getId();
+
         $user = User::create($userData);
 
         event(new Registered($user));
 
         Auth::login($user);
+
+        (new CartMerger())->merge($guestSessionId, $user);
 
         return redirect(route('home', absolute: false));
     }

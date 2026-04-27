@@ -224,11 +224,6 @@
     syncVariantSelection();
 
     addBtn.addEventListener('click', async () => {
-        @guest
-            window.location.href = '{{ route('login') }}';
-            return;
-        @endguest
-
         const variantId = addBtn.dataset.variantId;
         setQty(qtyInput.value);
         const quantity = parseInt(qtyInput.value, 10) || 1;

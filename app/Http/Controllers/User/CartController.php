@@ -8,12 +8,26 @@ use App\Models\CartItem;
 use App\Models\ProductVariant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CartController extends Controller
 {
+    public function show(Request $request): View
+    {
+        $cart = $this->resolveCart($request);
+        $cart->load([
+            'items.variant.product.images',
+        ]);
+
+        return view('cart', [
+            'cart' => $cart,
+            'items' => $cart->items,
+        ]);
+    }
+
     public function index(Request $request): JsonResponse
     {
-        $cart = $this->resolveCart((int) $request->user()->id);
+        $cart = $this->resolveCart($request);
 
         $cart->load([
             'items.variant.product.images',
@@ -32,7 +46,7 @@ class CartController extends Controller
             'quantity' => ['required', 'integer', 'min:1', 'max:99'],
         ]);
 
-        $cart = $this->resolveCart((int) $request->user()->id);
+        $cart = $this->resolveCart($request);
         $variant = ProductVariant::query()->findOrFail($data['variant_id']);
 
         $item = CartItem::query()->firstOrNew([
@@ -122,17 +136,33 @@ class CartController extends Controller
         ]);
     }
 
-    private function resolveCart(int $userId): Cart
+    private function resolveCart(Request $request): Cart
     {
-        return Cart::query()->firstOrCreate(
-            ['user_id' => $userId],
-            ['session_id' => session()->getId()]
-        );
+        if ($request->user()) {
+            return Cart::firstOrCreate(['user_id' => $request->user()->id]);
+        }
+
+        return Cart::firstOrCreate([
+            'session_id' => $request->session()->getId(),
+            'user_id' => null,
+        ]);
     }
 
     private function ensureOwnership(Request $request, CartItem $item): void
     {
-        abort_unless($item->cart && (int) $item->cart->user_id === (int) $request->user()->id, 403);
+        if ($request->user()) {
+            abort_unless(
+                $item->cart && (int) $item->cart->user_id === (int) $request->user()->id,
+                403
+            );
+        } else {
+            abort_unless(
+                $item->cart
+                && $item->cart->user_id === null
+                && $item->cart->session_id === $request->session()->getId(),
+                403
+            );
+        }
     }
 }
 

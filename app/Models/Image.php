@@ -14,6 +14,8 @@ class Image extends Model
 
     protected $fillable = ['name', 'path', 'position'];
 
+    protected $appends = ['url'];
+
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'product_images');
