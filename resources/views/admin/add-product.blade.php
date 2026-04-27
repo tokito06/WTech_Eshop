@@ -222,6 +222,9 @@
     }
 
     function syncInputFiles() {
+        if (typeof DataTransfer === 'undefined') {
+            return;
+        }
         const data = new DataTransfer();
         selectedFiles.forEach(file => data.items.add(file));
         photoInput.files = data.files;
@@ -247,22 +250,46 @@
         }
 
         thumbUrls.forEach((url, index) => {
-            const thumb = document.createElement('button');
-            thumb.type = 'button';
+            const thumb = document.createElement('div');
             thumb.className = `add-product-thumb${index === 0 ? ' active' : ''}`;
+            thumb.setAttribute('role', 'button');
+            thumb.tabIndex = 0;
+            thumb.dataset.index = String(index);
+
             const thumbImg = document.createElement('img');
             thumbImg.src = url;
             thumbImg.alt = `Uploaded photo ${index + 1}`;
             thumb.appendChild(thumbImg);
 
-            thumb.addEventListener('click', () => {
-                setPreviewByIndex(index);
-            });
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'add-product-thumb__remove';
+            removeBtn.setAttribute('aria-label', 'Remove photo');
+            removeBtn.dataset.index = String(index);
+            removeBtn.innerHTML = '<span class="material-symbols-outlined">close</span>';
+            thumb.appendChild(removeBtn);
 
             photoThumbs.appendChild(thumb);
         });
 
         setPreviewByIndex(0);
+    }
+
+    function removeFileAt(index) {
+        if (index < 0 || index >= selectedFiles.length) {
+            return;
+        }
+        selectedFiles.splice(index, 1);
+        syncInputFiles();
+        syncThumbs();
+
+        if (selectedFiles.length === 0) {
+            currentIndex = -1;
+            return;
+        }
+
+        const nextIndex = Math.min(index, selectedFiles.length - 1);
+        setPreviewByIndex(nextIndex);
     }
 
     function mergeFiles(fileList) {
@@ -279,6 +306,7 @@
 
         syncInputFiles();
         syncThumbs();
+        photoInput.value = '';
     }
 
     function setPreview(url) {
@@ -381,6 +409,41 @@
 
     previewPrev?.addEventListener('click', () => setPreviewByIndex(currentIndex - 1));
     previewNext?.addEventListener('click', () => setPreviewByIndex(currentIndex + 1));
+
+    photoThumbs?.addEventListener('click', e => {
+        const removeBtn = e.target.closest('.add-product-thumb__remove');
+        if (removeBtn) {
+            e.stopPropagation();
+            const index = Number(removeBtn.dataset.index);
+            if (!Number.isNaN(index)) {
+                removeFileAt(index);
+            }
+            return;
+        }
+
+        const thumb = e.target.closest('.add-product-thumb');
+        if (thumb) {
+            const index = Number(thumb.dataset.index);
+            if (!Number.isNaN(index)) {
+                setPreviewByIndex(index);
+            }
+        }
+    });
+
+    photoThumbs?.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' && e.key !== ' ') {
+            return;
+        }
+        const thumb = e.target.closest('.add-product-thumb');
+        if (!thumb) {
+            return;
+        }
+        e.preventDefault();
+        const index = Number(thumb.dataset.index);
+        if (!Number.isNaN(index)) {
+            setPreviewByIndex(index);
+        }
+    });
 
     syncPreview();
     syncThumbs();
