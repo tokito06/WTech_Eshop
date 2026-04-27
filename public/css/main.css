@@ -172,9 +172,13 @@ main { flex: 1; }
     z-index: 1;
 }
 .product-card__fav:hover { background-color: #ffe0f0; }
-.product-card__fav.liked { color: #e05555; }
-.product-card__fav .material-symbols-outlined {
-    font-size: clamp(14px, 1.4vw, 20px);
+.product-card__fav.liked {
+    background-color: #e05555;
+    color: #fff;
+}
+.product-card__fav.liked .material-symbols-outlined {
+    color: #fff;
+    font-variation-settings: 'FILL' 1;
 }
 
 .product-card__body {

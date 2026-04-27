@@ -9,11 +9,20 @@
     $variants = $product->variants->take(4);
     $price = $product->variants->min('price') ?? 0;
     $isOutOfStock = ((int) $product->variants->sum('inventory')) <= 0;
+    $isFavourited = auth()->check()
+        ? (bool) ($product->is_favourited ?? false)
+        : false;
 @endphp
 
 <div @class(['product-card', 'product-card--out-of-stock' => $isOutOfStock])>
-    <button class="product-card__fav" aria-label="Like">
-        <span class="material-symbols-outlined">favorite</span>
+    <button
+        class="product-card__fav {{ $isFavourited ? 'liked' : '' }}"
+        data-favourite-toggle
+        data-product-id="{{ $product->id }}"
+        data-favourited="{{ $isFavourited ? '1' : '0' }}"
+        aria-label="{{ $isFavourited ? 'Remove from favourites' : 'Add to favourites' }}"
+    >
+        <span class="material-symbols-outlined">{{ $isFavourited ? 'favorite' : 'favorite_border' }}</span>
     </button>
     <a href="{{ route('product', $product) }}" class="clear-link">
         <div class="product-card__img">
