@@ -9,9 +9,22 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class PaymentController extends Controller
 {
+    public function create(Request $request): View|RedirectResponse
+    {
+        $deliveryInfoId = $request->session()->get('checkout.delivery_information_id');
+        $deliveryMethodId = $request->session()->get('checkout.delivery_method_id');
+
+        if (!$deliveryInfoId || !$deliveryMethodId) {
+            return redirect()->route('delivery');
+        }
+
+        return view('payment');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $deliveryInfoId = $request->session()->get('checkout.delivery_information_id');

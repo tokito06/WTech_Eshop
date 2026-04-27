@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DeliveryStoreRequest;
+use App\Models\Cart;
 use App\Models\DeliveryInformation;
 use App\Models\DeliveryMethod;
 use Illuminate\Http\RedirectResponse;
@@ -11,8 +12,14 @@ use Illuminate\View\View;
 
 class DeliveryController extends Controller
 {
-    public function create(Request $request): View
+    public function create(Request $request): View|RedirectResponse
     {
+        $cart = $this->findCart($request);
+
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart');
+        }
+
         $deliveryMethods = DeliveryMethod::all();
 
         return view('delivery', compact('deliveryMethods'));
@@ -45,5 +52,19 @@ class DeliveryController extends Controller
         $request->session()->put('checkout.delivery_method_id', $data['delivery_method_id']);
 
         return redirect()->route('payment');
+    }
+
+    private function findCart(Request $request): ?Cart
+    {
+        if ($request->user()) {
+            return Cart::with('items')
+                ->where('user_id', $request->user()->id)
+                ->first();
+        }
+
+        return Cart::with('items')
+            ->where('session_id', $request->session()->getId())
+            ->whereNull('user_id')
+            ->first();
     }
 }

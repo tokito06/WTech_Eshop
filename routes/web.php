@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
@@ -24,11 +25,7 @@ Route::post('/api/cart/add', [CartController::class, 'store'])->name('cart.add')
 Route::put('/api/cart/item/{item}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/api/cart/item/{item}', [CartController::class, 'destroy'])->name('cart.remove');
 
-Route::get('/checkout', function () {
-    return Auth::check()
-        ? redirect()->route('delivery')
-        : view('checkout-choice');
-})->name('checkout');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 
 Route::get('/checkout/to-login', function () {
     session()->put('url.intended', route('delivery'));
@@ -42,7 +39,7 @@ Route::get('/checkout/to-register', function () {
 
 Route::get('/delivery', [DeliveryController::class, 'create'])->name('delivery');
 Route::post('/delivery', [DeliveryController::class, 'store'])->name('delivery.store');
-Route::view('/payment', 'payment')->name('payment');
+Route::get('/payment', [PaymentController::class, 'create'])->name('payment');
 Route::post('/order', [PaymentController::class, 'store'])->name('order.store');
 Route::get('/order-success', function () {
     return view('order-success', [
