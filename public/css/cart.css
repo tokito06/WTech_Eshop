@@ -43,6 +43,22 @@
 }
 .cart-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
 
+.cart-item__link {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2vw, 40px);
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    color: inherit;
+}
+
+.cart-item__link:focus-visible {
+    outline: 3px solid rgba(181, 186, 255, 0.6);
+    outline-offset: 4px;
+    border-radius: 12px;
+}
+
 .cart-item__image {
     width: clamp(80px, 10vw, 180px);
     height: clamp(80px, 10vw, 180px);
