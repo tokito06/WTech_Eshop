@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\DeliveryMethod;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,8 +35,14 @@ class PaymentController extends Controller
             ]);
         });
 
+        $deliveryMethod = DeliveryMethod::find($deliveryMethodId);
+        $deliveryPrice = $deliveryMethod?->price ?? 0;
+
         $request->session()->forget(['checkout.delivery_information_id', 'checkout.delivery_method_id']);
         $request->session()->flash('order.code', $order->code);
+        $request->session()->flash('order.items_total', $cart->total);
+        $request->session()->flash('order.delivery_price', $deliveryPrice);
+        $request->session()->flash('order.grand_total', $cart->total + $deliveryPrice);
 
         return redirect()->route('order.success');
     }

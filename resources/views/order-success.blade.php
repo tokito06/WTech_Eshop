@@ -24,22 +24,27 @@
 
             <div class="success-order-info">
                 <div class="success-order-info__row">
-                    <span>Order number</span>
-                    <span id="order-number">#WT-000001</span>
+                    <span>Order code</span>
+                    <span>{{ $orderCode ? substr($orderCode, 0, 8) : '—' }}</span>
                 </div>
                 <div class="success-order-info__row">
                     <span>Items amount</span>
-                    <span>100.99 €</span>
+                    <span>{{ $itemsTotal !== null ? number_format($itemsTotal, 2) . ' €' : '—' }}</span>
                 </div>
                 <div class="success-order-info__row">
                     <span>Delivery</span>
-                    <span>Free</span>
+                    <span>{{ $deliveryPrice !== null ? ($deliveryPrice == 0 ? 'Free' : number_format($deliveryPrice, 2) . ' €') : '—' }}</span>
                 </div>
                 <div class="success-order-info__row">
                     <span>Total paid</span>
-                    <span>100.99 €</span>
+                    <span>{{ $grandTotal !== null ? number_format($grandTotal, 2) . ' €' : '—' }}</span>
                 </div>
             </div>
+            @if($orderCode)
+            <p class="success-subtitle" style="font-size:0.85em; margin-top:0.5rem;">
+                Save this code — it's how you reference your order.
+            </p>
+            @endif
 
             <div class="success-actions">
                 <a href="{{ route('home') }}" class="success-btn">Continue shopping</a>
@@ -53,8 +58,4 @@
 @endsection
 
 @section('scripts')
-<script>
-    const num = Math.floor(100000 + Math.random() * 900000);
-    document.getElementById('order-number').textContent = '#WT-' + num;
-</script>
 @endsection
