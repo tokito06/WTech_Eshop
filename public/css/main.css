@@ -98,7 +98,7 @@ main { flex: 1; }
 
 /* Categories Nav */
 .category-nav {
-    background-color: var(--gray-color);
+    border-bottom: 1px solid var(--surface-border);
 }
 .category-nav .nav {
     justify-content: space-evenly;
