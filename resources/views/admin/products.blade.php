@@ -53,7 +53,6 @@
 
             <!-- Table header -->
             <div class="admin-table-header">
-                <div class="col-check"></div>
                 <div class="col-img"></div>
                 <div class="col-name">Product</div>
                 <div class="col-status">Status</div>
@@ -68,9 +67,6 @@
 
                 @forelse($products as $product)
                 <div class="admin-row">
-                    <div class="col-check">
-                        <input type="radio" class="admin-radio" name="product-select">
-                    </div>
                     <div class="col-img">
                         <div class="admin-product-img">
                             @if($product->firstImageUrl)

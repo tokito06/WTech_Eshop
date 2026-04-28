@@ -9,7 +9,7 @@
 .add-product-photo {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     border: 1px solid var(--surface-border);
     border-radius: 18px;
     display: flex;
@@ -43,6 +43,18 @@
     border-radius: 12px;
 }
 
+/* Upload note */
+.add-product-upload-note {
+    margin-top: 10px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(180, 35, 24, 0.2);
+    background: rgba(180, 35, 24, 0.08);
+    color: #b42318;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
 /* Thumbnails */
 .add-product-thumbs {
     display: flex;
@@ -52,17 +64,34 @@
 }
 
 .add-product-thumb {
-    width: clamp(36px, 5vw, 56px);
-    height: clamp(36px, 5vw, 56px);
+    width: clamp(40px, 6vw, 70px);
+    height: clamp(40px, 6vw, 70px);
     background-color: var(--gray-color);
     border-radius: 6px;
     cursor: pointer;
     border: 2px solid transparent;
     transition: border-color 0.2s, opacity 0.2s;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.add-product-thumb--empty {
+    width: clamp(120px, 40%, 200px);
+    height: clamp(40px, 6vw, 70px);
+    background-color: rgba(123, 123, 123, 0.12);
+    border: 1px dashed rgba(123, 123, 123, 0.4);
+    cursor: default;
 }
 
 .add-product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
     border-radius: 4px;
 }
 
@@ -140,6 +169,134 @@
 }
 .add-product-btn:hover  { opacity: 0.8; }
 .add-product-btn:active { transform: scale(0.99); }
+
+/* Select and Preview */
+.add-product-select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.add-product-preview {
+    background: var(--white-color);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(18, 20, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.add-product-preview__title {
+    margin: 0;
+    font-size: clamp(1rem, 1.2vw, 1.3rem);
+    font-weight: 700;
+}
+
+.add-product-preview__photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    background: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.add-product-preview__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.add-product-preview__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(18, 20, 42, 0.12);
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.add-product-preview__nav:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+#preview-prev { left: 10px; }
+#preview-next { right: 10px; }
+
+.add-product-preview__nav .material-symbols-outlined {
+    font-size: 22px;
+}
+
+.add-product-preview__placeholder {
+    color: var(--dark-gray-color);
+}
+
+.add-product-preview__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
+}
+
+.add-product-preview__label {
+    color: var(--dark-gray-color);
+    font-weight: 600;
+}
+
+.add-product-preview__value {
+    text-align: right;
+    font-weight: 600;
+    color: #000;
+    max-width: 60%;
+}
+
+/* Remove button in thumbnails */
+.add-product-thumb__remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.92);
+    color: #b42318;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 1;
+    transform: scale(1);
+    transition: box-shadow 0.2s, background-color 0.2s;
+}
+
+.add-product-thumb:hover .add-product-thumb__remove,
+.add-product-thumb:focus-within .add-product-thumb__remove {
+    box-shadow: 0 4px 10px rgba(18, 20, 42, 0.15);
+}
+
+.add-product-thumb__remove:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+.add-product-thumb__remove .material-symbols-outlined {
+    font-size: 16px;
+    line-height: 1;
+}
 
 /* Responsive */
 @media (max-width: 575px) {
