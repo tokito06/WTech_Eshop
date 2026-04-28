@@ -55,8 +55,8 @@ class ProductController extends Controller
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'sex'         => ['required', 'in:men,women,kids,unisex'],
             'price'       => ['required', 'numeric', 'min:0'],
-            'images'      => ['nullable', 'array'],
-            'images.*'    => ['image', 'max:4096'],
+            'images'      => ['nullable', 'array', 'max:10'],
+            'images.*'    => ['nullable', 'image', 'max:4096'],
             'inventory'   => ['nullable', 'array'],
             'inventory.*' => ['nullable', 'integer', 'min:0'],
         ]);

@@ -34,6 +34,8 @@
                     <input type="file" id="photo-input" name="images[]" accept="image/*" multiple hidden>
                 </div>
 
+                <div class="add-product-upload-note" id="photo-upload-note" role="status" aria-live="polite" hidden></div>
+
                 <div class="add-product-thumbs" id="photo-thumbs">
                     <div class="add-product-thumb add-product-thumb--empty" id="photo-thumbs-empty">
                         <span class="add-product-thumb__label">No photos yet</span>
@@ -181,8 +183,8 @@
     const photoPreview = document.getElementById('photo-preview');
     const photoLabel   = document.getElementById('photo-label');
     const photoThumbs  = document.getElementById('photo-thumbs');
+    const uploadNote   = document.getElementById('photo-upload-note');
 
-    const previewPhotoWrap = document.getElementById('preview-photo');
     const previewPrev = document.getElementById('preview-prev');
     const previewNext = document.getElementById('preview-next');
     const previewImage = document.getElementById('preview-image');
@@ -206,6 +208,10 @@
     let thumbUrls = [];
     let currentIndex = -1;
 
+    function canSyncFiles() {
+        return typeof DataTransfer !== 'undefined';
+    }
+
     function clearThumbs() {
         if (!photoThumbs) return;
         photoThumbs.innerHTML = '';
@@ -222,12 +228,23 @@
     }
 
     function syncInputFiles() {
-        if (typeof DataTransfer === 'undefined') {
+        if (!canSyncFiles()) {
             return;
         }
         const data = new DataTransfer();
         selectedFiles.forEach(file => data.items.add(file));
         photoInput.files = data.files;
+    }
+
+    function setUploadNote(message) {
+        if (!uploadNote) return;
+        if (message) {
+            uploadNote.textContent = message;
+            uploadNote.hidden = false;
+            return;
+        }
+        uploadNote.textContent = '';
+        uploadNote.hidden = true;
     }
 
     function syncThumbs() {
@@ -292,11 +309,27 @@
         setPreviewByIndex(nextIndex);
     }
 
-    function mergeFiles(fileList) {
+    function mergeFiles(fileList, options = {}) {
+        const { fromInput = false } = options;
+
+        if (!canSyncFiles() && !fromInput) {
+            setUploadNote('Drag & drop is not supported in this browser. Use the file picker.');
+            return;
+        }
+
         const incoming = Array.from(fileList || []);
+        const images = incoming.filter(file => file && file.type && file.type.startsWith('image/'));
+        const rejectedCount = incoming.length - images.length;
+
+        if (rejectedCount > 0) {
+            setUploadNote(`${rejectedCount} file${rejectedCount > 1 ? 's were' : ' was'} skipped (images only).`);
+        } else {
+            setUploadNote('');
+        }
+
         const existingKeys = new Set(selectedFiles.map(file => `${file.name}-${file.size}-${file.lastModified}`));
 
-        incoming.forEach(file => {
+        images.forEach(file => {
             const key = `${file.name}-${file.size}-${file.lastModified}`;
             if (!existingKeys.has(key)) {
                 selectedFiles.push(file);
@@ -304,9 +337,14 @@
             }
         });
 
-        syncInputFiles();
-        syncThumbs();
-        photoInput.value = '';
+        if (images.length) {
+            syncInputFiles();
+            syncThumbs();
+        }
+
+        if (canSyncFiles()) {
+            photoInput.value = '';
+        }
     }
 
     function setPreview(url) {
@@ -332,9 +370,10 @@
     }
 
     function updateNavState() {
-        const disabled = thumbUrls.length <= 1;
-        previewPrev?.toggleAttribute('disabled', disabled);
-        previewNext?.toggleAttribute('disabled', disabled);
+        const disablePrev = thumbUrls.length <= 1 || currentIndex <= 0;
+        const disableNext = thumbUrls.length <= 1 || currentIndex >= thumbUrls.length - 1;
+        previewPrev?.toggleAttribute('disabled', disablePrev);
+        previewNext?.toggleAttribute('disabled', disableNext);
     }
 
     function updateActiveThumb() {
@@ -402,10 +441,10 @@
         photoDrop.classList.remove('drag-over');
         const files = e.dataTransfer.files;
         if (files && files.length) {
-            mergeFiles(files);
+            mergeFiles(files, { fromInput: false });
         }
     });
-    photoInput.addEventListener('change', () => mergeFiles(photoInput.files));
+    photoInput.addEventListener('change', () => mergeFiles(photoInput.files, { fromInput: true }));
 
     previewPrev?.addEventListener('click', () => setPreviewByIndex(currentIndex - 1));
     previewNext?.addEventListener('click', () => setPreviewByIndex(currentIndex + 1));
@@ -447,5 +486,6 @@
 
     syncPreview();
     syncThumbs();
+    setUploadNote('');
 </script>
 @endsection
