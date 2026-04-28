@@ -170,6 +170,23 @@
     background-color: #ffd6d6;
 }
 
+.delivery-auth-btn.cart-summary__btn {
+    width: auto;
+    margin-top: 0;
+    padding: clamp(10px, 1vw, 14px) clamp(14px, 1.4vw, 20px);
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.delivery-auth-btn--ghost.cart-summary__btn {
+    background-color: transparent;
+    border: 1px solid var(--highlight-dark-color);
+}
+
+.delivery-auth-btn--ghost.cart-summary__btn:hover {
+    background-color: rgba(181, 186, 255, 0.18);
+}
+
 /* Responsive */
 @media (max-width: 760px) {
     .cart-sticky { position: static; }

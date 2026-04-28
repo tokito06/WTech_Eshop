@@ -13,7 +13,7 @@ class Order extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
-        'code', 'user_id', 'delivery_method_id', 'delivery_information',
+        'code', 'user_id', 'session_id', 'email', 'delivery_method_id', 'delivery_information',
         'status', 'total_amount', 'cart_id',
     ];
 

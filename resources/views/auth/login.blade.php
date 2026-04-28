@@ -21,7 +21,7 @@
                 <small class="text-success d-block mb-2">{{ session('status') }}</small>
             @endif
 
-            <input class="auth__input" type="email" name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="username" autofocus>
+            <input class="auth__input" type="email" name="email" value="{{ old('email', request('email')) }}" placeholder="Email" required autocomplete="username" autofocus>
             @error('email')<small class="text-danger d-block mb-2">{{ $message }}</small>@enderror
 
             <input class="auth__input" type="password" name="password" placeholder="Password" required autocomplete="current-password">

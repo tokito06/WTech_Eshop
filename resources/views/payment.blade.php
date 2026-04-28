@@ -103,15 +103,17 @@
                     <div class="cart-summary__amounts">
                         <div class="cart-summary__amount">
                             <span>Items amount</span>
-                            <span>100.99 €</span>
+                            <span>{{ number_format($itemsTotal ?? 0, 2, '.', '') }} €</span>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Delivery amount</span>
-                            <small>from 0 €</small>
+                            <small>
+                                {{ ($deliveryPrice ?? 0) == 0 ? 'Free' : number_format($deliveryPrice ?? 0, 2, '.', '') . ' €' }}
+                            </small>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Total</span>
-                            <strong class="cart-summary__total">100.99 €</strong>
+                            <strong class="cart-summary__total">{{ number_format($grandTotal ?? 0, 2, '.', '') }} €</strong>
                         </div>
                     </div>
                     <form id="order-form" action="{{ route('order.store') }}" method="POST">
