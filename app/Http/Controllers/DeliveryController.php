@@ -31,6 +31,7 @@ class DeliveryController extends Controller
                 ->first();
 
         $prefill = [
+            'email' => $request->session()->get('checkout.email') ?? ($user?->email ?? ''),
             'first_name' => $deliveryInformation?->first_name ?? ($user?->name ?? ''),
             'last_name' => $deliveryInformation?->last_name ?? ($user?->surname ?? ''),
             'phone_number' => $deliveryInformation?->phone_number ?? ($user?->phone ?? ''),
@@ -73,6 +74,8 @@ class DeliveryController extends Controller
             ? ['user_id' => $userId]
             : ['session_id' => $sessionId, 'user_id' => null];
 
+        $email = $data['email'] ?? $request->user()?->email;
+
         $delivery = DeliveryInformation::updateOrCreate($lookup, [
             'first_name'   => $data['first_name'],
             'last_name'    => $data['last_name'],
@@ -89,6 +92,7 @@ class DeliveryController extends Controller
 
         $request->session()->put('checkout.delivery_information_id', $delivery->id);
         $request->session()->put('checkout.delivery_method_id', $data['delivery_method_id']);
+        $request->session()->put('checkout.email', $email);
 
         return redirect()->route('payment');
     }

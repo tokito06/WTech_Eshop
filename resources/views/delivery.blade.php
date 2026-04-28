@@ -60,6 +60,41 @@
                 <form class="delivery-form" id="delivery-form" action="{{ route('delivery.store') }}" method="POST" novalidate>
                     @csrf
                     <input type="hidden" id="delivery-method-id" name="delivery_method_id" value="{{ $selectedMethodId }}">
+                    @guest
+                    <div class="d-flex flex-column flex-md-row gap-2 align-items-md-end">
+                        <div class="flex-grow-1">
+                            <input
+                                class="delivery-input"
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Email"
+                                value="{{ old('email', $prefill['email'] ?? '') }}"
+                                autocomplete="email"
+                                inputmode="email"
+                                required
+                            >
+                            @error('email')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a
+                                href="{{ route('checkout.to-login') }}"
+                                data-base-href="{{ route('checkout.to-login') }}"
+                                id="checkout-login-link"
+                                class="cart-summary__btn delivery-auth-btn delivery-auth-btn--ghost"
+                            >Login</a>
+                            <a
+                                href="{{ route('checkout.to-register') }}"
+                                data-base-href="{{ route('checkout.to-register') }}"
+                                id="checkout-register-link"
+                                class="cart-summary__btn delivery-auth-btn"
+                            >Register</a>
+                        </div>
+                    </div>
+                    @endguest
+                    @auth
+                        <input type="hidden" name="email" value="{{ old('email', $prefill['email'] ?? '') }}">
+                    @endauth
                     <div class="delivery-form__row">
                         <input class="delivery-input" type="text" id="name" name="first_name" placeholder="First name" value="{{ old('first_name', $prefill['first_name'] ?? '') }}" required>
                         <input class="delivery-input" type="text" id="surname" name="last_name" placeholder="Last name" value="{{ old('last_name', $prefill['last_name'] ?? '') }}" required>
@@ -115,6 +150,9 @@
     const summaryTotal = document.getElementById('summary-total');
     const summaryItems = document.getElementById('summary-items');
     const itemsTotalValue = Number("{{ number_format($itemsTotal ?? 0, 2, '.', '') }}") || 0;
+    const checkoutEmail = document.getElementById('email');
+    const checkoutLoginLink = document.getElementById('checkout-login-link');
+    const checkoutRegisterLink = document.getElementById('checkout-register-link');
 
     function formatPrice(value) {
         return Number(value || 0).toFixed(2) + ' €';
@@ -134,11 +172,28 @@
         }
     }
 
+    function updateAuthLinks() {
+        if (!checkoutEmail || !checkoutLoginLink || !checkoutRegisterLink) {
+            return;
+        }
+
+        const emailValue = checkoutEmail.value.trim();
+        const suffix = emailValue ? `?email=${encodeURIComponent(emailValue)}` : '';
+
+        checkoutLoginLink.href = `${checkoutLoginLink.dataset.baseHref}${suffix}`;
+        checkoutRegisterLink.href = `${checkoutRegisterLink.dataset.baseHref}${suffix}`;
+    }
+
     if (preselected) {
         preselected.closest('.service-card').classList.add('service-card--selected');
         deliveryMethodField.value = preselected.value;
         const price = Number(preselected.dataset.price || 0);
         updateSummary(price);
+    }
+
+    if (checkoutEmail && checkoutLoginLink && checkoutRegisterLink) {
+        updateAuthLinks();
+        checkoutEmail.addEventListener('input', updateAuthLinks);
     }
 
     document.querySelectorAll('.service-card input[type="radio"]').forEach(radio => {
