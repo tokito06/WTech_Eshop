@@ -22,7 +22,18 @@ class PaymentController extends Controller
             return redirect()->route('delivery');
         }
 
-        return view('payment');
+        $cart = $this->resolveCart($request);
+
+        if (!$cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart');
+        }
+
+        $itemsTotal = $cart->total;
+        $deliveryMethod = DeliveryMethod::find($deliveryMethodId);
+        $deliveryPrice = $deliveryMethod?->price ?? 0;
+        $grandTotal = $itemsTotal + $deliveryPrice;
+
+        return view('payment', compact('itemsTotal', 'deliveryPrice', 'grandTotal'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -36,16 +47,25 @@ class PaymentController extends Controller
 
         abort_if(!$cart || $cart->items->isEmpty(), 400, 'Cart is empty.');
 
-        $order = DB::transaction(function () use ($request, $cart, $deliveryInfoId, $deliveryMethodId) {
-            return Order::create([
+        $sessionId = $request->user() ? null : $request->session()->getId();
+
+        $itemsTotal = $cart->total;
+
+        $order = DB::transaction(function () use ($request, $cart, $deliveryInfoId, $deliveryMethodId, $sessionId) {
+            $order = Order::create([
                 'code'                 => (string) Str::uuid(),
                 'user_id'              => $request->user()?->id,
+                'session_id'           => $sessionId,
                 'delivery_method_id'   => $deliveryMethodId,
                 'delivery_information' => $deliveryInfoId,
                 'status'               => 'pending',
                 'total_amount'         => $cart->total,
                 'cart_id'              => $cart->id,
             ]);
+
+            $cart->items()->delete();
+
+            return $order;
         });
 
         $deliveryMethod = DeliveryMethod::find($deliveryMethodId);
@@ -53,9 +73,9 @@ class PaymentController extends Controller
 
         $request->session()->forget(['checkout.delivery_information_id', 'checkout.delivery_method_id']);
         $request->session()->flash('order.code', $order->code);
-        $request->session()->flash('order.items_total', $cart->total);
+        $request->session()->flash('order.items_total', $itemsTotal);
         $request->session()->flash('order.delivery_price', $deliveryPrice);
-        $request->session()->flash('order.grand_total', $cart->total + $deliveryPrice);
+        $request->session()->flash('order.grand_total', $itemsTotal + $deliveryPrice);
 
         return redirect()->route('order.success');
     }
