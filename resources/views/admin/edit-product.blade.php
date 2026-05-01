@@ -37,28 +37,18 @@
             <div class="col-12 col-md-5 col-lg-4 d-flex flex-column">
 
                 <div class="add-product-photo" id="photo-drop" title="Click or drag to upload">
-                    @php $currentImage = $product->images->first(); @endphp
-                    @if($currentImage)
-                        <img class="add-product-photo__preview" id="photo-preview"
-                             src="{{ $currentImage->url }}" alt="{{ $product->name }}"
-                             style="display:block">
-                        <span class="add-product-photo__label" id="photo-label" style="display:none">Photo</span>
-                    @else
-                        <span class="add-product-photo__label" id="photo-label">Photo</span>
-                        <img class="add-product-photo__preview" id="photo-preview" alt="Product photo preview">
-                    @endif
-                    <input type="file" id="photo-input" name="image" accept="image/*" hidden>
+                    <span class="add-product-photo__label" id="photo-label">Photo</span>
+                    <img class="add-product-photo__preview" id="photo-preview" alt="Product photo preview">
+                    <input type="file" id="photo-input" name="images[]" accept="image/*" multiple hidden>
                 </div>
 
-                @if($product->images->count() > 1)
-                <div class="add-product-thumbs mt-2">
-                    @foreach($product->images as $img)
-                    <div class="add-product-thumb {{ $loop->first ? 'active' : '' }}">
-                        <img class="img__container" src="{{ $img->url }}" alt="Thumbnail">
+                <div class="add-product-upload-note" id="photo-upload-note" role="status" aria-live="polite" hidden></div>
+
+                <div class="add-product-thumbs" id="photo-thumbs">
+                    <div class="add-product-thumb add-product-thumb--empty" id="photo-thumbs-empty">
+                        <span class="add-product-thumb__label">No photos yet</span>
                     </div>
-                    @endforeach
                 </div>
-                @endif
 
                 <!-- Size inventory -->
                 <div class="mt-3">
@@ -97,7 +87,7 @@
 
                     <select class="add-product-input add-product-select @error('category_id') add-product-input--error @enderror"
                             name="category_id" required>
-                        <option value="" disabled>Category</option>
+                        <option value="" disabled {{ old('category_id', $product->category_id) ? '' : 'selected' }}>Category</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}"
                                 {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
@@ -109,17 +99,17 @@
 
                     <select class="add-product-input add-product-select @error('sex') add-product-input--error @enderror"
                             name="sex" required>
-                        @foreach(['men' => 'Men', 'women' => 'Women', 'kids' => 'Kids', 'unisex' => 'Unisex'] as $val => $label)
-                            <option value="{{ $val }}"
-                                {{ old('sex', $product->sex) === $val ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
+                        <option value="" disabled {{ old('sex', $product->sex) ? '' : 'selected' }}>Target audience</option>
+                        <option value="men" {{ old('sex', $product->sex) === 'men' ? 'selected' : '' }}>Men</option>
+                        <option value="women" {{ old('sex', $product->sex) === 'women' ? 'selected' : '' }}>Women</option>
+                        <option value="kids" {{ old('sex', $product->sex) === 'kids' ? 'selected' : '' }}>Kids</option>
+                        <option value="unisex" {{ old('sex', $product->sex) === 'unisex' ? 'selected' : '' }}>Unisex</option>
                     </select>
                     @error('sex')<small style="color:#e05555">{{ $message }}</small>@enderror
 
                     <select class="add-product-input add-product-select @error('brand_id') add-product-input--error @enderror"
                             name="brand_id" required>
+                        <option value="" disabled {{ old('brand_id', $product->brand_id) ? '' : 'selected' }}>Brand</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->id }}"
                                 {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
@@ -147,6 +137,51 @@
                 </div>
             </div>
 
+            <!-- Live preview -->
+            <div class="col-12 col-lg-3">
+                <div class="add-product-preview">
+                    <h3 class="add-product-preview__title">Preview</h3>
+                    <div class="add-product-preview__photo" id="preview-photo">
+                        <button type="button" class="add-product-preview__nav" id="preview-prev" aria-label="Previous photo">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button type="button" class="add-product-preview__nav" id="preview-next" aria-label="Next photo">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                        <img class="add-product-preview__image" id="preview-image" alt="Preview photo" hidden>
+                        <span class="add-product-preview__placeholder" id="preview-placeholder">No photo</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Name</span>
+                        <span class="add-product-preview__value" id="preview-name">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Description</span>
+                        <span class="add-product-preview__value" id="preview-description">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Category</span>
+                        <span class="add-product-preview__value" id="preview-category">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Audience</span>
+                        <span class="add-product-preview__value" id="preview-sex">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Brand</span>
+                        <span class="add-product-preview__value" id="preview-brand">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Price</span>
+                        <span class="add-product-preview__value" id="preview-price">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Sizes</span>
+                        <span class="add-product-preview__value" id="preview-sizes">—</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
         </form>
     </div>
@@ -154,18 +189,270 @@
 @endsection
 
 @section('scripts')
-<style>
-.add-product-select {
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-}
-</style>
 <script>
     const photoDrop    = document.getElementById('photo-drop');
     const photoInput   = document.getElementById('photo-input');
     const photoPreview = document.getElementById('photo-preview');
     const photoLabel   = document.getElementById('photo-label');
+    const photoThumbs  = document.getElementById('photo-thumbs');
+    const uploadNote   = document.getElementById('photo-upload-note');
+
+    const previewPrev = document.getElementById('preview-prev');
+    const previewNext = document.getElementById('preview-next');
+    const previewImage = document.getElementById('preview-image');
+    const previewPlaceholder = document.getElementById('preview-placeholder');
+    const previewName = document.getElementById('preview-name');
+    const previewDescription = document.getElementById('preview-description');
+    const previewCategory = document.getElementById('preview-category');
+    const previewSex = document.getElementById('preview-sex');
+    const previewBrand = document.getElementById('preview-brand');
+    const previewPrice = document.getElementById('preview-price');
+    const previewSizes = document.getElementById('preview-sizes');
+
+    const nameInput = document.querySelector('input[name="name"]');
+    const descriptionInput = document.querySelector('textarea[name="description"]');
+    const categorySelect = document.querySelector('select[name="category_id"]');
+    const sexSelect = document.querySelector('select[name="sex"]');
+    const brandSelect = document.querySelector('select[name="brand_id"]');
+    const priceInput = document.querySelector('input[name="price"]');
+
+    const existingThumbs = @json($product->images->map(fn($img) => $img->url)->values());
+
+    let selectedFiles = [];
+    let thumbUrls = [];
+    let currentIndex = -1;
+
+    function canSyncFiles() {
+        return typeof DataTransfer !== 'undefined';
+    }
+
+    function allThumbs() {
+        const existing = existingThumbs.map(url => ({ type: 'existing', url }));
+        const fresh = thumbUrls.map((url, index) => ({ type: 'new', url, fileIndex: index }));
+        return [...existing, ...fresh];
+    }
+
+    function clearThumbs() {
+        if (!photoThumbs) return;
+        photoThumbs.innerHTML = '';
+    }
+
+    function createEmptyThumb() {
+        const empty = document.createElement('div');
+        empty.className = 'add-product-thumb add-product-thumb--empty';
+        const label = document.createElement('span');
+        label.className = 'add-product-thumb__label';
+        label.textContent = 'No photos yet';
+        empty.appendChild(label);
+        photoThumbs?.appendChild(empty);
+    }
+
+    function syncInputFiles() {
+        if (!canSyncFiles()) {
+            return;
+        }
+        const data = new DataTransfer();
+        selectedFiles.forEach(file => data.items.add(file));
+        photoInput.files = data.files;
+    }
+
+    function setUploadNote(message) {
+        if (!uploadNote) return;
+        if (message) {
+            uploadNote.textContent = message;
+            uploadNote.hidden = false;
+            return;
+        }
+        uploadNote.textContent = '';
+        uploadNote.hidden = true;
+    }
+
+    function syncThumbs() {
+        thumbUrls.forEach(url => URL.revokeObjectURL(url));
+        thumbUrls = selectedFiles.map(file => URL.createObjectURL(file));
+
+        clearThumbs();
+
+        const thumbs = allThumbs();
+
+        if (thumbs.length === 0) {
+            createEmptyThumb();
+            photoPreview.removeAttribute('src');
+            photoPreview.style.display = 'none';
+            photoLabel.style.display = 'block';
+            previewImage.hidden = true;
+            previewImage.removeAttribute('src');
+            previewPlaceholder.hidden = false;
+            currentIndex = -1;
+            updateNavState(0);
+            return;
+        }
+
+        thumbs.forEach((item, index) => {
+            const thumb = document.createElement('div');
+            thumb.className = `add-product-thumb${index === 0 ? ' active' : ''}`;
+            thumb.setAttribute('role', 'button');
+            thumb.tabIndex = 0;
+            thumb.dataset.index = String(index);
+
+            const thumbImg = document.createElement('img');
+            thumbImg.src = item.url;
+            thumbImg.alt = `Photo ${index + 1}`;
+            thumb.appendChild(thumbImg);
+
+            if (item.type === 'new') {
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'add-product-thumb__remove';
+                removeBtn.setAttribute('aria-label', 'Remove photo');
+                removeBtn.dataset.fileIndex = String(item.fileIndex);
+                removeBtn.innerHTML = '<span class="material-symbols-outlined">close</span>';
+                thumb.appendChild(removeBtn);
+            }
+
+            photoThumbs.appendChild(thumb);
+        });
+
+        if (currentIndex < 0 || currentIndex >= thumbs.length) {
+            currentIndex = 0;
+        }
+
+        setPreviewByIndex(currentIndex);
+    }
+
+    function removeFileAt(index) {
+        if (index < 0 || index >= selectedFiles.length) {
+            return;
+        }
+        selectedFiles.splice(index, 1);
+        syncInputFiles();
+        syncThumbs();
+    }
+
+    function mergeFiles(fileList, options = {}) {
+        const { fromInput = false } = options;
+
+        if (!canSyncFiles() && !fromInput) {
+            setUploadNote('Drag & drop is not supported in this browser. Use the file picker.');
+            return;
+        }
+
+        const incoming = Array.from(fileList || []);
+        const images = incoming.filter(file => file && file.type && file.type.startsWith('image/'));
+        const rejectedCount = incoming.length - images.length;
+
+        if (rejectedCount > 0) {
+            setUploadNote(`${rejectedCount} file${rejectedCount > 1 ? 's were' : ' was'} skipped (images only).`);
+        } else {
+            setUploadNote('');
+        }
+
+        const existingKeys = new Set(selectedFiles.map(file => `${file.name}-${file.size}-${file.lastModified}`));
+
+        images.forEach(file => {
+            const key = `${file.name}-${file.size}-${file.lastModified}`;
+            if (!existingKeys.has(key)) {
+                selectedFiles.push(file);
+                existingKeys.add(key);
+            }
+        });
+
+        if (images.length) {
+            syncInputFiles();
+            syncThumbs();
+        }
+
+        if (canSyncFiles()) {
+            photoInput.value = '';
+        }
+    }
+
+    function setPreview(url) {
+        if (!url) return;
+        photoLabel.style.display = 'block';
+        photoPreview.style.display = 'none';
+
+        previewImage.src = url;
+        previewImage.hidden = false;
+        previewPlaceholder.hidden = true;
+    }
+
+    function setPreviewByIndex(index) {
+        const thumbs = allThumbs();
+        if (!thumbs.length) {
+            currentIndex = -1;
+            return;
+        }
+
+        currentIndex = Math.max(0, Math.min(index, thumbs.length - 1));
+        setPreview(thumbs[currentIndex].url);
+        updateNavState(thumbs.length);
+        updateActiveThumb();
+    }
+
+    function updateNavState(total = allThumbs().length) {
+        const disablePrev = total <= 1 || currentIndex <= 0;
+        const disableNext = total <= 1 || currentIndex >= total - 1;
+        previewPrev?.toggleAttribute('disabled', disablePrev);
+        previewNext?.toggleAttribute('disabled', disableNext);
+    }
+
+    function updateActiveThumb() {
+        const active = photoThumbs?.querySelector('.add-product-thumb.active');
+        if (active) {
+            active.classList.remove('active');
+        }
+        const thumbs = photoThumbs?.querySelectorAll('.add-product-thumb');
+        const target = thumbs?.[currentIndex];
+        if (target) {
+            target.classList.add('active');
+        }
+    }
+
+    function syncPreviewText(el, value) {
+        if (!el) return;
+        el.textContent = value && value.trim() ? value.trim() : '—';
+    }
+
+    function syncSelectText(el, select) {
+        if (!el || !select) return;
+        const option = select.selectedOptions[0];
+        const text = option && option.value ? option.textContent.trim() : '';
+        el.textContent = text || '—';
+    }
+
+    function syncSizes() {
+        const inputs = document.querySelectorAll('input[name^="inventory["]');
+        const selected = [];
+        inputs.forEach(input => {
+            const size = input.name.match(/inventory\[(.*)\]/)?.[1];
+            const value = parseInt(input.value, 10) || 0;
+            if (size && value > 0) {
+                selected.push(size);
+            }
+        });
+        previewSizes.textContent = selected.length ? selected.join(', ') : '—';
+    }
+
+    function syncPreview() {
+        syncPreviewText(previewName, nameInput?.value || '');
+        syncPreviewText(previewDescription, descriptionInput?.value || '');
+        syncSelectText(previewCategory, categorySelect);
+        syncSelectText(previewSex, sexSelect);
+        syncSelectText(previewBrand, brandSelect);
+        const price = priceInput?.value ? `${Number(priceInput.value).toFixed(2)} €` : '';
+        previewPrice.textContent = price || '—';
+        syncSizes();
+    }
+
+    [nameInput, descriptionInput, categorySelect, sexSelect, brandSelect, priceInput].forEach(el => {
+        el?.addEventListener('input', syncPreview);
+        el?.addEventListener('change', syncPreview);
+    });
+
+    document.querySelectorAll('input[name^="inventory["]').forEach(input => {
+        input.addEventListener('input', syncSizes);
+    });
 
     photoDrop.addEventListener('click', () => photoInput.click());
     photoDrop.addEventListener('dragover', e => { e.preventDefault(); photoDrop.classList.add('drag-over'); });
@@ -173,18 +460,53 @@
     photoDrop.addEventListener('drop', e => {
         e.preventDefault();
         photoDrop.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-            photoInput.files = e.dataTransfer.files;
-            showPreview(file);
+        const files = e.dataTransfer.files;
+        if (files && files.length) {
+            mergeFiles(files, { fromInput: false });
         }
     });
-    photoInput.addEventListener('change', () => { if (photoInput.files[0]) showPreview(photoInput.files[0]); });
+    photoInput.addEventListener('change', () => mergeFiles(photoInput.files, { fromInput: true }));
 
-    function showPreview(file) {
-        photoPreview.src = URL.createObjectURL(file);
-        photoPreview.style.display = 'block';
-        if (photoLabel) photoLabel.style.display = 'none';
-    }
+    previewPrev?.addEventListener('click', () => setPreviewByIndex(currentIndex - 1));
+    previewNext?.addEventListener('click', () => setPreviewByIndex(currentIndex + 1));
+
+    photoThumbs?.addEventListener('click', e => {
+        const removeBtn = e.target.closest('.add-product-thumb__remove');
+        if (removeBtn) {
+            e.stopPropagation();
+            const index = Number(removeBtn.dataset.fileIndex);
+            if (!Number.isNaN(index)) {
+                removeFileAt(index);
+            }
+            return;
+        }
+
+        const thumb = e.target.closest('.add-product-thumb');
+        if (thumb) {
+            const index = Number(thumb.dataset.index);
+            if (!Number.isNaN(index)) {
+                setPreviewByIndex(index);
+            }
+        }
+    });
+
+    photoThumbs?.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' && e.key !== ' ') {
+            return;
+        }
+        const thumb = e.target.closest('.add-product-thumb');
+        if (!thumb) {
+            return;
+        }
+        e.preventDefault();
+        const index = Number(thumb.dataset.index);
+        if (!Number.isNaN(index)) {
+            setPreviewByIndex(index);
+        }
+    });
+
+    syncPreview();
+    syncThumbs();
+    setUploadNote('');
 </script>
 @endsection
