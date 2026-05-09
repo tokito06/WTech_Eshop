@@ -48,20 +48,6 @@
     </div>
 </nav>
 
-<style>
-.admin-nav-link {
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: clamp(0.8rem, 0.95vw, 1rem);
-    color: #000;
-    text-decoration: none;
-    transition: background-color 0.2s;
-}
-.admin-nav-link:hover { background-color: var(--gray-color); color: #000; }
-.admin-nav-link.active { background-color: var(--gray-color); font-weight: 600; }
-.admin-seller-name { font-size: clamp(0.8rem, 0.9vw, 1rem); color: var(--dark-gray-color); }
-</style>
-
 @yield('content')
 
 <!-- Footer -->
