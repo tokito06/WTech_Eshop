@@ -474,6 +474,11 @@ footer a:hover {
     color: #fff;
 }
 
+.error-text {
+    color: var(--error-color);
+    font-size: clamp(0.75rem, 0.9vw, 1rem);
+}
+
 /* Responsive */
 @media (max-width: 575px) {
     .navbar {
