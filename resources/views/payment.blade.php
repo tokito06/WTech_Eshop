@@ -139,22 +139,3 @@
 </div>
 @endsection
 
-@section('scripts')
-<script>
-    document.getElementById('card-number').addEventListener('input', function () {
-        let v = this.value.replace(/\D/g, '').substring(0, 16);
-        this.value = v.replace(/(.{4})/g, '$1 ').trim();
-    });
-
-    document.getElementById('card-expiry').addEventListener('input', function () {
-        let v = this.value.replace(/\D/g, '').substring(0, 4);
-        if (v.length >= 3) v = v.substring(0, 2) + ' / ' + v.substring(2);
-        this.value = v;
-    });
-
-    document.getElementById('card-cvv').addEventListener('input', function () {
-        this.value = this.value.replace(/\D/g, '').substring(0, 4);
-    });
-
-</script>
-@endsection
