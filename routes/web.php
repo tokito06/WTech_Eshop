@@ -14,7 +14,6 @@ use App\Http\Controllers\User\FavouriteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/shop', [CatalogController::class, 'shop'])->name('shop');
 Route::get('/search', [CatalogController::class, 'search'])->name('search');
 Route::get('/product/{product?}', [UserProductController::class, 'show'])->name('product');
 

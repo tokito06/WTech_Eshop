@@ -15,7 +15,7 @@
         <div class="container">
             <div class="home-banner-scroll" id="home-banner-scroll" aria-label="Promotions">
                 @forelse($banners as $banner)
-                <a class="home-banner-card clear-link" href="{{ route('shop') }}">
+                <a class="home-banner-card clear-link" href="{{ route('search') }}">
                     @if($banner->image)
                     <div class="home-banner-card__media">
                         <img class="img__container" src="{{ $banner->image->url }}" alt="{{ $banner->name }}">
@@ -28,7 +28,7 @@
                     </div>
                 </a>
                 @empty
-                <a class="home-banner-card clear-link" href="{{ route('shop') }}">
+                <a class="home-banner-card clear-link" href="{{ route('search') }}">
                     <div class="home-banner-card__content">
                         <p class="home-banner-card__eyebrow">New Collection</p>
                         <h2>Fresh Arrivals</h2>
@@ -77,7 +77,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title mb-0">New for Men</h2>
-                <a href="{{ route('shop') }}?sex=men" class="explore-link">
+                <a href="{{ route('search') }}?sex=men" class="explore-link">
                     See all <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
@@ -98,7 +98,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title mb-0">New for Women</h2>
-                <a href="{{ route('shop') }}?sex=women" class="explore-link">
+                <a href="{{ route('search') }}?sex=women" class="explore-link">
                     See all <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
@@ -119,7 +119,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title mb-0">Trending now</h2>
-                <a href="{{ route('shop') }}" class="explore-link">
+                <a href="{{ route('search') }}" class="explore-link">
                     See all <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
