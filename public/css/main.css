@@ -163,7 +163,7 @@ main {
 }
 
 .category-nav .nav-link:hover {
-    background-color: var(--shadow-black-soft);
+    background-color: var(--gray-tint);
 }
 
 .category-nav .nav-link.active {
