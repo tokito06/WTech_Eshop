@@ -66,19 +66,7 @@
                 <p class="quick-card__text">View saved items and move the best picks into your cart.</p>
             </a>
 
-            <a href="{{ route('delivery') }}" class="quick-card">
-                <span class="material-symbols-outlined quick-card__icon">local_shipping</span>
-                <h2 class="quick-card__title">Delivery details</h2>
-                <p class="quick-card__text">Manage address and shipping preferences for future orders.</p>
-            </a>
-
-            <a href="{{ route('payment') }}" class="quick-card">
-                <span class="material-symbols-outlined quick-card__icon">credit_card</span>
-                <h2 class="quick-card__title">Payment</h2>
-                <p class="quick-card__text">Review payment method and complete checkout in one step.</p>
-            </a>
-
-            <a href="{{ route('shop') }}" class="quick-card">
+            <a href="{{ route('home') }}" class="quick-card">
                 <span class="material-symbols-outlined quick-card__icon">storefront</span>
                 <h2 class="quick-card__title">Continue shopping</h2>
                 <p class="quick-card__text">Explore categories and discover new products in the catalog.</p>
