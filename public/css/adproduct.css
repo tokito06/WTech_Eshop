@@ -5,25 +5,6 @@
     min-height: calc(100vh - 80px);
 }
 
-/* Search in navbar */
-.admin-search-wrap {
-    max-width: 500px;
-}
-
-.admin-search {
-    width: 100%;
-    padding: clamp(8px, 0.8vw, 12px) clamp(14px, 1.2vw, 20px);
-    border: none;
-    border-radius: 8px;
-    background-color: var(--input-form);
-    font-size: clamp(0.9rem, 1vw, 1.1rem);
-    outline: none;
-    transition: box-shadow 0.2s;
-}
-.admin-search:focus {
-    box-shadow: 0 0 0 3px var(--accent-ring);
-}
-
 /* Page title */
 .admin-page-title {
     font-size: clamp(1.6rem, 3vw, 2.8rem);
@@ -201,7 +182,6 @@
 
 @media (max-width: 575px) {
     .navbar { padding: 0 12px; min-height: 60px; }
-    .admin-search-wrap { max-width: 100%; }
 }
 
 

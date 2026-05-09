@@ -37,9 +37,7 @@
             </a>
         </div>
 
-        <div class="admin-search-wrap flex-grow-1">
-            <input class="admin-search" type="search" placeholder="Search">
-        </div>
+        <span style="margin: 0 auto"></span>
 
         <span class="admin-seller-name d-none d-md-block flex-shrink-0">
             {{ auth()->user()->name }}
