@@ -21,7 +21,7 @@
 }
 .shop-search::placeholder { color: #bbb; }
 .shop-search:focus {
-    box-shadow: 0 0 0 3px rgba(181,186,255,0.45);
+    box-shadow: 0 0 0 3px var(--accent-ring);
 }
 
 .shop-search-btn {
@@ -42,7 +42,7 @@
 
 .shop-search-btn:hover {
     background-color: #ffcaca;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 10px var(--shadow-black-soft);
 }
 
 .shop-search-btn:active {
@@ -51,7 +51,7 @@
 
 .shop-search-btn:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(181,186,255,0.45), 0 6px 14px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 0 0 3px var(--accent-ring), 0 6px 14px var(--shadow-black);
 }
 
 .shop-search-btn .material-symbols-outlined {

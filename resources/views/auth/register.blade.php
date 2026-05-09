@@ -47,29 +47,4 @@
 </div>
 @endsection
 
-@section('scripts')
-<script>
-    // Preserve old UX: highlight invalid fields before submit.
-    document.getElementById('reg-form').addEventListener('submit', (e) => {
-        const fields = [
-            { id: 'inp-name', check: v => v.trim().length > 0 },
-            { id: 'inp-surname', check: v => v.trim().length > 0 },
-            { id: 'inp-email', check: v => /\S+@\S+\.\S+/.test(v) },
-            { id: 'inp-password', check: v => v.length >= 8 },
-            { id: 'inp-type', check: v => v !== '' },
-        ];
-
-        let valid = true;
-
-        fields.forEach(({ id, check }) => {
-            const input = document.getElementById(id);
-            const isOk = check(input.value);
-            input.style.boxShadow = isOk ? '' : '0 0 0 3px rgba(224,85,85,0.35)';
-            if (!isOk) valid = false;
-        });
-
-        if (!valid) e.preventDefault();
-    });
-</script>
-@endsection
 

@@ -48,8 +48,8 @@
     margin-top: 10px;
     padding: 6px 10px;
     border-radius: 10px;
-    border: 1px solid rgba(180, 35, 24, 0.2);
-    background: rgba(180, 35, 24, 0.08);
+    border: 1px solid var(--danger-border);
+    background: var(--danger-muted);
     color: #b42318;
     font-size: 0.85rem;
     line-height: 1.4;
@@ -82,8 +82,8 @@
 .add-product-thumb--empty {
     width: clamp(120px, 40%, 200px);
     height: clamp(40px, 6vw, 70px);
-    background-color: rgba(123, 123, 123, 0.12);
-    border: 1px dashed rgba(123, 123, 123, 0.4);
+    background-color: var(--gray-tint);
+    border: 1px dashed var(--gray-border-strong);
     cursor: default;
 }
 
@@ -114,16 +114,16 @@
 .add-product-input {
     width: 100%;
     padding: clamp(10px, 1vw, 14px) clamp(12px, 1.2vw, 18px);
-    border: 1px solid rgba(123, 123, 123, 0.26);
+    border: 1px solid var(--gray-border);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.88);
+    background: var(--glass);
     font-size: clamp(0.9rem, 1vw, 1.15rem);
     color: #000;
     outline: none;
     transition: box-shadow 0.2s;
 }
 .add-product-input:focus {
-    box-shadow: 0 0 0 3px rgba(181, 186, 255, 0.5);
+    box-shadow: 0 0 0 3px var(--accent-ring);
 }
 .add-product-input::placeholder { color: var(--dark-gray-color); }
 
@@ -131,16 +131,16 @@
 .add-product-input--vendor { width: 60%; }
 
 .add-product-input--error {
-    box-shadow: 0 0 0 3px rgba(224, 85, 85, 0.4);
+    box-shadow: 0 0 0 3px var(--danger-ring);
 }
 
 /* Textarea */
 .add-product-textarea {
     width: 100%;
     padding: clamp(10px, 1vw, 14px) clamp(12px, 1.2vw, 18px);
-    border: 1px solid rgba(123, 123, 123, 0.26);
+    border: 1px solid var(--gray-border);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.88);
+    background: var(--glass);
     font-size: clamp(0.9rem, 1vw, 1.15rem);
     color: #000;
     outline: none;
@@ -149,7 +149,7 @@
     transition: box-shadow 0.2s;
 }
 .add-product-textarea:focus {
-    box-shadow: 0 0 0 3px rgba(181, 186, 255, 0.5);
+    box-shadow: 0 0 0 3px var(--accent-ring);
 }
 .add-product-textarea::placeholder { color: var(--dark-gray-color); }
 
@@ -157,9 +157,9 @@
 .add-product-btn {
     width: 100%;
     padding: clamp(14px, 1.5vw, 18px);
-    border: 1px solid rgba(156, 161, 229, 0.34);
+    border: 1px solid var(--accent-tint);
     border-radius: 12px;
-    background: var(--highlight-color);
+    background: var(--primary-btn-bg);
     color: #121426;
     font-size: clamp(1.2rem, 2vw, 2rem);
     font-weight: 700;
@@ -181,7 +181,8 @@
     background: var(--white-color);
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 8px 20px rgba(18, 20, 42, 0.08);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--surface-shadow-soft);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -220,12 +221,12 @@
     height: 34px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--white-color);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(18, 20, 42, 0.12);
+    box-shadow: 0 4px 10px var(--shadow-black);
     transition: background-color 0.2s, opacity 0.2s;
 }
 
@@ -272,8 +273,8 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--shadow-black-soft);
+    background: var(--glass);
     color: #b42318;
     display: inline-flex;
     align-items: center;
@@ -286,11 +287,11 @@
 
 .add-product-thumb:hover .add-product-thumb__remove,
 .add-product-thumb:focus-within .add-product-thumb__remove {
-    box-shadow: 0 4px 10px rgba(18, 20, 42, 0.15);
+    box-shadow: 0 4px 10px var(--shadow-black);
 }
 
 .add-product-thumb__remove:hover {
-    background: rgba(255, 255, 255, 1);
+    background: var(--white-color);
 }
 
 .add-product-thumb__remove .material-symbols-outlined {

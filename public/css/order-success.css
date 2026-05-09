@@ -46,7 +46,7 @@
 }
 
 .success-order-info {
-    background: rgba(255, 255, 255, 0.76);
+    background: var(--glass);
     border-radius: 14px;
     padding: clamp(14px, 2vw, 24px) clamp(16px, 2.5vw, 32px);
     margin-bottom: clamp(24px, 3vw, 40px);
@@ -54,7 +54,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border: 1px solid rgba(123, 123, 123, 0.2);
+    border: 1px solid var(--gray-border);
 }
 
 .success-order-info__row {
@@ -87,15 +87,15 @@
     color: inherit;
     width: 100%;
     border: none;
-    background-color: var(--highlight-color);
+    background: var(--primary-btn-bg);
     font-size: clamp(0.95rem, 1.1vw, 1.3rem);
     font-weight: 600;
     padding: clamp(12px, 1.3vw, 18px);
     border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: opacity 0.2s;
 }
-.success-btn:hover { background-color: var(--highlight-dark-color); }
+.success-btn:hover { opacity: 0.8; }
 
 .success-btn--secondary {
     background-color: transparent;

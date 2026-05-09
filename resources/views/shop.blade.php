@@ -42,10 +42,3 @@
 </main>
 @endsection
 
-@section('scripts')
-<script>
-    document.querySelectorAll('.product-card__fav').forEach(btn => {
-        btn.addEventListener('click', () => btn.classList.toggle('liked'));
-    });
-</script>
-@endsection

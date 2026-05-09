@@ -97,7 +97,7 @@
                 <p>Keep your account information up to date for smooth checkout and support.</p>
             </div>
 
-            <form id="profile-form" method="POST" action="{{ route('profile.update') }}" class="profile-form">
+            <form id="profile-form" data-profile-status="{{ session('status') }}" method="POST" action="{{ route('profile.update') }}" class="profile-form">
                 @csrf
                 @method('PATCH')
 
@@ -147,38 +147,3 @@
 </div>
 @endsection
 
-@section('scripts')
-<script>
-    const editBtn = document.getElementById('btn-edit');
-    const fields = document.querySelectorAll('.info-field');
-    const profileForm = document.getElementById('profile-form');
-    let editing = false;
-
-    function showToast(msg) {
-        document.getElementById('toast-msg').textContent = msg;
-        bootstrap.Toast.getOrCreateInstance(document.getElementById('profileToast'), { delay: 2500 }).show();
-    }
-
-    editBtn.addEventListener('click', () => {
-        editing = !editing;
-        fields.forEach(f => {
-            if (f.name === 'name' || f.name === 'email' || f.name === 'phone') {
-                editing ? f.removeAttribute('readonly') : f.setAttribute('readonly', '');
-            }
-        });
-
-        if (editing) {
-            document.getElementById('field-name').focus();
-        } else {
-            profileForm.submit();
-        }
-
-        editBtn.textContent = editing ? 'Save changes' : 'Edit profile';
-        editBtn.classList.toggle('btn-edit--active', editing);
-    });
-
-    @if (session('status') === 'profile-updated')
-    showToast('Profile saved!');
-    @endif
-</script>
-@endsection

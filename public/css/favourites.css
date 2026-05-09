@@ -33,7 +33,7 @@
     width: clamp(28px, 2.5vw, 40px);
     height: clamp(28px, 2.5vw, 40px);
     border: none;
-    background: rgba(255,255,255,0.85);
+    background: var(--glass);
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -45,7 +45,7 @@
 }
 .product-card__delete:hover {
     background-color: #fde8e8;
-    color: #e05555;
+    color: var(--error-color);
 }
 .product-card__delete .material-symbols-outlined {
     font-size: clamp(16px, 1.6vw, 22px);

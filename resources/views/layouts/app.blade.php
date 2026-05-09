@@ -63,59 +63,19 @@
     </div>
 </footer>
 
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999">
+    <div id="authToast" class="toast align-items-center border-0" role="alert" aria-live="assertive">
+        <div class="d-flex align-items-center gap-2 p-3" style="background:var(--highlight-color); border-radius:10px;">
+            <span class="material-symbols-outlined">info</span>
+            <span id="auth-toast-message">Please sign in to manage favourites.</span>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('click', async event => {
-        const toggleBtn = event.target.closest('[data-favourite-toggle]');
-        if (!toggleBtn) return;
-
-        const body = document.body;
-        const isAuthed = body.dataset.auth === '1';
-        if (!isAuthed) {
-            window.location.href = body.dataset.loginUrl || '/login';
-            return;
-        }
-
-        const productId = toggleBtn.dataset.productId;
-        const toggleUrl = body.dataset.favouriteUrl;
-        if (!productId || !toggleUrl) return;
-
-        try {
-            const response = await fetch(toggleUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,                },
-                body: JSON.stringify({ product_id: productId }),
-            });
-
-            const data = await response.json();
-            if (!response.ok || !data.success) {
-                throw new Error('Unable to update favourites');
-            }
-
-            const isFavourited = Boolean(data.favourited);
-            toggleBtn.dataset.favourited = isFavourited ? '1' : '0';
-            toggleBtn.classList.toggle('liked', isFavourited);
-
-            const icon = toggleBtn.querySelector('.material-symbols-outlined');
-            if (icon) {
-                icon.textContent = isFavourited ? 'favorite' : 'favorite_border';
-            }
-
-            toggleBtn.setAttribute(
-                'aria-label',
-                isFavourited ? 'Remove from favourites' : 'Add to favourites'
-            );
-            if (toggleBtn.title !== undefined) {
-                toggleBtn.title = isFavourited ? 'Remove from favourites' : 'Add to favourites';
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    });
-</script>
+@vite(['resources/js/app.js'])
 @yield('scripts')
 </body>
 </html>

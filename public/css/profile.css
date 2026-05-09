@@ -1,8 +1,8 @@
 .profile-page {
     padding: clamp(26px, 4vw, 72px) 0;
     background:
-        radial-gradient(circle at 8% 12%, rgba(181, 186, 255, 0.2), transparent 34%),
-        radial-gradient(circle at 90% 85%, rgba(255, 168, 131, 0.22), transparent 30%),
+        radial-gradient(circle at 8% 12%, var(--accent-tint), transparent 34%),
+        radial-gradient(circle at 90% 85%, var(--primary-tint), transparent 30%),
         var(--white-color);
 }
 
@@ -19,9 +19,9 @@
     gap: clamp(20px, 3vw, 42px);
     padding: clamp(22px, 3.5vw, 44px);
     border-radius: 30px;
-    border: 1px solid rgba(123, 123, 123, 0.2);
+    border: 1px solid var(--gray-border);
     background:
-        linear-gradient(118deg, rgba(255, 168, 131, 0.44), rgba(181, 186, 255, 0.36) 50%, rgba(255, 255, 255, 0.96) 88%);
+        linear-gradient(118deg, var(--primary-glow), var(--accent-tint-strong) 50%, var(--glass) 88%);
     box-shadow: 0 14px 36px rgba(17, 20, 41, 0.1);
 }
 
@@ -66,9 +66,9 @@
     width: clamp(88px, 11vw, 130px);
     height: clamp(88px, 11vw, 130px);
     border-radius: 50%;
-    background: linear-gradient(140deg, rgba(255, 255, 255, 0.95), rgba(240, 241, 255, 0.95));
-    border: 3px solid rgba(255, 255, 255, 0.92);
-    box-shadow: 0 8px 22px rgba(43, 49, 95, 0.2);
+    background: var(--glass);
+    border: 3px solid var(--white-color);
+    box-shadow: 0 8px 22px var(--shadow-ink-deep);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,7 +85,7 @@
     font-size: clamp(0.82rem, 0.95vw, 1rem);
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--shadow-black-soft);
     font-weight: 700;
 }
 
@@ -100,7 +100,7 @@
 .profile-hero__subtitle {
     margin: clamp(8px, 1vw, 12px) 0 0;
     font-size: clamp(0.95rem, 1.15vw, 1.2rem);
-    color: rgba(0, 0, 0, 0.68);
+    color: var(--text-muted);
 }
 
 .profile-hero__chips {
@@ -155,7 +155,7 @@
     color: #0e1021;
     background-color: var(--bg-primary-color);
     border: none;
-    box-shadow: 0 8px 14px rgba(255, 168, 131, 0.35);
+    box-shadow: 0 8px 14px var(--primary-glow);
 }
 
 .btn-admin-panel:hover {
@@ -164,16 +164,16 @@
 }
 
 .btn-logout {
-    border: 2px solid #e05555;
-    background: rgba(255, 255, 255, 0.78);
-    color: #e05555;
+    border: 2px solid var(--error-color);
+    background: var(--glass);
+    color: var(--error-color);
     cursor: pointer;
 }
 
 .btn-logout:hover {
     color: #fff;
-    background-color: #e05555;
-    box-shadow: 0 8px 16px rgba(224, 85, 85, 0.28);
+    background-color: var(--error-color);
+    box-shadow: 0 8px 16px var(--danger-soft);
 }
 
 .btn-admin-panel .material-symbols-outlined,
@@ -196,7 +196,7 @@
     color: inherit;
     min-height: 180px;
     border-radius: 20px;
-    border: 1px solid rgba(123, 123, 123, 0.2);
+    border: 1px solid var(--gray-border);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 248, 255, 0.88));
     box-shadow: 0 8px 22px rgba(20, 22, 44, 0.08);
     padding: clamp(16px, 1.8vw, 24px);
@@ -213,13 +213,13 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: rgba(181, 186, 255, 0.2);
+    background: var(--accent-tint);
     z-index: -1;
 }
 
 .quick-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(156, 161, 229, 0.44);
+    border-color: var(--accent-border-strong);
     box-shadow: 0 14px 30px rgba(24, 28, 58, 0.14);
 }
 
@@ -232,7 +232,7 @@
     justify-content: center;
     font-size: 27px;
     color: #25263d;
-    background: linear-gradient(135deg, rgba(255, 168, 131, 0.35), rgba(181, 186, 255, 0.36));
+    background: linear-gradient(135deg, var(--primary-glow), var(--accent-tint-strong));
 }
 
 .quick-card__title {
@@ -252,9 +252,9 @@
 .profile-details {
     margin-top: clamp(20px, 2.5vw, 34px);
     border-radius: 30px;
-    border: 1px solid rgba(123, 123, 123, 0.22);
+    border: 1px solid var(--gray-border);
     box-shadow: 0 14px 32px rgba(17, 20, 41, 0.08);
-    background: #fff;
+    background: var(--white-color);
     padding: clamp(20px, 3vw, 36px);
 }
 
@@ -268,7 +268,7 @@
 .profile-details__head p {
     margin: 8px 0 0;
     font-size: clamp(0.9rem, 1.05vw, 1.06rem);
-    color: rgba(0, 0, 0, 0.68);
+    color: var(--text-muted);
 }
 
 .profile-form {
@@ -293,7 +293,7 @@
 .field-label {
     font-size: clamp(0.8rem, 0.92vw, 0.95rem);
     font-weight: 800;
-    color: rgba(0, 0, 0, 0.64);
+    color: var(--text-muted);
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -304,7 +304,7 @@
     padding: clamp(11px, 1.15vw, 15px) clamp(12px, 1.5vw, 20px);
     border-radius: 12px;
     border: 2px solid transparent;
-    background-color: rgba(217, 217, 217, 0.45);
+    background-color: var(--gray-soft);
     font-size: clamp(0.95rem, 1.06vw, 1.1rem);
     color: #2a2d39;
     transition: border-color 0.2s, background-color 0.2s;
@@ -318,7 +318,7 @@
 
 .info-field[readonly] {
     cursor: default;
-    color: rgba(0, 0, 0, 0.7);
+    color: var(--text-muted);
 }
 
 .btn-edit {
@@ -327,10 +327,10 @@
     padding: 12px 24px;
     border-radius: 12px;
     border: none;
-    background-color: var(--highlight-color);
+    background: var(--primary-btn-bg);
     color: #11131f;
     font-size: clamp(1rem, 1.15vw, 1.15rem);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.01em;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
@@ -338,8 +338,8 @@
 
 .btn-edit:hover,
 .btn-edit--active {
-    background-color: var(--highlight-dark-color);
-    box-shadow: 0 10px 20px rgba(156, 161, 229, 0.3);
+    opacity: 0.8;
+    box-shadow: 0 10px 20px var(--accent-border);
 }
 
 .btn-edit:hover {
