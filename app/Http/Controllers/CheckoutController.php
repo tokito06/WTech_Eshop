@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
-    public function index(Request $request): RedirectResponse|View
+    public function index(Request $request): RedirectResponse
     {
         $cart = $this->findCart($request);
 
@@ -18,9 +16,7 @@ class CheckoutController extends Controller
             return redirect()->route('cart');
         }
 
-        return Auth::check()
-            ? redirect()->route('delivery')
-            : view('checkout-choice');
+        return redirect()->route('delivery');
     }
 
     private function findCart(Request $request): ?Cart

@@ -21,6 +21,9 @@
 @endsection
 
 @section('content')
+@php
+    $selectedMethodId = old('delivery_method_id', $selectedDeliveryMethodId ?? '');
+@endphp
 <main class="delivery-section">
     <div class="container">
         <div class="row g-4 g-xl-5 align-items-start">
@@ -35,8 +38,8 @@
 
                 <div class="delivery-services" id="delivery-services">
                     @foreach($deliveryMethods as $method)
-                    <label class="service-card">
-                        <input type="radio" name="delivery_method_id" value="{{ $method->id }}">
+                    <label class="service-card {{ (string) $selectedMethodId === (string) $method->id ? 'service-card--selected' : '' }}">
+                        <input type="radio" name="delivery_method_id" value="{{ $method->id }}" data-price="{{ $method->price }}" {{ (string) $selectedMethodId === (string) $method->id ? 'checked' : '' }}>
                         <span class="service-card__name">{{ $method->name }}</span>
                         <span class="service-card__desc">{{ $method->brief }}</span>
                         <span class="service-card__meta">
@@ -56,18 +59,53 @@
 
                 <form class="delivery-form" id="delivery-form" action="{{ route('delivery.store') }}" method="POST" novalidate>
                     @csrf
-                    <input type="hidden" id="delivery-method-id" name="delivery_method_id">
-                    <div class="delivery-form__row">
-                        <input class="delivery-input" type="text" id="name" name="first_name" placeholder="First name" required>
-                        <input class="delivery-input" type="text" id="surname" name="last_name" placeholder="Last name" required>
+                    <input type="hidden" id="delivery-method-id" name="delivery_method_id" value="{{ $selectedMethodId }}">
+                    @guest
+                    <div class="d-flex flex-column flex-md-row gap-2 align-items-md-end">
+                        <div class="flex-grow-1">
+                            <input
+                                class="delivery-input"
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Email"
+                                value="{{ old('email', $prefill['email'] ?? '') }}"
+                                autocomplete="email"
+                                inputmode="email"
+                                required
+                            >
+                            @error('email')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a
+                                href="{{ route('checkout.to-login') }}"
+                                data-base-href="{{ route('checkout.to-login') }}"
+                                id="checkout-login-link"
+                                class="cart-summary__btn delivery-auth-btn delivery-auth-btn--ghost"
+                            >Login</a>
+                            <a
+                                href="{{ route('checkout.to-register') }}"
+                                data-base-href="{{ route('checkout.to-register') }}"
+                                id="checkout-register-link"
+                                class="cart-summary__btn delivery-auth-btn"
+                            >Register</a>
+                        </div>
                     </div>
-                    <input class="delivery-input" type="tel" id="phone" name="phone_number" placeholder="Phone number" required inputmode="tel">
-                    <input class="delivery-input" type="text" id="street" name="street" placeholder="Street and house number" required>
+                    @endguest
+                    @auth
+                        <input type="hidden" name="email" value="{{ old('email', $prefill['email'] ?? '') }}">
+                    @endauth
                     <div class="delivery-form__row">
-                        <input class="delivery-input" type="text" id="city" name="city" placeholder="City" required>
-                        <input class="delivery-input" type="text" id="zip" name="post_code" placeholder="ZIP code" required inputmode="numeric">
+                        <input class="delivery-input" type="text" id="name" name="first_name" placeholder="First name" value="{{ old('first_name', $prefill['first_name'] ?? '') }}" required>
+                        <input class="delivery-input" type="text" id="surname" name="last_name" placeholder="Last name" value="{{ old('last_name', $prefill['last_name'] ?? '') }}" required>
                     </div>
-                    <input class="delivery-input" type="text" id="country" name="country" placeholder="Country" required>
+                    <input class="delivery-input" type="tel" id="phone" name="phone_number" placeholder="Phone number" value="{{ old('phone_number', $prefill['phone_number'] ?? '') }}" required inputmode="tel">
+                    <input class="delivery-input" type="text" id="street" name="street" placeholder="Street and house number" value="{{ old('street', $prefill['street'] ?? '') }}" required>
+                    <div class="delivery-form__row">
+                        <input class="delivery-input" type="text" id="city" name="city" placeholder="City" value="{{ old('city', $prefill['city'] ?? '') }}" required>
+                        <input class="delivery-input" type="text" id="zip" name="post_code" placeholder="ZIP code" value="{{ old('post_code', $prefill['post_code'] ?? '') }}" required inputmode="numeric">
+                    </div>
+                    <input class="delivery-input" type="text" id="country" name="country" placeholder="Country" value="{{ old('country', $prefill['country'] ?? '') }}" required>
                 </form>
             </section>
 
@@ -78,15 +116,21 @@
                     <div class="cart-summary__amounts">
                         <div class="cart-summary__amount">
                             <span>Items amount</span>
-                            <span>100.99 €</span>
+                            <span id="summary-items">{{ number_format($itemsTotal ?? 0, 2, '.', '') }} €</span>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Delivery amount</span>
-                            <small id="summary-delivery">from 0 €</small>
+                            <small id="summary-delivery">
+                                @if($deliveryPrice !== null)
+                                    {{ $deliveryPrice == 0 ? 'Free' : number_format($deliveryPrice, 2, '.', '') . ' €' }}
+                                @else
+                                    from {{ number_format($minDeliveryPrice ?? 0, 2, '.', '') }} €
+                                @endif
+                            </small>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Total</span>
-                            <strong class="cart-summary__total">100.99 €</strong>
+                            <strong class="cart-summary__total" id="summary-total">{{ number_format($grandTotal ?? 0, 2, '.', '') }} €</strong>
                         </div>
                     </div>
                     <button class="cart-summary__btn" id="payment-btn">Payment</button>
@@ -101,6 +145,56 @@
 @section('scripts')
 <script>
     const deliveryMethodField = document.getElementById('delivery-method-id');
+    const preselected = document.querySelector('.service-card input[type="radio"]:checked');
+    const summaryDelivery = document.getElementById('summary-delivery');
+    const summaryTotal = document.getElementById('summary-total');
+    const summaryItems = document.getElementById('summary-items');
+    const itemsTotalValue = Number("{{ number_format($itemsTotal ?? 0, 2, '.', '') }}") || 0;
+    const checkoutEmail = document.getElementById('email');
+    const checkoutLoginLink = document.getElementById('checkout-login-link');
+    const checkoutRegisterLink = document.getElementById('checkout-register-link');
+
+    function formatPrice(value) {
+        return Number(value || 0).toFixed(2) + ' €';
+    }
+
+    function updateSummary(deliveryPrice) {
+        if (summaryDelivery) {
+            summaryDelivery.textContent = deliveryPrice === 0
+                ? 'Free'
+                : formatPrice(deliveryPrice);
+        }
+        if (summaryTotal) {
+            summaryTotal.textContent = formatPrice(itemsTotalValue + deliveryPrice);
+        }
+        if (summaryItems) {
+            summaryItems.textContent = formatPrice(itemsTotalValue);
+        }
+    }
+
+    function updateAuthLinks() {
+        if (!checkoutEmail || !checkoutLoginLink || !checkoutRegisterLink) {
+            return;
+        }
+
+        const emailValue = checkoutEmail.value.trim();
+        const suffix = emailValue ? `?email=${encodeURIComponent(emailValue)}` : '';
+
+        checkoutLoginLink.href = `${checkoutLoginLink.dataset.baseHref}${suffix}`;
+        checkoutRegisterLink.href = `${checkoutRegisterLink.dataset.baseHref}${suffix}`;
+    }
+
+    if (preselected) {
+        preselected.closest('.service-card').classList.add('service-card--selected');
+        deliveryMethodField.value = preselected.value;
+        const price = Number(preselected.dataset.price || 0);
+        updateSummary(price);
+    }
+
+    if (checkoutEmail && checkoutLoginLink && checkoutRegisterLink) {
+        updateAuthLinks();
+        checkoutEmail.addEventListener('input', updateAuthLinks);
+    }
 
     document.querySelectorAll('.service-card input[type="radio"]').forEach(radio => {
         radio.addEventListener('change', () => {
@@ -108,6 +202,8 @@
             radio.closest('.service-card').classList.add('service-card--selected');
             document.getElementById('service-error').classList.remove('delivery-services__error--visible');
             deliveryMethodField.value = radio.value;
+            const price = Number(radio.dataset.price || 0);
+            updateSummary(price);
         });
     });
 

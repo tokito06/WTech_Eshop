@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DeliveryStoreRequest extends FormRequest
 {
@@ -15,6 +16,7 @@ class DeliveryStoreRequest extends FormRequest
     {
         return [
             'delivery_method_id' => ['required', 'uuid', 'exists:delivery_methods,id'],
+            'email' => ['nullable', 'email', 'max:255', Rule::requiredIf(fn () => !$this->user())],
             'first_name' => ['required', 'string', 'max:50'],
             'last_name' => ['required', 'string', 'max:50'],
             'phone_number' => ['required', 'string', 'max:20'],

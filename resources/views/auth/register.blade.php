@@ -22,7 +22,7 @@
                 </div>
             </div>
 
-            <input class="auth__input" id="inp-email" type="email" name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="username">
+            <input class="auth__input" id="inp-email" type="email" name="email" value="{{ old('email', request('email')) }}" placeholder="Email" required autocomplete="username">
             @error('email')<small class="text-danger d-block mb-2">{{ $message }}</small>@enderror
 
             <input class="auth__input" id="inp-password" type="password" name="password" placeholder="Password" required autocomplete="new-password">

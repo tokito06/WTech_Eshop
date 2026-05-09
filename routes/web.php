@@ -11,7 +11,6 @@ use App\Http\Controllers\User\CatalogController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\ProductController as UserProductController;
 use App\Http\Controllers\User\FavouriteController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -29,12 +28,14 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 
 Route::get('/checkout/to-login', function () {
     session()->put('url.intended', route('delivery'));
-    return redirect()->route('login');
+    $email = request()->query('email');
+    return redirect()->route('login', $email ? ['email' => $email] : []);
 })->name('checkout.to-login');
 
 Route::get('/checkout/to-register', function () {
     session()->put('url.intended', route('delivery'));
-    return redirect()->route('register');
+    $email = request()->query('email');
+    return redirect()->route('register', $email ? ['email' => $email] : []);
 })->name('checkout.to-register');
 
 Route::get('/delivery', [DeliveryController::class, 'create'])->name('delivery');
@@ -43,10 +44,10 @@ Route::get('/payment', [PaymentController::class, 'create'])->name('payment');
 Route::post('/order', [PaymentController::class, 'store'])->name('order.store');
 Route::get('/order-success', function () {
     return view('order-success', [
-        'orderCode'     => session('order.code'),
-        'itemsTotal'    => session('order.items_total'),
+        'orderCode' => session('order.code'),
+        'itemsTotal' => session('order.items_total'),
         'deliveryPrice' => session('order.delivery_price'),
-        'grandTotal'    => session('order.grand_total'),
+        'grandTotal' => session('order.grand_total'),
     ]);
 })->name('order.success');
 
