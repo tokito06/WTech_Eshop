@@ -21,7 +21,7 @@ export default function initRegisterPage() {
                 return;
             }
             const isOk = check(input.value);
-            input.style.boxShadow = isOk ? '' : '0 0 0 3px rgba(224, 85, 85, 0.35)';
+            input.style.boxShadow = isOk ? '' : '0 0 0 3px var(--danger-ring)';
             if (!isOk) {
                 valid = false;
             }

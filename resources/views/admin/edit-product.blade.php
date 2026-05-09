@@ -88,12 +88,12 @@
                            type="text" name="name"
                            value="{{ old('name', $product->name) }}"
                            placeholder="Name" required>
-                    @error('name')<small style="color:#e05555">{{ $message }}</small>@enderror
+                    @error('name')<small style="color:var(--error-color)">{{ $message }}</small>@enderror
 
                     <textarea class="add-product-textarea @error('description') add-product-input--error @enderror"
                               name="description" placeholder="Describing: material, colour, etc."
                               rows="3">{{ old('description', $product->description) }}</textarea>
-                    @error('description')<small style="color:#e05555">{{ $message }}</small>@enderror
+                    @error('description')<small style="color:var(--error-color)">{{ $message }}</small>@enderror
 
                     <select class="add-product-input add-product-select @error('category_id') add-product-input--error @enderror"
                             name="category_id" required>
@@ -105,7 +105,7 @@
                             </option>
                         @endforeach
                     </select>
-                    @error('category_id')<small style="color:#e05555">{{ $message }}</small>@enderror
+                    @error('category_id')<small style="color:var(--error-color)">{{ $message }}</small>@enderror
 
                     <select class="add-product-input add-product-select @error('sex') add-product-input--error @enderror"
                             name="sex" required>
@@ -116,7 +116,7 @@
                             </option>
                         @endforeach
                     </select>
-                    @error('sex')<small style="color:#e05555">{{ $message }}</small>@enderror
+                    @error('sex')<small style="color:var(--error-color)">{{ $message }}</small>@enderror
 
                     <select class="add-product-input add-product-select @error('brand_id') add-product-input--error @enderror"
                             name="brand_id" required>
@@ -127,20 +127,20 @@
                             </option>
                         @endforeach
                     </select>
-                    @error('brand_id')<small style="color:#e05555">{{ $message }}</small>@enderror
+                    @error('brand_id')<small style="color:var(--error-color)">{{ $message }}</small>@enderror
 
                     <select class="add-product-input add-product-select @error('status') add-product-input--error @enderror"
                             name="status" required>
                         <option value="active"   {{ old('status', $product->status) === 'active'   ? 'selected' : '' }}>Active</option>
                         <option value="archived" {{ old('status', $product->status) === 'archived' ? 'selected' : '' }}>Archived</option>
                     </select>
-                    @error('status')<small style="color:#e05555">{{ $message }}</small>@enderror
+                    @error('status')<small style="color:var(--error-color)">{{ $message }}</small>@enderror
 
                     <input class="add-product-input @error('price') add-product-input--error @enderror"
                            type="number" name="price"
                            value="{{ old('price', $variantsBySize->first()?->price ?? '') }}"
                            step="0.01" min="0" placeholder="Price (€)" required>
-                    @error('price')<small style="color:#e05555">{{ $message }}</small>@enderror
+                    @error('price')<small style="color:var(--error-color)">{{ $message }}</small>@enderror
 
                     <button class="add-product-btn" type="submit">Save</button>
 
