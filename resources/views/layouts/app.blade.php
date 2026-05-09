@@ -63,6 +63,16 @@
     </div>
 </footer>
 
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999">
+    <div id="authToast" class="toast align-items-center border-0" role="alert" aria-live="assertive">
+        <div class="d-flex align-items-center gap-2 p-3" style="background:var(--highlight-color); border-radius:10px;">
+            <span class="material-symbols-outlined">info</span>
+            <span id="auth-toast-message">Please sign in to manage favourites.</span>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 @vite(['resources/js/app.js'])

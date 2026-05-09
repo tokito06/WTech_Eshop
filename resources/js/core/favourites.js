@@ -1,4 +1,22 @@
 export default function initFavouriteToggles() {
+    const authToast = document.getElementById('authToast');
+    const authToastMessage = document.getElementById('auth-toast-message');
+
+    const showAuthToast = (message = 'Please sign in to manage favourites.') => {
+        if (authToastMessage) {
+            authToastMessage.textContent = message;
+        }
+
+        if (authToast && window.bootstrap?.Toast) {
+            window.bootstrap.Toast.getOrCreateInstance(authToast, { delay: 2500 }).show();
+            return;
+        }
+
+        if (!authToast) {
+            alert(message);
+        }
+    };
+
     document.addEventListener('click', async event => {
         const toggleBtn = event.target.closest('[data-favourite-toggle]');
         if (!toggleBtn) {
@@ -8,7 +26,7 @@ export default function initFavouriteToggles() {
         const body = document.body;
         const isAuthed = body?.dataset?.auth === '1';
         if (!isAuthed) {
-            window.location.href = body?.dataset?.loginUrl || '/login';
+            showAuthToast();
             return;
         }
 
