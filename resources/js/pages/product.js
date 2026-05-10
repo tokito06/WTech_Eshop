@@ -25,6 +25,7 @@ export default function initProductPage() {
     const qtyPlus = document.getElementById('qty-plus');
     const sizeSelect = document.getElementById('product-size');
     const priceEl = document.getElementById('product-price');
+    const stockBadge = document.getElementById('stock-badge');
     const addBtn = document.getElementById('add-to-bag');
     const modalEl = document.getElementById('cartToastModal');
     const toastQtyEl = document.getElementById('toast-qty');
@@ -79,6 +80,38 @@ export default function initProductPage() {
         qtyInput.addEventListener('blur', () => setQty(qtyInput.value));
     }
 
+    function updateStockBadge(value) {
+        if (!stockBadge) {
+            return;
+        }
+
+        const inventory = Number(value);
+        if (!Number.isFinite(inventory) || inventory < 1) {
+            stockBadge.hidden = true;
+            stockBadge.textContent = '';
+            stockBadge.className = 'product__stock-badge';
+            return;
+        }
+
+        if (inventory === 1) {
+            stockBadge.textContent = 'Last one';
+            stockBadge.className = 'product__stock-badge product__stock-badge--last';
+            stockBadge.hidden = false;
+            return;
+        }
+
+        if (inventory < 5) {
+            stockBadge.textContent = 'Low stock';
+            stockBadge.className = 'product__stock-badge product__stock-badge--low';
+            stockBadge.hidden = false;
+            return;
+        }
+
+        stockBadge.hidden = true;
+        stockBadge.textContent = '';
+        stockBadge.className = 'product__stock-badge';
+    }
+
     function syncVariantSelection() {
         if (!sizeSelect || !addBtn) {
             return;
@@ -91,6 +124,8 @@ export default function initProductPage() {
             const price = Number(selected.dataset.price || 0);
             priceEl.textContent = `${price.toFixed(2).replace('.', ',')} \u20AC`;
         }
+
+        updateStockBadge(selected?.dataset?.inventory);
     }
 
     if (sizeSelect) {

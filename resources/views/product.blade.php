@@ -84,7 +84,9 @@
                     <div class="product__badges">
                         <span class="product__category-badge">{{ $product?->category?->name ?? 'Category' }}</span>
                         <span class="product__category-badge">{{ $product?->brand?->name ?? 'Brand' }}</span>
-                        <span class="product__category-badge">{{ ucfirst($product?->sex ?? 'Unspecified') }}</span>                    </div>
+                        <span class="product__category-badge">{{ ucfirst($product?->sex ?? 'Unspecified') }}</span>
+                        <span class="product__stock-badge" id="stock-badge" hidden></span>
+                    </div>
                     <h1>{{ $product->name ?? 'Product' }}</h1>
 
                     <p class="product__description">
@@ -95,7 +97,12 @@
 
                     <select class="product__size" id="product-size">
                         @forelse(($product?->variants ?? collect()) as $variant)
-                            <option value="{{ $variant->id }}" data-price="{{ $variant->price }}" @selected($loop->first)>{{ $variant->symbol }}</option>
+                            <option value="{{ $variant->id }}"
+                                    data-price="{{ $variant->price }}"
+                                    data-inventory="{{ $variant->inventory }}"
+                                    @selected($loop->first)>
+                                {{ $variant->symbol }}
+                            </option>
                         @empty
                             <option value="">Size</option>
                         @endforelse
