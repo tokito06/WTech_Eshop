@@ -198,7 +198,19 @@ class ProductController extends Controller
     {
         $this->authorizeProduct($product);
 
+        $images = $product->images()->get();
+
         $product->delete();
+
+        foreach ($images as $image) {
+            if ($image->products()->exists()) {
+                continue;
+            }
+            if (!str_starts_with($image->path, 'images/')) {
+                Storage::disk('public')->delete($image->path);
+            }
+            $image->delete();
+        }
 
         return redirect()->route('admin.products')->with('success', 'Product deleted.');
     }
