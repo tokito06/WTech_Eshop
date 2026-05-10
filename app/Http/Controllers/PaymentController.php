@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\EnsureGuestToken;
 use App\Models\Cart;
 use App\Models\DeliveryMethod;
 use App\Models\Order;
@@ -47,7 +48,7 @@ class PaymentController extends Controller
 
         abort_if(!$cart || $cart->items->isEmpty(), 400, 'Cart is empty.');
 
-        $sessionId = $request->user() ? null : $request->session()->getId();
+        $sessionId = $request->user() ? null : EnsureGuestToken::token($request);
         $email = $request->user()?->email ?? $request->session()->get('checkout.email');
 
         $itemsTotal = $cart->total;
@@ -89,7 +90,7 @@ class PaymentController extends Controller
         }
 
         return Cart::with('items')
-            ->where('session_id', $request->session()->getId())
+            ->where('session_id', EnsureGuestToken::token($request))
             ->whereNull('user_id')
             ->first();
     }
