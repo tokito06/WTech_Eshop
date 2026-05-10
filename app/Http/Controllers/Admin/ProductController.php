@@ -123,7 +123,8 @@ class ProductController extends Controller
             'sex'         => ['required', 'in:men,women,kids,unisex'],
             'status'      => ['required', 'in:active,archived'],
             'price'       => ['required', 'numeric', 'min:0'],
-            'image'       => ['nullable', 'image', 'max:4096'],
+            'images'      => ['nullable', 'array', 'max:10'],
+            'images.*'    => ['nullable', 'image', 'max:4096'],
             'inventory'   => ['nullable', 'array'],
             'inventory.*' => ['nullable', 'integer', 'min:0'],
         ]);
@@ -137,14 +138,22 @@ class ProductController extends Controller
             'status'      => $data['status'],
         ]);
 
-        if ($request->hasFile('image')) {
-            $path  = $request->file('image')->store('products', 'public');
-            $image = Image::create([
-                'name'     => $product->name,
-                'path'     => $path,
-                'position' => 0,
-            ]);
-            $product->images()->syncWithoutDetaching([$image->id]);
+        if ($request->hasFile('images')) {
+            $position = (int) ($product->images()->max('position') ?? -1);
+
+            foreach ($request->file('images') as $file) {
+                if (!$file) {
+                    continue;
+                }
+
+                $path  = $file->store('products', 'public');
+                $image = Image::create([
+                    'name'     => $product->name,
+                    'path'     => $path,
+                    'position' => ++$position,
+                ]);
+                $product->images()->syncWithoutDetaching([$image->id]);
+            }
         }
 
         foreach (self::SIZES as $symbol) {

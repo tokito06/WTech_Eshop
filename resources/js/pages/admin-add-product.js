@@ -28,6 +28,9 @@ export default function initAdminAddProductPage() {
     if (!photoDrop || !photoInput || !photoThumbs) {
         return;
     }
+    if (photoThumbs.hasAttribute('data-existing-thumbs')) {
+        return;
+    }
 
     let selectedFiles = [];
     let thumbUrls = [];
@@ -180,9 +183,6 @@ export default function initAdminAddProductPage() {
             syncThumbs();
         }
 
-        if (canSyncFiles()) {
-            photoInput.value = '';
-        }
     }
 
     function setPreview(url) {

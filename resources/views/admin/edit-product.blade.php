@@ -37,28 +37,19 @@
             <div class="col-12 col-md-5 col-lg-4 d-flex flex-column">
 
                 <div class="add-product-photo" id="photo-drop" title="Click or drag to upload">
-                    @php $currentImage = $product->images->first(); @endphp
-                    @if($currentImage)
-                        <img class="add-product-photo__preview" id="photo-preview"
-                             src="{{ $currentImage->url }}" alt="{{ $product->name }}"
-                             style="display:block">
-                        <span class="add-product-photo__label" id="photo-label" style="display:none">Photo</span>
-                    @else
-                        <span class="add-product-photo__label" id="photo-label">Photo</span>
-                        <img class="add-product-photo__preview" id="photo-preview" alt="Product photo preview">
-                    @endif
-                    <input type="file" id="photo-input" name="image" accept="image/*" hidden>
+                    <span class="add-product-photo__label" id="photo-label">Photo</span>
+                    <img class="add-product-photo__preview" id="photo-preview" alt="Product photo preview">
+                    <input type="file" id="photo-input" name="images[]" accept="image/*" multiple hidden>
                 </div>
 
-                @if($product->images->count() > 1)
-                <div class="add-product-thumbs mt-2">
-                    @foreach($product->images as $img)
-                    <div class="add-product-thumb {{ $loop->first ? 'active' : '' }}">
-                        <img class="img__container" src="{{ $img->url }}" alt="Thumbnail">
+                <div class="add-product-upload-note" id="photo-upload-note" role="status" aria-live="polite" hidden></div>
+
+                 <div class="add-product-thumbs" id="photo-thumbs"
+                     data-existing-thumbs='@json($product->images->map(fn($img) => $img->url)->values())'>
+                    <div class="add-product-thumb add-product-thumb--empty" id="photo-thumbs-empty">
+                        <span class="add-product-thumb__label">No photos yet</span>
                     </div>
-                    @endforeach
                 </div>
-                @endif
 
                 <!-- Size inventory -->
                 <div class="mt-3">
@@ -97,7 +88,7 @@
 
                     <select class="add-product-input add-product-select @error('category_id') add-product-input--error @enderror"
                             name="category_id" required>
-                        <option value="" disabled>Category</option>
+                        <option value="" disabled {{ old('category_id', $product->category_id) ? '' : 'selected' }}>Category</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}"
                                 {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
@@ -109,17 +100,17 @@
 
                     <select class="add-product-input add-product-select @error('sex') add-product-input--error @enderror"
                             name="sex" required>
-                        @foreach(['men' => 'Men', 'women' => 'Women', 'kids' => 'Kids', 'unisex' => 'Unisex'] as $val => $label)
-                            <option value="{{ $val }}"
-                                {{ old('sex', $product->sex) === $val ? 'selected' : '' }}>
-                                {{ $label }}
-                            </option>
-                        @endforeach
+                        <option value="" disabled {{ old('sex', $product->sex) ? '' : 'selected' }}>Target audience</option>
+                        <option value="men" {{ old('sex', $product->sex) === 'men' ? 'selected' : '' }}>Men</option>
+                        <option value="women" {{ old('sex', $product->sex) === 'women' ? 'selected' : '' }}>Women</option>
+                        <option value="kids" {{ old('sex', $product->sex) === 'kids' ? 'selected' : '' }}>Kids</option>
+                        <option value="unisex" {{ old('sex', $product->sex) === 'unisex' ? 'selected' : '' }}>Unisex</option>
                     </select>
                     @error('sex')<small class="error-text">{{ $message }}</small>@enderror
 
                     <select class="add-product-input add-product-select @error('brand_id') add-product-input--error @enderror"
                             name="brand_id" required>
+                        <option value="" disabled {{ old('brand_id', $product->brand_id) ? '' : 'selected' }}>Brand</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->id }}"
                                 {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}>
@@ -147,9 +138,53 @@
                 </div>
             </div>
 
+            <!-- Live preview -->
+            <div class="col-12 col-lg-3">
+                <div class="add-product-preview">
+                    <h3 class="add-product-preview__title">Preview</h3>
+                    <div class="add-product-preview__photo" id="preview-photo">
+                        <button type="button" class="add-product-preview__nav" id="preview-prev" aria-label="Previous photo">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+                        <button type="button" class="add-product-preview__nav" id="preview-next" aria-label="Next photo">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                        <img class="add-product-preview__image" id="preview-image" alt="Preview photo" hidden>
+                        <span class="add-product-preview__placeholder" id="preview-placeholder">No photo</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Name</span>
+                        <span class="add-product-preview__value" id="preview-name">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Description</span>
+                        <span class="add-product-preview__value" id="preview-description">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Category</span>
+                        <span class="add-product-preview__value" id="preview-category">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Audience</span>
+                        <span class="add-product-preview__value" id="preview-sex">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Brand</span>
+                        <span class="add-product-preview__value" id="preview-brand">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Price</span>
+                        <span class="add-product-preview__value" id="preview-price">—</span>
+                    </div>
+                    <div class="add-product-preview__row">
+                        <span class="add-product-preview__label">Sizes</span>
+                        <span class="add-product-preview__value" id="preview-sizes">—</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
         </form>
     </div>
 </main>
 @endsection
-
