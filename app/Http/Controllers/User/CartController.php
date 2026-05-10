@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\ProductVariant;
+use App\Http\Middleware\EnsureGuestToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -143,7 +144,7 @@ class CartController extends Controller
         }
 
         return Cart::firstOrCreate([
-            'session_id' => $request->session()->getId(),
+            'session_id' => EnsureGuestToken::token($request),
             'user_id' => null,
         ]);
     }
@@ -159,7 +160,7 @@ class CartController extends Controller
             abort_unless(
                 $item->cart
                 && $item->cart->user_id === null
-                && $item->cart->session_id === $request->session()->getId(),
+                && $item->cart->session_id === EnsureGuestToken::token($request),
                 403
             );
         }

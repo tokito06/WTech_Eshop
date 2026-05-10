@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\EnsureGuestToken;
 use App\Models\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class CheckoutController extends Controller
         }
 
         return Cart::with('items')
-            ->where('session_id', $request->session()->getId())
+            ->where('session_id', EnsureGuestToken::token($request))
             ->whereNull('user_id')
             ->first();
     }

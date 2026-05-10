@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\EnsureGuestToken;
 use App\Http\Requests\DeliveryStoreRequest;
 use App\Models\Cart;
 use App\Models\DeliveryInformation;
@@ -26,7 +27,7 @@ class DeliveryController extends Controller
 
         $deliveryInformation = $user
             ? DeliveryInformation::where('user_id', $user->id)->first()
-            : DeliveryInformation::where('session_id', $request->session()->getId())
+            : DeliveryInformation::where('session_id', EnsureGuestToken::token($request))
                 ->whereNull('user_id')
                 ->first();
 
@@ -68,7 +69,7 @@ class DeliveryController extends Controller
         $data = $request->validated();
 
         $userId = $request->user()?->id;
-        $sessionId = $userId ? null : $request->session()->getId();
+        $sessionId = $userId ? null : EnsureGuestToken::token($request);
 
         $lookup = $userId
             ? ['user_id' => $userId]
@@ -106,7 +107,7 @@ class DeliveryController extends Controller
         }
 
         return Cart::with('items')
-            ->where('session_id', $request->session()->getId())
+            ->where('session_id', EnsureGuestToken::token($request))
             ->whereNull('user_id')
             ->first();
     }

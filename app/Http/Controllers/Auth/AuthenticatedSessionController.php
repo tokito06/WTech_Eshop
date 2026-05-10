@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EnsureGuestToken;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Services\CartMerger;
 use Illuminate\Http\RedirectResponse;
@@ -25,11 +26,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $guestSessionId = $request->session()->getId();
+        $guestToken = EnsureGuestToken::token($request);
 
         $request->authenticate();
 
-        (new CartMerger())->merge($guestSessionId, $request->user());
+        (new CartMerger())->merge($guestToken, $request->user());
 
         $request->session()->regenerate();
 

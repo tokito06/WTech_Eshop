@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EnsureGuestToken;
 use App\Models\User;
 use App\Services\CartMerger;
 use Illuminate\Auth\Events\Registered;
@@ -62,7 +63,7 @@ class RegisteredUserController extends Controller
             $userData['user_type'] = $validated['user_type'];
         }
 
-        $guestSessionId = $request->session()->getId();
+        $guestToken = EnsureGuestToken::token($request);
 
         $user = User::create($userData);
 
@@ -70,7 +71,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        (new CartMerger())->merge($guestSessionId, $user);
+        (new CartMerger())->merge($guestToken, $user);
 
         return redirect(route('home', absolute: false));
     }
