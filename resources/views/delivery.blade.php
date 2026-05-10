@@ -21,6 +21,9 @@
 @endsection
 
 @section('content')
+@php
+    $selectedMethodId = old('delivery_method_id', $selectedDeliveryMethodId ?? '');
+@endphp
 <main class="delivery-section">
     <div class="container">
         <div class="row g-4 g-xl-5 align-items-start">
@@ -35,8 +38,8 @@
 
                 <div class="delivery-services" id="delivery-services">
                     @foreach($deliveryMethods as $method)
-                    <label class="service-card">
-                        <input type="radio" name="delivery_method_id" value="{{ $method->id }}">
+                    <label class="service-card {{ (string) $selectedMethodId === (string) $method->id ? 'service-card--selected' : '' }}">
+                        <input type="radio" name="delivery_method_id" value="{{ $method->id }}" data-price="{{ $method->price }}" {{ (string) $selectedMethodId === (string) $method->id ? 'checked' : '' }}>
                         <span class="service-card__name">{{ $method->name }}</span>
                         <span class="service-card__desc">{{ $method->brief }}</span>
                         <span class="service-card__meta">
@@ -56,18 +59,53 @@
 
                 <form class="delivery-form" id="delivery-form" action="{{ route('delivery.store') }}" method="POST" novalidate>
                     @csrf
-                    <input type="hidden" id="delivery-method-id" name="delivery_method_id">
-                    <div class="delivery-form__row">
-                        <input class="delivery-input" type="text" id="name" name="first_name" placeholder="First name" required>
-                        <input class="delivery-input" type="text" id="surname" name="last_name" placeholder="Last name" required>
+                    <input type="hidden" id="delivery-method-id" name="delivery_method_id" value="{{ $selectedMethodId }}">
+                    @guest
+                    <div class="d-flex flex-column flex-md-row gap-2 align-items-md-end">
+                        <div class="flex-grow-1">
+                            <input
+                                class="delivery-input"
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Email"
+                                value="{{ old('email', $prefill['email'] ?? '') }}"
+                                autocomplete="email"
+                                inputmode="email"
+                                required
+                            >
+                            @error('email')<small class="text-danger d-block mt-1">{{ $message }}</small>@enderror
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a
+                                href="{{ route('checkout.to-login') }}"
+                                data-base-href="{{ route('checkout.to-login') }}"
+                                id="checkout-login-link"
+                                class="cart-summary__btn delivery-auth-btn delivery-auth-btn--ghost"
+                            >Login</a>
+                            <a
+                                href="{{ route('checkout.to-register') }}"
+                                data-base-href="{{ route('checkout.to-register') }}"
+                                id="checkout-register-link"
+                                class="cart-summary__btn delivery-auth-btn"
+                            >Register</a>
+                        </div>
                     </div>
-                    <input class="delivery-input" type="tel" id="phone" name="phone_number" placeholder="Phone number" required inputmode="tel">
-                    <input class="delivery-input" type="text" id="street" name="street" placeholder="Street and house number" required>
+                    @endguest
+                    @auth
+                        <input type="hidden" name="email" value="{{ old('email', $prefill['email'] ?? '') }}">
+                    @endauth
                     <div class="delivery-form__row">
-                        <input class="delivery-input" type="text" id="city" name="city" placeholder="City" required>
-                        <input class="delivery-input" type="text" id="zip" name="post_code" placeholder="ZIP code" required inputmode="numeric">
+                        <input class="delivery-input" type="text" id="name" name="first_name" placeholder="First name" value="{{ old('first_name', $prefill['first_name'] ?? '') }}" required>
+                        <input class="delivery-input" type="text" id="surname" name="last_name" placeholder="Last name" value="{{ old('last_name', $prefill['last_name'] ?? '') }}" required>
                     </div>
-                    <input class="delivery-input" type="text" id="country" name="country" placeholder="Country" required>
+                    <input class="delivery-input" type="tel" id="phone" name="phone_number" placeholder="Phone number" value="{{ old('phone_number', $prefill['phone_number'] ?? '') }}" required inputmode="tel">
+                    <input class="delivery-input" type="text" id="street" name="street" placeholder="Street and house number" value="{{ old('street', $prefill['street'] ?? '') }}" required>
+                    <div class="delivery-form__row">
+                        <input class="delivery-input" type="text" id="city" name="city" placeholder="City" value="{{ old('city', $prefill['city'] ?? '') }}" required>
+                        <input class="delivery-input" type="text" id="zip" name="post_code" placeholder="ZIP code" value="{{ old('post_code', $prefill['post_code'] ?? '') }}" required inputmode="numeric">
+                    </div>
+                    <input class="delivery-input" type="text" id="country" name="country" placeholder="Country" value="{{ old('country', $prefill['country'] ?? '') }}" required>
                 </form>
             </section>
 
@@ -78,15 +116,21 @@
                     <div class="cart-summary__amounts">
                         <div class="cart-summary__amount">
                             <span>Items amount</span>
-                            <span>100.99 €</span>
+                            <span id="summary-items" data-items-total="{{ number_format($itemsTotal ?? 0, 2, '.', '') }}">{{ number_format($itemsTotal ?? 0, 2, '.', '') }} €</span>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Delivery amount</span>
-                            <small id="summary-delivery">from 0 €</small>
+                            <small id="summary-delivery">
+                                @if($deliveryPrice !== null)
+                                    {{ $deliveryPrice == 0 ? 'Free' : number_format($deliveryPrice, 2, '.', '') . ' €' }}
+                                @else
+                                    from {{ number_format($minDeliveryPrice ?? 0, 2, '.', '') }} €
+                                @endif
+                            </small>
                         </div>
                         <div class="cart-summary__amount">
                             <span>Total</span>
-                            <strong class="cart-summary__total">100.99 €</strong>
+                            <strong class="cart-summary__total" id="summary-total">{{ number_format($grandTotal ?? 0, 2, '.', '') }} €</strong>
                         </div>
                     </div>
                     <button class="cart-summary__btn" id="payment-btn">Payment</button>
@@ -98,58 +142,3 @@
 </main>
 @endsection
 
-@section('scripts')
-<script>
-    const deliveryMethodField = document.getElementById('delivery-method-id');
-
-    document.querySelectorAll('.service-card input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            document.querySelectorAll('.service-card').forEach(c => c.classList.remove('service-card--selected'));
-            radio.closest('.service-card').classList.add('service-card--selected');
-            document.getElementById('service-error').classList.remove('delivery-services__error--visible');
-            deliveryMethodField.value = radio.value;
-        });
-    });
-
-    document.getElementById('payment-btn').addEventListener('click', () => {
-        const form = document.getElementById('delivery-form');
-        const inputs = form.querySelectorAll('input[required]');
-        const serviceChosen = document.querySelector('.service-card input[type="radio"]:checked');
-        let valid = true;
-
-        if (serviceChosen) {
-            deliveryMethodField.value = serviceChosen.value;
-        }
-
-        if (!serviceChosen) {
-            document.getElementById('service-error').classList.add('delivery-services__error--visible');
-            document.getElementById('delivery-services').classList.add('delivery-services--error');
-            valid = false;
-        } else {
-            document.getElementById('delivery-services').classList.remove('delivery-services--error');
-        }
-
-        inputs.forEach(input => {
-            if (!input.value.trim()) {
-                input.classList.add('delivery-input--error');
-                valid = false;
-            } else {
-                input.classList.remove('delivery-input--error');
-            }
-        });
-
-        if (valid) {
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return;
-            }
-
-            form.submit();
-        }
-    });
-
-    document.getElementById('delivery-form').addEventListener('input', e => {
-        if (e.target.value.trim()) e.target.classList.remove('delivery-input--error');
-    });
-</script>
-@endsection

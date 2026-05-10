@@ -23,7 +23,6 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('shop') }}">Shop</a></li>
                 <li class="breadcrumb-item">
                     <a href="{{ route('search', ['sex' => $product->sex]) }}">{{ ucfirst($product->sex ?? 'All') }}</a>
                 </li>
@@ -122,7 +121,12 @@
                         >
                             <span class="material-symbols-outlined">{{ $isFavourited ? 'favorite' : 'favorite_border' }}</span>
                         </button>
-                        <button class="product__add" id="add-to-bag" data-variant-id="{{ $variantId ?? '' }}">Add to bag</button>
+                        <button
+                            class="product__add"
+                            id="add-to-bag"
+                            data-variant-id="{{ $variantId ?? '' }}"
+                            data-cart-add-url="{{ route('cart.add') }}"
+                        >Add to bag</button>
                     </div>
                 </div>
             </div>
@@ -151,125 +155,3 @@
 </x-pop-out-modal>
 @endsection
 
-@section('scripts')
-<script>
-    const carousel = document.getElementById('productCarousel');
-    const thumbs = document.querySelectorAll('.product__thumb');
-    const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carousel);
-
-    thumbs.forEach((thumb, i) => {
-        thumb.addEventListener('click', () => { bsCarousel.to(i); });
-    });
-
-    carousel.addEventListener('slid.bs.carousel', e => {
-        thumbs.forEach(t => t.classList.remove('active'));
-        const idx = e.to < thumbs.length ? e.to : 0;
-        thumbs[idx].classList.add('active');
-    });
-
-    const qtyInput = document.getElementById('qty-input');
-    const qtyMinus = document.getElementById('qty-minus');
-    const qtyPlus  = document.getElementById('qty-plus');
-    const sizeSelect = document.getElementById('product-size');
-    const priceEl = document.getElementById('product-price');
-    const addBtn   = document.getElementById('add-to-bag');
-    const modalEl = document.getElementById('cartToastModal');
-    const toastQtyEl = document.getElementById('toast-qty');
-    const toastNoteEl = document.getElementById('toast-note');
-    let cartModalTimer = null;
-
-    function showCartToast(quantity, note = '') {
-        toastQtyEl.textContent = String(Math.max(0, Number(quantity) || 0));
-        toastNoteEl.textContent = note;
-
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.show();
-
-        if (cartModalTimer) {
-            clearTimeout(cartModalTimer);
-        }
-
-        cartModalTimer = setTimeout(() => modal.hide(), 2500);
-    }
-
-    function setQty(val) {
-        const n = Math.max(1, Math.min(99, parseInt(val) || 1));
-        qtyInput.value = n;
-        qtyMinus.disabled = n <= 1;
-    }
-
-    function sanitizeQtyInput(value) {
-        return String(value).replace(/[^0-9]/g, '').slice(0, 2);
-    }
-
-    qtyMinus.addEventListener('click', () => setQty(+qtyInput.value - 1));
-    qtyPlus.addEventListener ('click', () => setQty(+qtyInput.value + 1));
-    qtyInput.addEventListener('input', () => {
-        // Allow temporary empty value while user is typing.
-        qtyInput.value = sanitizeQtyInput(qtyInput.value);
-    });
-    qtyInput.addEventListener('blur', () => setQty(qtyInput.value));
-
-    function syncVariantSelection() {
-        const selected = sizeSelect?.selectedOptions?.[0];
-        addBtn.dataset.variantId = selected?.value || '';
-
-        if (priceEl && selected?.dataset?.price) {
-            const price = Number(selected.dataset.price || 0);
-            priceEl.textContent = `${price.toFixed(2).replace('.', ',')} €`;
-        }
-    }
-
-    sizeSelect?.addEventListener('change', syncVariantSelection);
-    syncVariantSelection();
-
-    addBtn.addEventListener('click', async () => {
-        const variantId = addBtn.dataset.variantId;
-        setQty(qtyInput.value);
-        const quantity = parseInt(qtyInput.value, 10) || 1;
-
-        if (!variantId) {
-            showCartToast(0, 'Variant is not available for this product.');
-            return;
-        }
-
-        try {
-            const response = await fetch('{{ route('cart.add') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-                },
-                body: JSON.stringify({ variant_id: variantId, quantity }),
-            });
-
-            const data = await response.json();
-            if (!response.ok || !data.success) {
-                throw new Error(data.message || 'Failed to add item');
-            }
-
-            const addedQuantity = Number(data.added_quantity ?? quantity);
-            const wasCapped = Boolean(data.capped) || addedQuantity < quantity;
-
-            showCartToast(
-                addedQuantity,
-                wasCapped
-                ? (data.message || `Only ${addedQuantity} item(s) were added due to stock limit.`)
-                : ''
-            );
-        } catch (error) {
-            showCartToast(0, error.message || 'Unable to add item to cart.');
-        }
-    });
-
-    setQty(1);
-
-    const stars = document.querySelector('.product__rating');
-    let rating = 0;
-    stars.addEventListener('click', e => {
-        const rect = stars.getBoundingClientRect();
-        rating = Math.ceil((e.clientX - rect.left) / rect.width * 5);
-        stars.textContent = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    });
-</script>
-@endsection

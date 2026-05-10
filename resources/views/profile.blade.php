@@ -66,19 +66,7 @@
                 <p class="quick-card__text">View saved items and move the best picks into your cart.</p>
             </a>
 
-            <a href="{{ route('delivery') }}" class="quick-card">
-                <span class="material-symbols-outlined quick-card__icon">local_shipping</span>
-                <h2 class="quick-card__title">Delivery details</h2>
-                <p class="quick-card__text">Manage address and shipping preferences for future orders.</p>
-            </a>
-
-            <a href="{{ route('payment') }}" class="quick-card">
-                <span class="material-symbols-outlined quick-card__icon">credit_card</span>
-                <h2 class="quick-card__title">Payment</h2>
-                <p class="quick-card__text">Review payment method and complete checkout in one step.</p>
-            </a>
-
-            <a href="{{ route('shop') }}" class="quick-card">
+            <a href="{{ route('home') }}" class="quick-card">
                 <span class="material-symbols-outlined quick-card__icon">storefront</span>
                 <h2 class="quick-card__title">Continue shopping</h2>
                 <p class="quick-card__text">Explore categories and discover new products in the catalog.</p>
@@ -97,7 +85,7 @@
                 <p>Keep your account information up to date for smooth checkout and support.</p>
             </div>
 
-            <form id="profile-form" method="POST" action="{{ route('profile.update') }}" class="profile-form">
+            <form id="profile-form" data-profile-status="{{ session('status') }}" method="POST" action="{{ route('profile.update') }}" class="profile-form">
                 @csrf
                 @method('PATCH')
 
@@ -147,38 +135,3 @@
 </div>
 @endsection
 
-@section('scripts')
-<script>
-    const editBtn = document.getElementById('btn-edit');
-    const fields = document.querySelectorAll('.info-field');
-    const profileForm = document.getElementById('profile-form');
-    let editing = false;
-
-    function showToast(msg) {
-        document.getElementById('toast-msg').textContent = msg;
-        bootstrap.Toast.getOrCreateInstance(document.getElementById('profileToast'), { delay: 2500 }).show();
-    }
-
-    editBtn.addEventListener('click', () => {
-        editing = !editing;
-        fields.forEach(f => {
-            if (f.name === 'name' || f.name === 'email' || f.name === 'phone') {
-                editing ? f.removeAttribute('readonly') : f.setAttribute('readonly', '');
-            }
-        });
-
-        if (editing) {
-            document.getElementById('field-name').focus();
-        } else {
-            profileForm.submit();
-        }
-
-        editBtn.textContent = editing ? 'Save changes' : 'Edit profile';
-        editBtn.classList.toggle('btn-edit--active', editing);
-    });
-
-    @if (session('status') === 'profile-updated')
-    showToast('Profile saved!');
-    @endif
-</script>
-@endsection

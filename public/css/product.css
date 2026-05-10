@@ -189,7 +189,7 @@
     width: 100%;
     padding: clamp(8px, 1vw, 16px) clamp(10px, 1.2vw, 20px);
     background: var(--white-color);
-    border: 1px solid rgba(123, 123, 123, 0.3);
+    border: 1px solid var(--gray-border-strong);
     border-radius: 12px;
     font-size: clamp(0.9rem, 1.1vw, 1.3rem);
     cursor: pointer;
@@ -209,8 +209,8 @@
     align-items: center;
     width: fit-content;
     overflow: hidden;
-    border: 1px solid rgba(123, 123, 123, 0.28);
-    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid var(--gray-border);
+    background: var(--glass);
     border-radius: 12px;
 }
 
@@ -218,7 +218,7 @@
     width: clamp(36px, 3.5vw, 52px);
     height: clamp(36px, 3.5vw, 52px);
     border: none;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--glass);
     font-size: clamp(18px, 1.6vw, 26px);
     font-weight: 700;
     cursor: pointer;
@@ -272,7 +272,7 @@
 }
 
 .product__fav.liked {
-    background-color: #e05555;
+    background-color: var(--error-color);
     color: #fff;
 }
 

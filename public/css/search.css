@@ -26,7 +26,7 @@
 .search-tag:hover,
 .search-tag:focus-within {
     transform: scale(1.05);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 14px var(--shadow-black);
 }
 
 .search-tag__input {
@@ -57,7 +57,7 @@
     transition: color 0.2s;
     text-decoration: none;
 }
-.search-tag__close:hover { color: #e05555; }
+.search-tag__close:hover { color: var(--error-color); }
 
 .sort-select {
     display: flex;
@@ -167,9 +167,9 @@
 .size-btn {
     width:  clamp(32px, 3vw, 44px);
     height: clamp(32px, 3vw, 44px);
-    border: 2px solid rgba(123, 123, 123, 0.34);
+    border: 2px solid var(--gray-border-strong);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.84);
+    background: var(--glass);
     font-size: clamp(0.75rem, 0.9vw, 1rem);
     font-weight: 600;
     cursor: pointer;
@@ -180,8 +180,8 @@
 }
 .size-btn:hover  { border-color: #999; }
 .size-btn.active {
-    border-color: rgba(156, 161, 229, 0.64);
-    background: rgba(181, 186, 255, 0.3);
+    border-color: var(--accent-border-strong);
+    background: var(--accent-tint-strong);
 }
 .size-btn input { display: none; }
 
@@ -265,5 +265,5 @@
 }
 
 .filters .btn-outline-secondary {
-    border-color: rgba(123, 123, 123, 0.44);
+    border-color: var(--gray-border-strong);
 }

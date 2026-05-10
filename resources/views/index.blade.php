@@ -15,7 +15,7 @@
         <div class="container">
             <div class="home-banner-scroll" id="home-banner-scroll" aria-label="Promotions">
                 @forelse($banners as $banner)
-                <a class="home-banner-card clear-link" href="{{ route('shop') }}">
+                <a class="home-banner-card clear-link" href="{{ route('search') }}">
                     @if($banner->image)
                     <div class="home-banner-card__media">
                         <img class="img__container" src="{{ $banner->image->url }}" alt="{{ $banner->name }}">
@@ -28,7 +28,7 @@
                     </div>
                 </a>
                 @empty
-                <a class="home-banner-card clear-link" href="{{ route('shop') }}">
+                <a class="home-banner-card clear-link" href="{{ route('search') }}">
                     <div class="home-banner-card__content">
                         <p class="home-banner-card__eyebrow">New Collection</p>
                         <h2>Fresh Arrivals</h2>
@@ -77,7 +77,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title mb-0">New for Men</h2>
-                <a href="{{ route('shop') }}?sex=men" class="explore-link">
+                <a href="{{ route('search') }}?sex=men" class="explore-link">
                     See all <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
@@ -98,7 +98,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title mb-0">New for Women</h2>
-                <a href="{{ route('shop') }}?sex=women" class="explore-link">
+                <a href="{{ route('search') }}?sex=women" class="explore-link">
                     See all <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
@@ -119,7 +119,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title mb-0">Trending now</h2>
-                <a href="{{ route('shop') }}" class="explore-link">
+                <a href="{{ route('search') }}" class="explore-link">
                     See all <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
@@ -137,73 +137,3 @@
 </main>
 @endsection
 
-@section('scripts')
-<script>
-    const catScroll = document.getElementById('cat-scroll');
-    const dots      = document.querySelectorAll('.cat-dot');
-    const prevBtn   = document.getElementById('cat-prev');
-    const nextBtn   = document.getElementById('cat-next');
-    const bannerScroll = document.getElementById('home-banner-scroll');
-
-    if (bannerScroll) {
-        const banners = bannerScroll.querySelectorAll('.home-banner-card');
-        let bannerIndex = 0;
-        let bannerTimer = null;
-
-        const goToBanner = (i) => bannerScroll.scrollTo({ left: i * bannerScroll.clientWidth, behavior: 'smooth' });
-        const stopAuto   = () => { if (bannerTimer) { clearInterval(bannerTimer); bannerTimer = null; } };
-        const startAuto  = () => {
-            if (banners.length < 2) return;
-            stopAuto();
-            bannerTimer = setInterval(() => { bannerIndex = (bannerIndex + 1) % banners.length; goToBanner(bannerIndex); }, 3600);
-        };
-
-        setTimeout(startAuto, 1500);
-        bannerScroll.addEventListener('scroll', () => {
-            const page = Math.round(bannerScroll.scrollLeft / Math.max(1, bannerScroll.clientWidth));
-            bannerIndex = Math.max(0, Math.min(banners.length - 1, page));
-        });
-        bannerScroll.addEventListener('pointerdown', stopAuto);
-        bannerScroll.addEventListener('mouseenter', stopAuto);
-        bannerScroll.addEventListener('mouseleave', () => setTimeout(startAuto, 1200));
-        window.addEventListener('resize', () => goToBanner(bannerIndex));
-    }
-
-    function positionArrows() {
-        const top    = catScroll.offsetTop;
-        const center = top + catScroll.offsetHeight / 2 - prevBtn.offsetHeight / 2;
-        prevBtn.style.top = center + 'px';
-        nextBtn.style.top = center + 'px';
-    }
-
-    function updateScrollState() {
-        const canScroll = catScroll.scrollWidth > catScroll.clientWidth + 2;
-        catScroll.classList.toggle('no-scroll', !canScroll);
-        prevBtn.classList.toggle('hidden', !canScroll || catScroll.scrollLeft <= 0);
-        nextBtn.classList.toggle('hidden', !canScroll || catScroll.scrollLeft >= catScroll.scrollWidth - catScroll.clientWidth - 2);
-        document.querySelector('.cat-dots').style.visibility = canScroll ? 'visible' : 'hidden';
-    }
-
-    prevBtn.addEventListener('click', () => catScroll.scrollBy({ left: -catScroll.offsetWidth * 0.8, behavior: 'smooth' }));
-    nextBtn.addEventListener('click', () => catScroll.scrollBy({ left:  catScroll.offsetWidth * 0.8, behavior: 'smooth' }));
-
-    catScroll.addEventListener('scroll', () => {
-        const max   = catScroll.scrollWidth - catScroll.clientWidth;
-        const ratio = max > 0 ? catScroll.scrollLeft / max : 0;
-        dots.forEach((d, i) => d.classList.toggle('active', i === (ratio < 0.5 ? 0 : 1)));
-        updateScrollState();
-    });
-
-    dots.forEach(dot => dot.addEventListener('click', () => {
-        catScroll.scrollTo({ left: parseInt(dot.dataset.page) * (catScroll.scrollWidth - catScroll.clientWidth), behavior: 'smooth' });
-    }));
-
-    positionArrows();
-    updateScrollState();
-    window.addEventListener('resize', () => { positionArrows(); updateScrollState(); });
-
-    document.querySelectorAll('.product-card__fav').forEach(btn =>
-        btn.addEventListener('click', () => btn.classList.toggle('liked'))
-    );
-</script>
-@endsection

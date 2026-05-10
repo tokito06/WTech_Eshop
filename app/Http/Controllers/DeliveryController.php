@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\EnsureGuestToken;
 use App\Http\Requests\DeliveryStoreRequest;
 use App\Models\Cart;
 use App\Models\DeliveryInformation;
@@ -21,8 +22,46 @@ class DeliveryController extends Controller
         }
 
         $deliveryMethods = DeliveryMethod::all();
+        $itemsTotal = $cart->total;
+        $user = $request->user();
 
-        return view('delivery', compact('deliveryMethods'));
+        $deliveryInformation = $user
+            ? DeliveryInformation::where('user_id', $user->id)->first()
+            : DeliveryInformation::where('session_id', EnsureGuestToken::token($request))
+                ->whereNull('user_id')
+                ->first();
+
+        $prefill = [
+            'email' => $request->session()->get('checkout.email') ?? ($user?->email ?? ''),
+            'first_name' => $deliveryInformation?->first_name ?? ($user?->name ?? ''),
+            'last_name' => $deliveryInformation?->last_name ?? ($user?->surname ?? ''),
+            'phone_number' => $deliveryInformation?->phone_number ?? ($user?->phone ?? ''),
+            'street' => $deliveryInformation?->street ?? '',
+            'city' => $deliveryInformation?->city ?? '',
+            'post_code' => $deliveryInformation?->post_code ?? '',
+            'country' => $deliveryInformation?->country ?? '',
+            'province' => $deliveryInformation?->province ?? '',
+            'house' => $deliveryInformation?->house ?? '',
+        ];
+
+        $selectedDeliveryMethodId = $request->session()->get('checkout.delivery_method_id');
+        $selectedDeliveryMethod = $selectedDeliveryMethodId
+            ? $deliveryMethods->firstWhere('id', $selectedDeliveryMethodId)
+            : null;
+
+        $deliveryPrice = $selectedDeliveryMethod?->price;
+        $minDeliveryPrice = $deliveryMethods->min('price');
+        $grandTotal = $itemsTotal + ($deliveryPrice ?? 0);
+
+        return view('delivery', compact(
+            'deliveryMethods',
+            'prefill',
+            'selectedDeliveryMethodId',
+            'itemsTotal',
+            'deliveryPrice',
+            'minDeliveryPrice',
+            'grandTotal'
+        ));
     }
 
     public function store(DeliveryStoreRequest $request): RedirectResponse
@@ -30,11 +69,13 @@ class DeliveryController extends Controller
         $data = $request->validated();
 
         $userId = $request->user()?->id;
-        $sessionId = $userId ? null : $request->session()->getId();
+        $sessionId = $userId ? null : EnsureGuestToken::token($request);
 
         $lookup = $userId
             ? ['user_id' => $userId]
             : ['session_id' => $sessionId, 'user_id' => null];
+
+        $email = $data['email'] ?? $request->user()?->email;
 
         $delivery = DeliveryInformation::updateOrCreate($lookup, [
             'first_name'   => $data['first_name'],
@@ -46,10 +87,13 @@ class DeliveryController extends Controller
             'country'      => $data['country'],
             'province'     => $data['province'] ?? null,
             'house'        => $data['house'] ?? null,
+            'user_id'      => $userId,
+            'session_id'   => $sessionId,
         ]);
 
         $request->session()->put('checkout.delivery_information_id', $delivery->id);
         $request->session()->put('checkout.delivery_method_id', $data['delivery_method_id']);
+        $request->session()->put('checkout.email', $email);
 
         return redirect()->route('payment');
     }
@@ -63,7 +107,7 @@ class DeliveryController extends Controller
         }
 
         return Cart::with('items')
-            ->where('session_id', $request->session()->getId())
+            ->where('session_id', EnsureGuestToken::token($request))
             ->whereNull('user_id')
             ->first();
     }
