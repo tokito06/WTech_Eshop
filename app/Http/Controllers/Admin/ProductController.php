@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -57,6 +58,8 @@ class ProductController extends Controller
             'price'       => ['required', 'numeric', 'min:0'],
             'images'      => ['nullable', 'array', 'max:10'],
             'images.*'    => ['nullable', 'image', 'max:4096'],
+            'remove_images'   => ['nullable', 'array'],
+            'remove_images.*' => ['nullable', 'uuid'],
             'inventory'   => ['nullable', 'array'],
             'inventory.*' => ['nullable', 'integer', 'min:0'],
         ]);
@@ -137,6 +140,30 @@ class ProductController extends Controller
             'sex'         => $data['sex'],
             'status'      => $data['status'],
         ]);
+
+        $removeIds = collect($request->input('remove_images', []))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($removeIds->isNotEmpty()) {
+            $imagesToRemove = $product->images()
+                ->whereIn('images.id', $removeIds)
+                ->get();
+
+            if ($imagesToRemove->isNotEmpty()) {
+                $product->images()->detach($imagesToRemove->pluck('id'));
+
+                foreach ($imagesToRemove as $image) {
+                    if (!$image->products()->exists()) {
+                        if (!str_starts_with($image->path, 'images/')) {
+                            Storage::disk('public')->delete($image->path);
+                        }
+                        $image->delete();
+                    }
+                }
+            }
+        }
 
         if ($request->hasFile('images')) {
             $position = (int) ($product->images()->max('position') ?? -1);

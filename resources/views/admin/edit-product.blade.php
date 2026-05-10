@@ -45,11 +45,12 @@
                 <div class="add-product-upload-note" id="photo-upload-note" role="status" aria-live="polite" hidden></div>
 
                  <div class="add-product-thumbs" id="photo-thumbs"
-                     data-existing-thumbs='@json($product->images->map(fn($img) => $img->url)->values())'>
+                     data-existing-thumbs='@json($product->images->map(fn($img) => ["id" => $img->id, "url" => $img->url])->values())'>
                     <div class="add-product-thumb add-product-thumb--empty" id="photo-thumbs-empty">
                         <span class="add-product-thumb__label">No photos yet</span>
                     </div>
                 </div>
+                <div id="removed-images" hidden></div>
 
                 <!-- Size inventory -->
                 <div class="mt-3">

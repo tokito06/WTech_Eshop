@@ -5,6 +5,7 @@ export default function initAdminEditProductPage() {
     const photoLabel = document.getElementById('photo-label');
     const photoThumbs = document.getElementById('photo-thumbs');
     const uploadNote = document.getElementById('photo-upload-note');
+    const removedImages = document.getElementById('removed-images');
 
     const previewPrev = document.getElementById('preview-prev');
     const previewNext = document.getElementById('preview-next');
@@ -35,7 +36,20 @@ export default function initAdminEditProductPage() {
     let existingThumbs = [];
     if (photoThumbs.dataset.existingThumbs) {
         try {
-            existingThumbs = JSON.parse(photoThumbs.dataset.existingThumbs);
+            const parsed = JSON.parse(photoThumbs.dataset.existingThumbs);
+            if (Array.isArray(parsed)) {
+                existingThumbs = parsed
+                    .map(item => {
+                        if (typeof item === 'string') {
+                            return { id: null, url: item };
+                        }
+                        if (item && typeof item === 'object') {
+                            return { id: item.id ?? null, url: item.url };
+                        }
+                        return null;
+                    })
+                    .filter(item => item && item.url);
+            }
         } catch (error) {
             existingThumbs = [];
         }
@@ -44,13 +58,14 @@ export default function initAdminEditProductPage() {
     let selectedFiles = [];
     let thumbUrls = [];
     let currentIndex = -1;
+    const removedExistingIds = new Set();
 
     function canSyncFiles() {
         return typeof DataTransfer !== 'undefined';
     }
 
     function allThumbs() {
-        const existing = existingThumbs.map(url => ({ type: 'existing', url }));
+        const existing = existingThumbs.map(item => ({ type: 'existing', id: item.id, url: item.url }));
         const fresh = thumbUrls.map((url, index) => ({ type: 'new', url, fileIndex: index }));
         return [...existing, ...fresh];
     }
@@ -135,12 +150,17 @@ export default function initAdminEditProductPage() {
             thumbImg.alt = `Photo ${index + 1}`;
             thumb.appendChild(thumbImg);
 
-            if (item.type === 'new') {
+            if (item.type === 'new' || (item.type === 'existing' && item.id)) {
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
                 removeBtn.className = 'add-product-thumb__remove';
                 removeBtn.setAttribute('aria-label', 'Remove photo');
-                removeBtn.dataset.fileIndex = String(item.fileIndex);
+                removeBtn.dataset.thumbType = item.type;
+                if (item.type === 'new') {
+                    removeBtn.dataset.fileIndex = String(item.fileIndex);
+                } else {
+                    removeBtn.dataset.imageId = String(item.id);
+                }
                 removeBtn.innerHTML = '<span class="material-symbols-outlined">close</span>';
                 thumb.appendChild(removeBtn);
             }
@@ -161,6 +181,31 @@ export default function initAdminEditProductPage() {
         }
         selectedFiles.splice(index, 1);
         syncInputFiles();
+        syncThumbs();
+    }
+
+    function addRemovedImageInput(imageId) {
+        if (!removedImages || !imageId || removedExistingIds.has(imageId)) {
+            return;
+        }
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'remove_images[]';
+        input.value = imageId;
+        removedImages.appendChild(input);
+        removedExistingIds.add(imageId);
+    }
+
+    function removeExistingImage(imageId) {
+        if (!imageId) {
+            return;
+        }
+        const index = existingThumbs.findIndex(item => String(item.id) === String(imageId));
+        if (index === -1) {
+            return;
+        }
+        existingThumbs.splice(index, 1);
+        addRemovedImageInput(imageId);
         syncThumbs();
     }
 
@@ -336,9 +381,17 @@ export default function initAdminEditProductPage() {
         const removeBtn = event.target.closest('.add-product-thumb__remove');
         if (removeBtn) {
             event.stopPropagation();
-            const index = Number(removeBtn.dataset.fileIndex);
-            if (!Number.isNaN(index)) {
-                removeFileAt(index);
+            const thumbType = removeBtn.dataset.thumbType;
+            if (thumbType === 'existing') {
+                const imageId = removeBtn.dataset.imageId;
+                if (imageId) {
+                    removeExistingImage(imageId);
+                }
+            } else {
+                const index = Number(removeBtn.dataset.fileIndex);
+                if (!Number.isNaN(index)) {
+                    removeFileAt(index);
+                }
             }
             return;
         }
