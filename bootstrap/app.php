@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'seller' => \App\Http\Middleware\SellerMiddleware::class,
         ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\EnsureGuestToken::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
