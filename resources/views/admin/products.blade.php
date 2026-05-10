@@ -114,7 +114,7 @@
 
             @if($products->hasPages())
             <div class="d-flex justify-content-center py-3">
-                {{ $products->links() }}
+                {{ $products->links('pagination::bootstrap-5') }}
             </div>
             @endif
 
